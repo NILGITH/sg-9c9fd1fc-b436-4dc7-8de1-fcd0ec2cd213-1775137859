@@ -2,8 +2,8 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://wsnzsfwvsjmryldzxllr.supabase.co";
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndzbnpzZnd2c2ptcnlsZHp4bGxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2MTQwNzksImV4cCI6MjA1OTE5MDA3OX0.4lvKMDTp3D0c4AoiEiCl-WqjOGXYWlZGzDrx4gLWh8M";
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://magoeegjfwxkvnrgaxhx.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1hZ29lZWdqZnd4a3ZucmdheGh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzUwNDQ5MTgsImV4cCI6MjA1MDYyMDkxOH0.RHU2V05kS8K5hkZvhw2YIUbR2snlQRAMQK20eqq4KnY";
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
