@@ -1,6 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import type { News } from "@/services/newsService";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 type NewsImage = {
   id: string;
@@ -23,19 +25,65 @@ export function NewsCard({ news }: NewsCardProps) {
     day: "numeric",
   });
 
-  const imageUrl = news.news_images && news.news_images.length > 0 
-    ? news.news_images[0].image_url 
-    : news.image_url;
+  const images = news.news_images && news.news_images.length > 0 
+    ? news.news_images.sort((a, b) => a.display_order - b.display_order).map(img => img.image_url)
+    : news.image_url ? [news.image_url] : [];
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const nextImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
 
   return (
     <Card className="overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-      <div className="aspect-video relative overflow-hidden">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={news.title}
-            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-          />
+      <div className="aspect-video relative overflow-hidden group">
+        {images.length > 0 ? (
+          <>
+            <img
+              src={images[currentImageIndex]}
+              alt={news.title}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+            {images.length > 1 && (
+              <>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={prevImage}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={nextImage}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                  {images.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentImageIndex ? "bg-white" : "bg-white/50"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
         ) : (
           <div className="w-full h-full bg-muted flex items-center justify-center">
             <Calendar className="w-12 h-12 text-muted-foreground" />

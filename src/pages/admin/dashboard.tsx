@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap, DollarSign } from "lucide-react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, PieChart, Pie, Cell } from "recharts";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -14,6 +14,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [enrollmentData, setEnrollmentData] = useState<any[]>([]);
   const [formationStats, setFormationStats] = useState<any[]>([]);
+  const [paymentData, setPaymentData] = useState<any[]>([]);
+  const [paymentStatusData, setPaymentStatusData] = useState<any[]>([]);
   const [stats, setStats] = useState({
     newsCount: 0,
     photosCount: 0,
@@ -46,7 +48,7 @@ export default function AdminDashboard() {
     const { data: videos } = await supabase.from("gallery").select("id").eq("media_type", "video");
     const { data: formations } = await supabase.from("formations").select("id, title");
     const { data: enrollments } = await supabase.from("enrollments").select("id, created_at, formation_id");
-    const { data: payments } = await supabase.from("payments").select("id");
+    const { data: payments } = await supabase.from("payments").select("id, amount, payment_status, created_at");
 
     setStats({
       newsCount: news?.length || 0,
@@ -85,6 +87,38 @@ export default function AdminDashboard() {
         }).sort((a, b) => b.inscrits - a.inscrits);
         setFormationStats(popularityData);
       }
+    }
+
+    // Generate payment charts data
+    if (payments) {
+      // Payment evolution over last 7 days
+      const last7Days = Array.from({ length: 7 }).map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return d.toISOString().split('T')[0];
+      });
+
+      const paymentChartData = last7Days.map(date => {
+        const dayPayments = payments.filter(p => p.created_at?.startsWith(date));
+        const totalAmount = dayPayments.reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0);
+        const [year, month, day] = date.split('-');
+        return {
+          date: `${day}/${month}`,
+          montant: totalAmount
+        };
+      });
+      setPaymentData(paymentChartData);
+
+      // Payment status distribution
+      const pending = payments.filter(p => p.payment_status === 'pending').length;
+      const validated = payments.filter(p => p.payment_status === 'validated').length;
+      const rejected = payments.filter(p => p.payment_status === 'rejected').length;
+      
+      setPaymentStatusData([
+        { name: 'En attente', value: pending, color: '#F59E0B' },
+        { name: 'Validés', value: validated, color: '#10B981' },
+        { name: 'Rejetés', value: rejected, color: '#EF4444' },
+      ]);
     }
   };
 
@@ -251,6 +285,30 @@ export default function AdminDashboard() {
 
             <Card>
               <CardHeader>
+                <CardTitle>Paiements des 7 derniers jours</CardTitle>
+                <CardDescription>Évolution des revenus (FCFA)</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={paymentData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorPayments" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="date" />
+                    <YAxis allowDecimals={false} />
+                    <Tooltip formatter={(value) => `${Number(value).toLocaleString('fr-FR')} FCFA`} />
+                    <Area type="monotone" dataKey="montant" stroke="#10B981" fillOpacity={1} fill="url(#colorPayments)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
                 <CardTitle>Formations les plus demandées</CardTitle>
                 <CardDescription>Top 5 des formations</CardDescription>
               </CardHeader>
@@ -263,6 +321,34 @@ export default function AdminDashboard() {
                     <Tooltip />
                     <Bar dataKey="inscrits" fill="#E30613" radius={[0, 4, 4, 0]} />
                   </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Statut des paiements</CardTitle>
+                <CardDescription>Répartition par statut</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={paymentStatusData}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={(entry) => `${entry.name}: ${entry.value}`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {paymentStatusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>

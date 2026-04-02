@@ -3,317 +3,621 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
+import { CheckCircle2, AlertCircle, GraduationCap, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { formationService, type Formation } from "@/services/formationService";
-import { enrollmentService } from "@/services/enrollmentService";
+import { enrollmentService, type EnrollmentInsert } from "@/services/enrollmentService";
 import { paymentService } from "@/services/paymentService";
-import { GraduationCap, BookOpen, CreditCard, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { formationService, type Formation } from "@/services/formationService";
+import { GetStaticProps } from "next";
 
-export default function Admissions() {
-  const { toast } = useToast();
-  const [formations, setFormations] = useState<Formation[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: Form, 2: Payment, 3: Success
+declare global {
+  interface Window {
+    openKkiapayWidget: (options: {
+      amount: number;
+      api_key: string;
+      sandbox: boolean;
+      email?: string;
+      phone?: string;
+      name?: string;
+      data?: string;
+      callback?: (response: any) => void;
+    }) => void;
+    addKkiapayListener: (event: string, callback: (response: any) => void) => void;
+  }
+}
+
+interface AdmissionsProps {
+  formations: Formation[];
+}
+
+export default function Admissions({ formations }: AdmissionsProps) {
+  const [currentStep, setCurrentStep] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
-    education_level: "",
-    formation_id: "",
+    birthDate: "",
+    birthPlace: "",
+    nationality: "Béninoise",
+    address: "",
+    city: "",
+    formationId: "",
+    educationLevel: "",
+    lastDiploma: "",
+    motivation: "",
   });
 
   useEffect(() => {
-    const loadFormations = async () => {
-      const { data } = await formationService.getAll();
-      if (data) setFormations(data);
+    // Load Kkiapay SDK
+    const script = document.createElement("script");
+    script.src = "https://cdn.kkiapay.me/k.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
     };
-    loadFormations();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
   };
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmitRegistration = async (e: React.FormEvent) => {
+  const handleStepSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    try {
-      const { data, error } = await enrollmentService.create({
-        first_name: formData.first_name,
-        last_name: formData.last_name,
+    if (currentStep === 1) {
+      // Validate step 1
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez remplir tous les champs obligatoires",
+          variant: "destructive",
+        });
+        return;
+      }
+      setCurrentStep(2);
+    } else if (currentStep === 2) {
+      // Validate step 2
+      if (!formData.formationId || !formData.educationLevel) {
+        toast({
+          title: "Erreur",
+          description: "Veuillez sélectionner une formation et votre niveau d'études",
+          variant: "destructive",
+        });
+        return;
+      }
+      setCurrentStep(3);
+    } else if (currentStep === 3) {
+      // Final submission - create enrollment
+      setLoading(true);
+      try {
+        const enrollmentData: EnrollmentInsert = {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+          birth_date: formData.birthDate || null,
+          birth_place: formData.birthPlace || null,
+          nationality: formData.nationality,
+          address: formData.address || null,
+          city: formData.city || null,
+          formation_id: formData.formationId,
+          education_level: formData.educationLevel,
+          last_diploma: formData.lastDiploma || null,
+          motivation: formData.motivation || null,
+          status: "pending",
+        };
+
+        const { data: enrollment, error } = await enrollmentService.create(enrollmentData);
+
+        if (error || !enrollment) {
+          throw new Error("Erreur lors de la création de l'inscription");
+        }
+
+        setEnrollmentId(enrollment.id);
+        setCurrentStep(4);
+        toast({
+          title: "Succès !",
+          description: "Votre inscription a été enregistrée. Procédez au paiement.",
+        });
+      } catch (error) {
+        console.error("Erreur:", error);
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'inscription. Veuillez réessayer.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handlePayment = () => {
+    if (!enrollmentId) return;
+
+    const selectedFormation = formations.find(f => f.id === formData.formationId);
+
+    if (window.openKkiapayWidget) {
+      window.openKkiapayWidget({
+        amount: 25000,
+        api_key: process.env.NEXT_PUBLIC_KKIAPAY_PUBLIC_KEY || "",
+        sandbox: process.env.NEXT_PUBLIC_KKIAPAY_ENV === "sandbox",
         email: formData.email,
         phone: formData.phone,
-        education_level: formData.education_level,
-        formation_id: formData.formation_id,
-        status: "pending",
-        payment_status: "unpaid",
+        name: `${formData.firstName} ${formData.lastName}`,
+        data: enrollmentId,
       });
 
-      if (error) throw error;
+      window.addKkiapayListener("success", async (response: any) => {
+        console.log("Paiement réussi:", response);
+        
+        try {
+          // Save payment to database
+          await paymentService.create({
+            enrollment_id: enrollmentId,
+            amount: 25000,
+            payment_method: "mobile_money",
+            payment_status: "pending",
+            payment_date: new Date().toISOString(),
+            payment_reference: response.transactionId || `KKP-${Date.now()}`,
+            notes: `Paiement Kkiapay - ${selectedFormation?.title}`,
+            validated_at: null,
+            validated_by: null,
+          });
 
-      if (data) {
-        setEnrollmentId(data.id);
-        setStep(2); // Move to payment step
+          setCurrentStep(5);
+          toast({
+            title: "Paiement réussi !",
+            description: "Votre paiement a été enregistré avec succès.",
+          });
+        } catch (error) {
+          console.error("Erreur enregistrement paiement:", error);
+        }
+      });
+
+      window.addKkiapayListener("failed", (response: any) => {
+        console.log("Paiement échoué:", response);
         toast({
-          title: "Inscription enregistrée",
-          description: "Veuillez procéder au paiement des droits d'inscription.",
+          title: "Paiement échoué",
+          description: "Le paiement n'a pas pu être effectué. Veuillez réessayer.",
+          variant: "destructive",
         });
-      }
-    } catch (error) {
-      console.error(error);
+      });
+    } else {
       toast({
-        variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de l'inscription.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSimulatePayment = async () => {
-    setIsLoading(true);
-    // Simulate payment processing delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    try {
-      if (enrollmentId) {
-        // Update the enrollment's payment status to paid
-        await enrollmentService.updatePaymentStatus(enrollmentId, "paid", 25000); // Ex: 25,000 FCFA / XOF
-        
-        // Register the payment in our new payments table
-        await paymentService.create({
-          enrollment_id: enrollmentId,
-          amount: 25000,
-          payment_method: "mobile_money",
-          payment_status: "pending", // Set as pending so admin can validate it in Dashboard
-          payment_date: new Date().toISOString(),
-          payment_reference: `PAY-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
-          notes: null,
-          validated_at: null,
-          validated_by: null,
-        });
-
-        toast({
-          title: "Paiement réussi !",
-          description: "Vos droits d'inscription ont été réglés avec succès. Bienvenue chez TCI Formation !",
-        });
-        
-        setStep(3); // Success step
-      }
-    } catch (error) {
-      console.error(error);
-      toast({
+        description: "Le système de paiement n'est pas disponible. Veuillez réessayer.",
         variant: "destructive",
-        title: "Erreur de paiement",
-        description: "Le paiement a échoué. Veuillez réessayer.",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  const selectedFormation = formations.find(f => f.id === formData.formationId);
 
   return (
     <>
       <SEO 
-        title="Admissions & Inscriptions | TCI Formation" 
-        description="Inscrivez-vous en ligne à nos formations diplômantes CQM et CQP."
+        title="Inscrivez-vous - TCI Formation"
+        description="Inscrivez-vous en ligne à l'une de nos formations professionnelles. Processus simple et sécurisé."
       />
+      
       <Header />
       
-      <main>
+      <main className="pt-20">
         {/* Hero Section */}
-        <section className="py-16 bg-gradient-hero text-white">
-          <div className="container-custom max-w-4xl text-center space-y-6">
-            <h1 className="font-heading font-bold text-4xl md:text-5xl">
-              Admissions
+        <section className="gradient-hero text-white py-16">
+          <div className="container-custom max-w-4xl text-center">
+            <GraduationCap className="w-16 h-16 mx-auto mb-6" />
+            <h1 className="font-heading font-bold text-4xl md:text-5xl mb-4">
+              Inscription en Ligne
             </h1>
-            <p className="text-xl text-white/90">
-              Rejoignez TCI Formation. Obtenez votre diplôme d'État et lancez votre carrière.
+            <p className="text-lg md:text-xl text-white/90">
+              Rejoignez TCI Formation et lancez votre carrière professionnelle
             </p>
           </div>
         </section>
 
-        <section className="py-12 bg-muted/20 border-b">
-          <div className="container-custom max-w-5xl">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="border-primary/20 bg-white">
-                <CardContent className="p-8">
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-6">
-                    <GraduationCap className="w-6 h-6 text-primary" />
+        {/* Progress Steps */}
+        <section className="py-8 bg-muted/30">
+          <div className="container-custom max-w-4xl">
+            <div className="flex items-center justify-between">
+              {[
+                { num: 1, label: "Informations personnelles" },
+                { num: 2, label: "Formation & Niveau" },
+                { num: 3, label: "Confirmation" },
+                { num: 4, label: "Paiement" },
+                { num: 5, label: "Terminé" },
+              ].map((step, index) => (
+                <div key={step.num} className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                        currentStep >= step.num
+                          ? "bg-primary text-white"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {currentStep > step.num ? <CheckCircle2 className="w-5 h-5" /> : step.num}
+                    </div>
+                    <p className="text-xs mt-2 text-center hidden md:block">{step.label}</p>
                   </div>
-                  <h3 className="font-heading font-bold text-2xl mb-4">Diplômes Préparés</h3>
-                  <ul className="space-y-4 text-muted-foreground">
-                    <li><strong>CQM</strong> (Certificat de Qualification aux Métiers)</li>
-                    <li><strong>CQP</strong> (Certificat de Qualification Professionnelle)</li>
-                    <li className="pt-2 text-sm">Diplômes reconnus par l'État, garantissant votre expertise sur le marché de l'emploi.</li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card className="border-secondary/20 bg-white">
-                <CardContent className="p-8">
-                  <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center mb-6">
-                    <BookOpen className="w-6 h-6 text-secondary" />
-                  </div>
-                  <h3 className="font-heading font-bold text-2xl mb-4">Critères d'Admission</h3>
-                  <ul className="space-y-4 text-muted-foreground">
-                    <li>Niveaux requis allant de la <strong>5ème à la Terminale</strong> selon les filières choisies.</li>
-                    <li>Possibilité d'admission pour les professionnels en reconversion.</li>
-                    <li className="pt-2 text-sm">Les exigences spécifiques sont détaillées sur chaque fiche de formation.</li>
-                  </ul>
-                </CardContent>
-              </Card>
+                  {index < 4 && (
+                    <div
+                      className={`h-0.5 w-12 md:w-20 mx-2 ${
+                        currentStep > step.num ? "bg-primary" : "bg-muted"
+                      }`}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Registration Form */}
-        <section className="py-20">
+        {/* Form Section */}
+        <section className="py-12">
           <div className="container-custom max-w-3xl">
-            <div className="text-center mb-12">
-              <h2 className="font-heading font-bold text-3xl mb-4">Inscription en Ligne</h2>
-              <p className="text-muted-foreground">
-                Remplissez le formulaire ci-dessous et réglez vos droits d'inscription de manière sécurisée.
-              </p>
-            </div>
-
-            <Card className="shadow-lg border-0 ring-1 ring-muted">
-              <CardContent className="p-8 md:p-10">
-                {step === 1 && (
-                  <form onSubmit={handleSubmitRegistration} className="space-y-6">
+            {currentStep === 1 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5" />
+                    Informations Personnelles
+                  </CardTitle>
+                  <CardDescription>
+                    Renseignez vos informations personnelles
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleStepSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="first_name">Prénom</Label>
-                        <Input id="first_name" name="first_name" required value={formData.first_name} onChange={handleInputChange} />
+                        <Label htmlFor="firstName">Prénom *</Label>
+                        <Input
+                          id="firstName"
+                          value={formData.firstName}
+                          onChange={(e) => handleChange("firstName", e.target.value)}
+                          required
+                        />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="last_name">Nom</Label>
-                        <Input id="last_name" name="last_name" required value={formData.last_name} onChange={handleInputChange} />
+                        <Label htmlFor="lastName">Nom *</Label>
+                        <Input
+                          id="lastName"
+                          value={formData.lastName}
+                          onChange={(e) => handleChange("lastName", e.target.value)}
+                          required
+                        />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" required value={formData.email} onChange={handleInputChange} />
+                        <Label htmlFor="email">Email *</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="email"
+                            type="email"
+                            className="pl-10"
+                            value={formData.email}
+                            onChange={(e) => handleChange("email", e.target.value)}
+                            required
+                          />
+                        </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="phone">Téléphone</Label>
-                        <Input id="phone" name="phone" required value={formData.phone} onChange={handleInputChange} />
+                        <Label htmlFor="phone">Téléphone *</Label>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="phone"
+                            type="tel"
+                            className="pl-10"
+                            value={formData.phone}
+                            onChange={(e) => handleChange("phone", e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="birthDate">Date de naissance</Label>
+                        <div className="relative">
+                          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="birthDate"
+                            type="date"
+                            className="pl-10"
+                            value={formData.birthDate}
+                            onChange={(e) => handleChange("birthDate", e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="birthPlace">Lieu de naissance</Label>
+                        <Input
+                          id="birthPlace"
+                          value={formData.birthPlace}
+                          onChange={(e) => handleChange("birthPlace", e.target.value)}
+                        />
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="education_level">Niveau d'études actuel</Label>
-                      <Select onValueChange={(val) => handleSelectChange("education_level", val)} required>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez votre niveau" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="5eme">Niveau 5ème</SelectItem>
-                          <SelectItem value="bepc">BEPC</SelectItem>
-                          <SelectItem value="seconde">Niveau Seconde / Première</SelectItem>
-                          <SelectItem value="bac">Baccalauréat</SelectItem>
-                          <SelectItem value="bac+">Bac +2 ou plus</SelectItem>
-                          <SelectItem value="pro">Professionnel / Artisan</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <Label htmlFor="nationality">Nationalité</Label>
+                      <Input
+                        id="nationality"
+                        value={formData.nationality}
+                        onChange={(e) => handleChange("nationality", e.target.value)}
+                      />
                     </div>
 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label htmlFor="address">Adresse</Label>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                          <Input
+                            id="address"
+                            className="pl-10"
+                            value={formData.address}
+                            onChange={(e) => handleChange("address", e.target.value)}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="city">Ville</Label>
+                        <Input
+                          id="city"
+                          value={formData.city}
+                          onChange={(e) => handleChange("city", e.target.value)}
+                        />
+                      </div>
+                    </div>
+
+                    <Button type="submit" className="w-full" size="lg">
+                      Continuer
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
+            {currentStep === 2 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5" />
+                    Formation & Niveau d'Études
+                  </CardTitle>
+                  <CardDescription>
+                    Sélectionnez votre formation et votre niveau
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleStepSubmit} className="space-y-6">
                     <div className="space-y-2">
-                      <Label htmlFor="formation_id">Formation souhaitée</Label>
-                      <Select onValueChange={(val) => handleSelectChange("formation_id", val)} required>
+                      <Label htmlFor="formationId">Formation souhaitée *</Label>
+                      <Select value={formData.formationId} onValueChange={(value) => handleChange("formationId", value)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Sélectionnez une formation" />
                         </SelectTrigger>
                         <SelectContent>
-                          {formations.map(form => (
-                            <SelectItem key={form.id} value={form.id}>{form.title}</SelectItem>
+                          {formations.map((formation) => (
+                            <SelectItem key={formation.id} value={formation.id}>
+                              {formation.title}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <Button type="submit" className="w-full text-lg h-12" disabled={isLoading}>
-                      {isLoading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
-                      Continuer vers le paiement
-                    </Button>
-                  </form>
-                )}
-
-                {step === 2 && (
-                  <div className="text-center space-y-8 py-8">
-                    <div className="w-20 h-20 bg-secondary/10 rounded-full flex items-center justify-center mx-auto">
-                      <CreditCard className="w-10 h-10 text-secondary" />
+                    <div className="space-y-2">
+                      <Label htmlFor="educationLevel">Niveau d'études *</Label>
+                      <Select value={formData.educationLevel} onValueChange={(value) => handleChange("educationLevel", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionnez votre niveau" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="aucun">Aucun diplôme</SelectItem>
+                          <SelectItem value="cep">CEP</SelectItem>
+                          <SelectItem value="bepc">BEPC</SelectItem>
+                          <SelectItem value="bac">BAC</SelectItem>
+                          <SelectItem value="licence">Licence</SelectItem>
+                          <SelectItem value="master">Master</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    <div>
-                      <h3 className="font-heading font-bold text-2xl mb-2">Paiement des Droits</h3>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="lastDiploma">Dernier diplôme obtenu</Label>
+                      <Input
+                        id="lastDiploma"
+                        value={formData.lastDiploma}
+                        onChange={(e) => handleChange("lastDiploma", e.target.value)}
+                        placeholder="Ex: BAC Série D"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="motivation">Motivation (optionnel)</Label>
+                      <Textarea
+                        id="motivation"
+                        rows={4}
+                        value={formData.motivation}
+                        onChange={(e) => handleChange("motivation", e.target.value)}
+                        placeholder="Pourquoi souhaitez-vous suivre cette formation ?"
+                      />
+                    </div>
+
+                    <div className="flex gap-4">
+                      <Button type="button" variant="outline" onClick={() => setCurrentStep(1)} className="flex-1">
+                        Retour
+                      </Button>
+                      <Button type="submit" className="flex-1">
+                        Continuer
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+            )}
+
+            {currentStep === 3 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    Confirmation de votre inscription
+                  </CardTitle>
+                  <CardDescription>
+                    Vérifiez vos informations avant de valider
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="bg-muted/50 p-6 rounded-lg space-y-4">
+                      <h3 className="font-semibold text-lg">Informations personnelles</h3>
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-muted-foreground">Nom complet</p>
+                          <p className="font-medium">{formData.firstName} {formData.lastName}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Email</p>
+                          <p className="font-medium">{formData.email}</p>
+                        </div>
+                        <div>
+                          <p className="text-muted-foreground">Téléphone</p>
+                          <p className="font-medium">{formData.phone}</p>
+                        </div>
+                        {formData.birthDate && (
+                          <div>
+                            <p className="text-muted-foreground">Date de naissance</p>
+                            <p className="font-medium">{new Date(formData.birthDate).toLocaleDateString("fr-FR")}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="bg-primary/5 p-6 rounded-lg space-y-4">
+                      <h3 className="font-semibold text-lg">Formation sélectionnée</h3>
+                      <div className="space-y-2">
+                        <p className="font-medium text-lg">{selectedFormation?.title}</p>
+                        <p className="text-sm text-muted-foreground">{selectedFormation?.description}</p>
+                        <div className="flex items-center gap-4 text-sm mt-4">
+                          <span className="text-muted-foreground">Niveau d'études:</span>
+                          <span className="font-medium uppercase">{formData.educationLevel}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <Button type="button" variant="outline" onClick={() => setCurrentStep(2)} className="flex-1">
+                        Modifier
+                      </Button>
+                      <Button onClick={handleStepSubmit} disabled={loading} className="flex-1">
+                        {loading ? "Enregistrement..." : "Confirmer l'inscription"}
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {currentStep === 4 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5" />
+                    Paiement des frais d'inscription
+                  </CardTitle>
+                  <CardDescription>
+                    Montant : 25 000 FCFA
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="bg-muted/50 p-6 rounded-lg text-center space-y-4">
+                      <p className="text-3xl font-bold text-primary">25 000 FCFA</p>
                       <p className="text-muted-foreground">
-                        Montant à régler pour valider l'inscription : <strong>25 000 FCFA</strong>
+                        Frais d'inscription pour la formation<br />
+                        <span className="font-medium text-foreground">{selectedFormation?.title}</span>
                       </p>
                     </div>
-                    
-                    <div className="bg-muted/30 p-6 rounded-xl text-left max-w-sm mx-auto space-y-4">
-                      <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground">Frais d'étude de dossier</span>
-                        <span className="font-medium">10 000 FCFA</span>
-                      </div>
-                      <div className="flex justify-between border-b pb-2">
-                        <span className="text-muted-foreground">Acompte inscription</span>
-                        <span className="font-medium">15 000 FCFA</span>
-                      </div>
-                      <div className="flex justify-between pt-2">
-                        <span className="font-bold">Total</span>
-                        <span className="font-bold text-primary">25 000 FCFA</span>
-                      </div>
+
+                    <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2 flex items-center gap-2">
+                        <AlertCircle className="w-4 h-4" />
+                        Méthodes de paiement acceptées
+                      </h4>
+                      <ul className="text-sm space-y-1 text-muted-foreground">
+                        <li>• MTN Mobile Money</li>
+                        <li>• Moov Money</li>
+                        <li>• Carte bancaire</li>
+                      </ul>
                     </div>
 
-                    <Button onClick={handleSimulatePayment} size="lg" className="w-full max-w-sm" disabled={isLoading}>
-                      {isLoading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
-                      Payer par Mobile Money / Carte
+                    <Button onClick={handlePayment} size="lg" className="w-full">
+                      Payer avec Kkiapay
                     </Button>
-                    <p className="text-xs text-muted-foreground mt-4 flex items-center justify-center gap-2">
-                      <CreditCard className="w-4 h-4" /> Paiement 100% sécurisé
-                    </p>
                   </div>
-                )}
+                </CardContent>
+              </Card>
+            )}
 
-                {step === 3 && (
+            {currentStep === 5 && (
+              <Card>
+                <CardContent className="pt-6">
                   <div className="text-center space-y-6 py-8">
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900">
+                      <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
                     </div>
-                    <h3 className="font-heading font-bold text-3xl text-green-600">Inscription Validée !</h3>
-                    <p className="text-lg text-muted-foreground max-w-md mx-auto">
-                      Félicitations ! Vos droits d'inscription ont été réglés. Vous recevrez très prochainement un email avec vos identifiants d'accès et les prochaines étapes.
-                    </p>
-                    <div className="pt-8">
-                      <Link href="/">
-                        <Button variant="outline">
-                          Retour à l'accueil
-                        </Button>
-                      </Link>
+                    <div>
+                      <h2 className="text-2xl font-bold mb-2">Inscription réussie !</h2>
+                      <p className="text-muted-foreground">
+                        Votre paiement a été enregistré avec succès.
+                      </p>
                     </div>
+                    <div className="bg-muted/50 p-6 rounded-lg text-left space-y-3">
+                      <h3 className="font-semibold">Prochaines étapes :</h3>
+                      <ul className="space-y-2 text-sm text-muted-foreground">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span>Vous recevrez un email de confirmation</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span>Notre équipe validera votre inscription sous 24-48h</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle2 className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span>Vous serez contacté pour finaliser votre dossier</span>
+                        </li>
+                      </ul>
+                    </div>
+                    <Button onClick={() => window.location.href = "/"} size="lg">
+                      Retour à l'accueil
+                    </Button>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </section>
       </main>
@@ -322,3 +626,14 @@ export default function Admissions() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  const { data: formations } = await formationService.getAll();
+
+  return {
+    props: {
+      formations: formations || [],
+    },
+    revalidate: 60,
+  };
+};
