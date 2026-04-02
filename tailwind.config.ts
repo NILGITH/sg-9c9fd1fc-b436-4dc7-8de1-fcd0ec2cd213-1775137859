@@ -16,8 +16,8 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        heading: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
-        body: ["Work Sans", "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        heading: ["Poppins", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -44,6 +44,7 @@ const config: Config = {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+          red: "hsl(var(--accent-red))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -53,10 +54,6 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-      },
-      backgroundImage: {
-        "gradient-hero": "var(--gradient-hero)",
-        "gradient-accent": "var(--gradient-accent)",
       },
       borderRadius: {
         lg: "var(--radius)",
