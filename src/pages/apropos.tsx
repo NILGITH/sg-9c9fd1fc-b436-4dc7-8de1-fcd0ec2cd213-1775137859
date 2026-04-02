@@ -1,9 +1,10 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-import { Award, Target, MapPin, Handshake, Phone, Building2 } from "lucide-react";
-import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { MapPin, Phone, Building2, Target, Award, Users, Briefcase, CheckCircle2, Handshake } from "lucide-react";
+import Image from "next/image";
 
 export default function Apropos() {
   const sites = [
@@ -12,35 +13,30 @@ export default function Apropos() {
       location: "Voir Canal, dans rue à droite",
       phones: ["(+229) 01 96 10 04 42", "(+229) 01 47 37 44 56", "(+229) 01 47 37 44 57"],
       image: "/site-vedoko.png",
-      color: "bg-primary",
     },
     {
       name: "Godomey",
       location: "Rue en face du bar-Restaurant PARC DES PRINCES de Godomey",
       phones: ["(+229) 01 47 37 44 59", "(+229) 01 47 37 44 57", "(+229) 01 96 10 04 42"],
       image: "/site-godomey.png",
-      color: "bg-secondary",
     },
     {
       name: "Abomey-Calavi",
       location: "Zone universitaire",
       phones: ["(+229) 01 47 37 44 57"],
       image: null,
-      color: "bg-primary",
     },
     {
       name: "Parakou",
       location: "Dépôt rue pavée en face de la douane à côté du marché dépôt",
       phones: ["(+229) 01 47 37 44 60", "(+229) 01 96 10 04 42", "(+229) 01 47 37 44 57"],
       image: "/site-parakou.png",
-      color: "bg-secondary",
     },
     {
       name: "Porto-Novo",
       location: "Quartier OUASSIN à côté de la clinique Louis Pasteur",
       phones: ["(+229) 01 97 00 85 83", "(+229) 01 47 37 44 57", "(+229) 01 96 10 04 42"],
       image: "/site-porto-novo.png",
-      color: "bg-primary",
     },
   ];
 
@@ -65,38 +61,71 @@ export default function Apropos() {
     "LA ROCHE",
   ];
 
+  const stats = [
+    { icon: Award, value: "10+", label: "Années d'Expérience" },
+    { icon: Users, value: "2000+", label: "Étudiants Formés" },
+    { icon: Building2, value: "5", label: "Centres de Formation" },
+    { icon: Briefcase, value: "40+", label: "Formations Disponibles" },
+  ];
+
   return (
     <>
       <SEO 
-        title="À Propos | TCI Formation" 
-        description="Découvrez notre mission, nos 5 centres de formation au Bénin et nos nombreux partenaires."
+        title="À Propos - TCI Formation" 
+        description="Découvrez TCI Formation, leader de la formation professionnelle au Bénin. 10 ans d'expérience, 5 centres, 2000+ étudiants formés."
       />
       <Header />
       
-      <main>
+      <main className="bg-gray-50">
         {/* Hero Section */}
-        <section className="py-20 bg-gradient-hero text-white">
-          <div className="container-custom max-w-4xl text-center space-y-6">
-            <h1 className="font-heading font-bold text-4xl md:text-5xl">
-              Notre ADN & Notre Mission
-            </h1>
-            <p className="text-xl text-white/90 leading-relaxed">
-              Répondre au défi de l'emploi des jeunes en Afrique par une formation en adéquation réelle avec le marché.
-            </p>
+        <section className="relative py-24 bg-gradient-to-br from-tci-blue via-tci-blue/95 to-tci-blue/90 text-white overflow-hidden">
+          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-tci-red/20 to-transparent"></div>
+          
+          <div className="container-custom relative z-10">
+            <div className="max-w-3xl">
+              <Badge variant="secondary" className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                À PROPOS DE NOUS
+              </Badge>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                Plus de 10 Ans d'Excellence en Formation
+              </h1>
+              <p className="text-xl text-white/90 leading-relaxed">
+                TCI Formation, votre partenaire de confiance pour une formation professionnelle de qualité au Bénin.
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* Who We Are with Image */}
+        {/* Stats Section */}
+        <section className="py-20 bg-white">
+          <div className="container-custom">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {stats.map((stat, index) => (
+                <div key={index} className="text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-tci-blue/10 rounded-2xl mb-4">
+                    <stat.icon className="w-8 h-8 text-tci-blue" />
+                  </div>
+                  <div className="text-4xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                  <div className="text-gray-600">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Who We Are */}
         <section className="py-20">
           <div className="container-custom">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <h2 className="font-heading font-bold text-3xl md:text-5xl mb-6">
-                  Qui Sommes-Nous ?
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-6">
+                <Badge className="bg-tci-blue/10 text-tci-blue border-0">QUI SOMMES-NOUS</Badge>
+                <h2 className="text-4xl font-bold text-gray-900">
+                  Leader de la Formation Professionnelle au Bénin
                 </h2>
-                <div className="space-y-4 text-lg text-muted-foreground">
+                <div className="space-y-4 text-lg text-gray-700 leading-relaxed">
                   <p>
-                    <strong className="text-foreground">TCI BENIN</strong> est un centre de formation professionnelle créé depuis plus de 10 ans, 
+                    <strong className="text-tci-blue">TCI BENIN</strong> est un centre de formation professionnelle créé depuis plus de 10 ans, 
                     dédié à l'excellence et à l'insertion professionnelle des jeunes au Bénin et en Côte d'Ivoire.
                   </p>
                   <p>
@@ -104,119 +133,153 @@ export default function Apropos() {
                     du numérique, de l'énergie, de l'industrie et des métiers du lifestyle.
                   </p>
                   <p>
-                    Avec <strong>5 sites de formation</strong> au Bénin (Cotonou, Godomey, Abomey-Calavi, Porto-Novo, Parakou) 
-                    et une présence à Abidjan en Côte d'Ivoire, nous sommes le partenaire de référence pour votre 
-                    développement professionnel.
+                    Avec <strong className="text-tci-red">5 sites de formation</strong> au Bénin et une présence à Abidjan, 
+                    nous sommes le partenaire de référence pour votre développement professionnel.
                   </p>
                 </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4">
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-tci-blue flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold text-gray-900">Diplômes Reconnus</div>
+                      <div className="text-sm text-gray-600">CQM et CQP certifiés</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-tci-blue flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold text-gray-900">Formateurs Experts</div>
+                      <div className="text-sm text-gray-600">Professionnels qualifiés</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-tci-blue flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold text-gray-900">Équipements Modernes</div>
+                      <div className="text-sm text-gray-600">Matériel professionnel</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <CheckCircle2 className="w-6 h-6 text-tci-blue flex-shrink-0 mt-1" />
+                    <div>
+                      <div className="font-semibold text-gray-900">Insertion Garantie</div>
+                      <div className="text-sm text-gray-600">Suivi post-formation</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&auto=format&fit=crop"
-                  alt="Centre de formation TCI"
-                  className="w-full h-full object-cover"
-                />
+
+              <div className="relative">
+                <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
+                  <img 
+                    src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&auto=format&fit=crop"
+                    alt="Centre TCI Formation"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="absolute -bottom-8 -left-8 bg-tci-red text-white p-8 rounded-2xl shadow-xl max-w-xs">
+                  <div className="text-3xl font-bold mb-2">2000+</div>
+                  <div className="text-white/90">Étudiants nous ont fait confiance</div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Mission & Vision with Images */}
-        <section className="py-20 bg-muted/30">
-          <div className="container-custom max-w-6xl">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="relative">
-                <div className="bg-gradient-hero text-white p-10 rounded-3xl relative overflow-hidden">
-                  <div className="absolute inset-0 opacity-5">
-                    <img 
-                      src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop"
-                      alt="Étudiants en formation"
-                      className="w-full h-full object-cover"
-                    />
+        {/* Mission & Vision */}
+        <section className="py-20 bg-white">
+          <div className="container-custom">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <Card className="border-0 shadow-xl overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-tci-blue to-tci-blue/80"></div>
+                <CardContent className="relative z-10 p-12 text-white">
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
+                    <Target className="w-8 h-8 text-white" />
                   </div>
-                  <div className="relative z-10">
-                    <h2 className="font-heading font-bold text-3xl mb-6">Problématique et Mission</h2>
-                    <p className="text-lg leading-relaxed text-white/90">
-                      Le problème de l'emploi des jeunes est devenu une préoccupation majeure. Avec l'environnement concurrentiel d'aujourd'hui, il est important que la jeunesse reçoive une formation en adéquation avec les besoins du marché.
-                    </p>
-                    <p className="text-lg leading-relaxed text-white/90 mt-4">
-                      Voilà pourquoi <strong>TCI BENIN</strong> s'est engagé depuis dix (10) ans à faire de la formation professionnelle une offre qui, à travers la qualité de l'enseignement, met déjà sur le marché un nouveau type de professionnels capables de se prendre en charge.
-                    </p>
-                  </div>
-                </div>
-              </div>
+                  <h3 className="text-3xl font-bold mb-6">Notre Mission</h3>
+                  <p className="text-lg text-white/90 leading-relaxed mb-6">
+                    Répondre au défi de l'emploi des jeunes en Afrique par une formation professionnelle de qualité, 
+                    en parfaite adéquation avec les besoins réels du marché du travail.
+                  </p>
+                  <p className="text-white/80 leading-relaxed">
+                    Nous nous engageons à former des professionnels compétents, autonomes et capables de s'adapter 
+                    aux évolutions technologiques et économiques de leur secteur.
+                  </p>
+                </CardContent>
+              </Card>
 
-              <div className="relative">
-                <div className="bg-secondary/10 p-10 rounded-3xl border-2 border-secondary/20 relative overflow-hidden">
-                  <div className="absolute inset-0 opacity-5">
-                    <img 
-                      src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop"
-                      alt="Vision TCI"
-                      className="w-full h-full object-cover"
-                    />
+              <Card className="border-0 shadow-xl overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-tci-red to-tci-red/80"></div>
+                <CardContent className="relative z-10 p-12 text-white">
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6">
+                    <Award className="w-8 h-8 text-white" />
                   </div>
-                  <div className="relative z-10">
-                    <h2 className="font-heading font-bold text-3xl mb-6">Notre Vision</h2>
-                    <p className="text-lg leading-relaxed text-muted-foreground">
-                      Devenir le centre de référence en matière de formation professionnelle au Bénin, 
-                      reconnu pour la qualité de ses programmes, l'expertise de ses formateurs et 
-                      le taux d'insertion professionnelle de ses diplômés.
-                    </p>
-                  </div>
-                </div>
-              </div>
+                  <h3 className="text-3xl font-bold mb-6">Notre Vision</h3>
+                  <p className="text-lg text-white/90 leading-relaxed mb-6">
+                    Devenir le centre de référence en matière de formation professionnelle au Bénin et en Afrique de l'Ouest.
+                  </p>
+                  <p className="text-white/80 leading-relaxed">
+                    Reconnu pour l'excellence de nos programmes, l'expertise de nos formateurs et le taux d'insertion 
+                    professionnelle exceptionnel de nos diplômés dans leurs domaines respectifs.
+                  </p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
 
         {/* Sites Section */}
-        <section className="py-20 bg-muted/30">
-          <div className="container-custom max-w-6xl">
+        <section className="py-20">
+          <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="font-heading font-bold text-3xl md:text-4xl mb-4">
-                Nos Sites de Formation
+              <Badge className="bg-tci-blue/10 text-tci-blue border-0 mb-4">NOS CENTRES</Badge>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                5 Centres Modernes au Bénin
               </h2>
-              <p className="text-lg text-muted-foreground">
-                5 centres modernes équipés au Bénin pour votre formation
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Des infrastructures équipées et accessibles pour votre formation
               </p>
             </div>
 
-            <div className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {sites.map((site, index) => (
-                <Card key={index} className="overflow-hidden hover:shadow-xl transition-shadow">
+                <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
                   <CardContent className="p-0">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-                      <div className="p-8 md:p-10 space-y-6">
-                        <div className={`inline-flex items-center gap-2 ${site.color} text-white px-4 py-2 rounded-full`}>
+                    <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
+                      <div className="md:col-span-3 p-8 space-y-6">
+                        <div className="inline-flex items-center gap-2 bg-tci-blue text-white px-4 py-2 rounded-full font-semibold">
                           <Building2 className="w-4 h-4" />
-                          <span className="font-semibold">Site de {site.name}</span>
+                          {site.name}
                         </div>
                         
                         <div className="space-y-4">
                           <div className="flex items-start gap-3">
-                            <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                            <p className="text-muted-foreground">{site.location}</p>
+                            <MapPin className="w-5 h-5 text-tci-blue flex-shrink-0 mt-1" />
+                            <p className="text-gray-700">{site.location}</p>
                           </div>
                           
                           <div className="space-y-2">
-                            <div className="flex items-center gap-2 font-semibold">
-                              <Phone className="w-5 h-5 text-primary" />
-                              <span>Tél:</span>
+                            <div className="flex items-center gap-2 font-semibold text-gray-900">
+                              <Phone className="w-5 h-5 text-tci-blue" />
+                              <span>Contacts :</span>
                             </div>
-                            {site.phones.map((phone, i) => (
-                              <a
-                                key={i}
-                                href={`tel:${phone.replace(/\s/g, "")}`}
-                                className="block pl-7 text-muted-foreground hover:text-primary transition-colors"
-                              >
-                                {phone}
-                              </a>
-                            ))}
+                            <div className="pl-7 space-y-1">
+                              {site.phones.map((phone, i) => (
+                                <a
+                                  key={i}
+                                  href={`tel:${phone.replace(/\s/g, "")}`}
+                                  className="block text-gray-600 hover:text-tci-blue transition-colors"
+                                >
+                                  {phone}
+                                </a>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
 
-                      <div className="relative h-64 md:h-auto bg-muted">
+                      <div className="md:col-span-2 relative h-64 md:h-auto bg-gray-100">
                         {site.image ? (
                           <Image
                             src={site.image}
@@ -226,7 +289,7 @@ export default function Apropos() {
                           />
                         ) : (
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <Building2 className="w-20 h-20 text-muted-foreground/30" />
+                            <Building2 className="w-16 h-16 text-gray-300" />
                           </div>
                         )}
                       </div>
@@ -239,65 +302,30 @@ export default function Apropos() {
         </section>
 
         {/* Partners Section */}
-        <section className="py-20">
-          <div className="container-custom max-w-6xl">
+        <section className="py-20 bg-white">
+          <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="font-heading font-bold text-3xl md:text-4xl mb-4">
-                Quelques Partenaires
+              <Badge className="bg-tci-blue/10 text-tci-blue border-0 mb-4">NOS PARTENAIRES</Badge>
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                Ils Nous Font Confiance
               </h2>
-              <p className="text-lg text-muted-foreground">
-                Nous collaborons avec des institutions reconnues pour garantir l'excellence
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Collaboration avec des institutions reconnues pour garantir l'excellence
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {partners.map((partner, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-3 bg-white p-6 rounded-xl shadow-sm border border-muted hover:border-primary/30 hover:shadow-md transition-all"
+                  className="flex items-center gap-3 bg-white p-6 rounded-xl border border-gray-200 hover:border-tci-blue hover:shadow-md transition-all group"
                 >
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Handshake className="w-4 h-4 text-primary" />
+                  <div className="w-10 h-10 rounded-xl bg-tci-blue/10 flex items-center justify-center flex-shrink-0 group-hover:bg-tci-blue group-hover:text-white transition-colors">
+                    <Handshake className="w-5 h-5 text-tci-blue group-hover:text-white" />
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground leading-snug">
+                  <span className="text-sm font-medium text-gray-700 leading-snug">
                     {partner}
                   </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Domaines d'intervention */}
-        <section className="py-20 bg-muted/30">
-          <div className="container-custom max-w-4xl">
-            <h2 className="font-heading font-bold text-3xl md:text-4xl mb-12 text-center">
-              Domaines D'intervention
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                "Électricité bâtiment",
-                "Systèmes solaires photovoltaïques",
-                "Froid et climatisation",
-                "Vidéo surveillance",
-                "Informatique appliquée",
-                "Graphisme",
-                "Génie Electrique et Informatique",
-                "Génie Electrique Informatique et Réseaux",
-                "Génie Logiciel et réseaux",
-                "Génie des Télécommunications et Réseaux",
-                "Génie Electrique et Maintenance Industrielle",
-                "Génie Electrique Froid et Plomberie",
-                "Secrétariat",
-                "Coupe et Couture",
-                "Coiffure et Esthétique",
-                "Cuisine et restauration",
-              ].map((domaine, index) => (
-                <div key={index} className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-muted">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                  </div>
-                  <span className="text-muted-foreground font-semibold">{domaine}</span>
                 </div>
               ))}
             </div>

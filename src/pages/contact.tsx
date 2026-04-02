@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Phone, Mail, MapPin, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Phone, Mail, MapPin, Clock, Send, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Contact() {
@@ -24,7 +25,6 @@ export default function Contact() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     toast({
@@ -47,174 +47,276 @@ export default function Contact() {
     <>
       <SEO 
         title="Contact - TCI Formation"
-        description="Contactez TCI Formation pour toute information sur nos formations professionnelles au Bénin. Nous sommes à votre écoute."
+        description="Contactez TCI Formation pour toute information. 5 centres au Bénin à votre disposition."
       />
       
       <Header />
       
-      <main>
-        {/* Hero with Image */}
-        <section className="py-20 bg-gradient-hero text-white relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <img 
-              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&auto=format&fit=crop"
-              alt="Contactez-nous"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="container-custom max-w-3xl text-center space-y-6 relative z-10">
-            <h1 className="font-heading font-bold text-4xl md:text-6xl">
-              Contactez-Nous
-            </h1>
-            <p className="text-xl text-white/90">
-              Une question ? Un projet de formation ? Notre équipe est à votre écoute pour vous accompagner dans votre parcours professionnel.
-            </p>
+      <main className="bg-gray-50">
+        {/* Hero Section */}
+        <section className="relative py-24 bg-gradient-to-br from-tci-blue via-tci-blue/95 to-tci-blue/90 text-white overflow-hidden">
+          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-tci-red/20 to-transparent"></div>
+          
+          <div className="container-custom relative z-10">
+            <div className="max-w-3xl mx-auto text-center">
+              <Badge variant="secondary" className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                CONTACTEZ-NOUS
+              </Badge>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                Parlons de Votre Projet
+              </h1>
+              <p className="text-xl text-white/90 leading-relaxed">
+                Notre équipe est à votre écoute pour répondre à toutes vos questions et vous accompagner dans votre parcours professionnel.
+              </p>
+            </div>
           </div>
         </section>
 
         {/* Contact Content */}
         <section className="py-20">
-          <div className="container-custom max-w-6xl">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="container-custom">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Contact Form */}
-              <div>
-                <h2 className="font-heading font-bold text-2xl mb-6">Envoyez-nous un message</h2>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div>
-                    <Label htmlFor="name">Nom complet *</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="mt-2"
-                    />
-                  </div>
+              <div className="lg:col-span-2">
+                <Card className="border-0 shadow-xl">
+                  <CardContent className="p-8 md:p-12">
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-12 h-12 bg-tci-blue/10 rounded-xl flex items-center justify-center">
+                        <MessageSquare className="w-6 h-6 text-tci-blue" />
+                      </div>
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">Envoyez-nous un message</h2>
+                        <p className="text-gray-600">Nous vous répondrons sous 24h</p>
+                      </div>
+                    </div>
 
-                  <div>
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="mt-2"
-                    />
-                  </div>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <Label htmlFor="name" className="text-gray-900 font-medium mb-2 block">
+                            Nom complet *
+                          </Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            required
+                            className="h-12"
+                            placeholder="Votre nom"
+                          />
+                        </div>
 
-                  <div>
-                    <Label htmlFor="phone">Téléphone *</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      required
-                      className="mt-2"
-                    />
-                  </div>
+                        <div>
+                          <Label htmlFor="email" className="text-gray-900 font-medium mb-2 block">
+                            Email *
+                          </Label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="h-12"
+                            placeholder="votre@email.com"
+                          />
+                        </div>
+                      </div>
 
-                  <div>
-                    <Label htmlFor="message">Message *</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className="mt-2"
-                    />
-                  </div>
+                      <div>
+                        <Label htmlFor="phone" className="text-gray-900 font-medium mb-2 block">
+                          Téléphone *
+                        </Label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          type="tel"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          required
+                          className="h-12"
+                          placeholder="+229 XX XX XX XX"
+                        />
+                      </div>
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    disabled={isSubmitting}
-                    className="w-full bg-primary hover:bg-primary/90"
-                  >
-                    {isSubmitting ? "Envoi en cours..." : "Envoyer le message"}
-                  </Button>
-                </form>
+                      <div>
+                        <Label htmlFor="message" className="text-gray-900 font-medium mb-2 block">
+                          Votre message *
+                        </Label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
+                          required
+                          rows={6}
+                          placeholder="Décrivez votre projet ou posez votre question..."
+                        />
+                      </div>
+
+                      <Button
+                        type="submit"
+                        size="lg"
+                        disabled={isSubmitting}
+                        className="w-full bg-tci-blue hover:bg-tci-blue/90 h-14 text-base"
+                      >
+                        {isSubmitting ? (
+                          "Envoi en cours..."
+                        ) : (
+                          <>
+                            <Send className="w-5 h-5 mr-2" />
+                            Envoyer le message
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  </CardContent>
+                </Card>
               </div>
 
               {/* Contact Info */}
               <div className="space-y-6">
-                <h2 className="font-heading font-bold text-2xl mb-6">Nos coordonnées</h2>
-                
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-6 h-6 text-primary" />
+                <Card className="border-0 shadow-xl overflow-hidden">
+                  <div className="bg-gradient-to-br from-tci-blue to-tci-blue/90 p-8 text-white">
+                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-6">
+                      <MapPin className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">Adresse Principale</h3>
+                    <p className="text-white/90 leading-relaxed">
+                      Porto-Novo<br />
+                      République du Bénin
+                    </p>
+                  </div>
+                </Card>
+
+                <Card className="border-0 shadow-xl overflow-hidden">
+                  <div className="bg-gradient-to-br from-tci-red to-tci-red/90 p-8 text-white">
+                    <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-6">
+                      <Phone className="w-7 h-7 text-white" />
+                    </div>
+                    <h3 className="text-xl font-bold mb-3">Téléphone</h3>
+                    <div className="space-y-2 text-white/90">
+                      <a href="tel:+229XXXXXXXX" className="block hover:text-white transition-colors">
+                        +229 01 96 10 04 42
+                      </a>
+                      <a href="tel:+229XXXXXXXX" className="block hover:text-white transition-colors">
+                        +229 01 47 37 44 56
+                      </a>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="border-0 shadow-xl">
+                  <CardContent className="p-8">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-14 h-14 bg-tci-blue/10 rounded-xl flex items-center justify-center">
+                        <Mail className="w-7 h-7 text-tci-blue" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-2">Adresse</h3>
-                        <p className="text-muted-foreground">
-                          Porto-Novo<br />
-                          République du Bénin
-                        </p>
+                        <h3 className="font-bold text-gray-900">Email</h3>
                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <a href="mailto:contact@tciformation.com" className="block text-gray-600 hover:text-tci-blue transition-colors">
+                        contact@tciformation.com
+                      </a>
+                      <a href="mailto:info@tciformation.com" className="block text-gray-600 hover:text-tci-blue transition-colors">
+                        info@tciformation.com
+                      </a>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Phone className="w-6 h-6 text-secondary" />
+                <Card className="border-0 shadow-xl">
+                  <CardContent className="p-8">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-14 h-14 bg-tci-blue/10 rounded-xl flex items-center justify-center">
+                        <Clock className="w-7 h-7 text-tci-blue" />
                       </div>
                       <div>
-                        <h3 className="font-semibold mb-2">Téléphone</h3>
-                        <p className="text-muted-foreground">
-                          +229 XX XX XX XX<br />
-                          +229 XX XX XX XX
-                        </p>
+                        <h3 className="font-bold text-gray-900">Horaires</h3>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Mail className="w-6 h-6 text-accent" />
+                    <div className="space-y-3 text-gray-600">
+                      <div className="flex justify-between">
+                        <span className="font-medium">Lun - Ven</span>
+                        <span>8h00 - 17h00</span>
                       </div>
-                      <div>
-                        <h3 className="font-semibold mb-2">Email</h3>
-                        <p className="text-muted-foreground">
-                          contact@tciformation.com<br />
-                          info@tciformation.com
-                        </p>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Samedi</span>
+                        <span>8h00 - 13h00</span>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <Clock className="w-6 h-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold mb-2">Horaires d&apos;ouverture</h3>
-                        <p className="text-muted-foreground">
-                          Lundi - Vendredi : 8h00 - 17h00<br />
-                          Samedi : 8h00 - 13h00<br />
-                          Dimanche : Fermé
-                        </p>
+                      <div className="flex justify-between">
+                        <span className="font-medium">Dimanche</span>
+                        <span className="text-tci-red">Fermé</span>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Quick Links Section */}
+        <section className="py-20 bg-white">
+          <div className="container-custom">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Besoin d'Informations Rapides ?
+              </h2>
+              <p className="text-gray-600">
+                Explorez nos ressources pour trouver rapidement ce que vous cherchez
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-tci-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <MessageSquare className="w-8 h-8 text-tci-blue" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">FAQ</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Questions fréquentes sur nos formations
+                  </p>
+                  <Button variant="outline" className="w-full">
+                    Voir la FAQ
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-tci-red/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Phone className="w-8 h-8 text-tci-red" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">Nos Sites</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    5 centres à votre disposition
+                  </p>
+                  <Button variant="outline" className="w-full" asChild>
+                    <a href="/apropos#sites">Voir les centres</a>
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 bg-tci-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <Mail className="w-8 h-8 text-tci-blue" />
+                  </div>
+                  <h3 className="font-bold text-lg mb-2">Admissions</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Inscrivez-vous en ligne
+                  </p>
+                  <Button variant="outline" className="w-full" asChild>
+                    <a href="/admissions">S'inscrire</a>
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>
