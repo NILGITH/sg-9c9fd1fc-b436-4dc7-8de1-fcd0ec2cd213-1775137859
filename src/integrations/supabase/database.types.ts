@@ -1,4 +1,4 @@
- 
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 export type Json =
   | string
   | number
@@ -185,6 +185,7 @@ export type Database = {
           icon_color: string | null
           id: string
           image_url: string | null
+          pole: string | null
           published: boolean | null
           requirements: string | null
           slug: string
@@ -198,6 +199,7 @@ export type Database = {
           icon_color?: string | null
           id?: string
           image_url?: string | null
+          pole?: string | null
           published?: boolean | null
           requirements?: string | null
           slug: string
@@ -211,6 +213,7 @@ export type Database = {
           icon_color?: string | null
           id?: string
           image_url?: string | null
+          pole?: string | null
           published?: boolean | null
           requirements?: string | null
           slug?: string
