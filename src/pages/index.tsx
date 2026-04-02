@@ -4,7 +4,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { Award, Users, MapPin, GraduationCap, Code, Zap, Briefcase, ArrowRight, Network, Droplets, Snowflake, Scissors, Leaf, ChefHat, Coffee, Building } from "lucide-react";
+import { Award, Users, MapPin, GraduationCap, Code, Zap, Briefcase, ArrowRight, Network, Droplets, Snowflake, Scissors, Leaf, ChefHat, Coffee, Building, Calendar } from "lucide-react";
 import { HeroSlider } from "@/components/HeroSlider";
 import { TestimonialsSlider } from "@/components/TestimonialsSlider";
 import { formationService, type Formation } from "@/services/formationService";
