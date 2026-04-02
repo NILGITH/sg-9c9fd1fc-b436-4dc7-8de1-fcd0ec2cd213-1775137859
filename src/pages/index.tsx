@@ -478,31 +478,22 @@ export default function Home({ featuredFormations, recentNews, intakeDates }: Ho
 
         {/* CTA Section */}
         <section className="py-20 bg-gradient-hero text-white">
-          <div className="container-custom text-center max-w-4xl mx-auto space-y-8">
-            <h2 className="font-heading font-bold text-3xl md:text-5xl">
-              Prêt à transformer votre avenir professionnel ?
+          <div className="container-custom text-center">
+            <h2 className="font-heading font-bold text-3xl md:text-4xl mb-6">
+              Prêt à Transformer Votre Avenir ?
             </h2>
-            <p className="text-xl text-white/90">
-              Rejoignez des milliers d'étudiants qui ont déjà lancé leur carrière avec TCI Formation
+            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8">
+              Rejoignez TCI Formation et donnez vie à vos ambitions professionnelles
             </p>
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
+            <Button asChild size="lg" className="bg-white text-primary hover:bg-white/90">
               <Link href="/admissions">
-                <Button size="lg" variant="secondary" className="text-lg px-8">
-                  S'inscrire en ligne
-                  <Calendar className="ml-2 w-5 h-5" />
-                </Button>
+                S'inscrire Maintenant
               </Link>
-              <Link href="/entreprises">
-                <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20">
-                  <Briefcase className="mr-2 w-5 h-5" />
-                  Solutions Entreprises
-                </Button>
-              </Link>
-            </div>
+            </Button>
           </div>
         </section>
 
-        {/* News Section */}
+        {/* Actualités Section */}
         {recentNews.length > 0 && (
           <section className="py-20">
             <div className="container-custom">
