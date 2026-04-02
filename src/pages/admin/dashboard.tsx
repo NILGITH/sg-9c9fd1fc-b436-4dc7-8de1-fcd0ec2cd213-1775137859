@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap, DollarSign, Calendar } from "lucide-react";
+import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap, DollarSign } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, PieChart, Pie, Cell } from "recharts";
 
 export default function AdminDashboard() {
@@ -426,25 +426,6 @@ export default function AdminDashboard() {
               <CardContent>
                 <Link href="/admin/payments">
                   <Button className="w-full bg-green-600 hover:bg-green-700">
-                    Accéder
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Dates de Rentrées
-                </CardTitle>
-                <CardDescription>
-                  Gérez les dates d'inscription
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Link href="/admin/intake-dates">
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700">
                     Accéder
                   </Button>
                 </Link>
