@@ -36,16 +36,6 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // Check Supabase connection first
-      const { error: healthError } = await supabase.from("profiles").select("count").limit(1);
-      
-      if (healthError) {
-        console.error("Supabase connection error:", healthError);
-        setError("Erreur de connexion au serveur. Veuillez réessayer.");
-        setLoading(false);
-        return;
-      }
-
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password,
@@ -58,7 +48,7 @@ export default function AdminLogin() {
         } else if (authError.message.includes("Email not confirmed")) {
           setError("Veuillez confirmer votre email");
         } else {
-          setError("Erreur de connexion. Veuillez réessayer.");
+          setError(authError.message || "Erreur de connexion. Veuillez réessayer.");
         }
         setLoading(false);
         return;
