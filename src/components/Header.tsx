@@ -75,8 +75,8 @@ export function Header() {
             <Link href="/entreprises" className="text-sm font-medium hover:text-primary transition-colors">
               Solutions Entreprises
             </Link>
-            <Link href="/online" className="text-sm font-medium hover:text-primary transition-colors">
-              TCI Online
+            <Link href="/galerie" className="text-sm font-medium hover:text-primary transition-colors">
+              Galerie
             </Link>
             <Link href="/apropos" className="text-sm font-medium hover:text-primary transition-colors">
               À Propos
@@ -127,8 +127,8 @@ export function Header() {
             <Link href="/entreprises" className="block py-2 text-sm font-medium hover:text-primary">
               Solutions Entreprises
             </Link>
-            <Link href="/online" className="block py-2 text-sm font-medium hover:text-primary">
-              TCI Online
+            <Link href="/galerie" className="block py-2 text-sm font-medium hover:text-primary">
+              Galerie
             </Link>
             <Link href="/apropos" className="block py-2 text-sm font-medium hover:text-primary">
               À Propos
