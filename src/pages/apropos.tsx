@@ -114,8 +114,8 @@ export default function Apropos() {
           </div>
         </section>
 
-        {/* Who We Are */}
-        <section className="py-20">
+        {/* Who We Are - FIXED: Corriger les couleurs de texte */}
+        <section className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div className="space-y-6">
@@ -229,8 +229,8 @@ export default function Apropos() {
           </div>
         </section>
 
-        {/* Sites Section */}
-        <section className="py-20">
+        {/* Sites Section - FIXED */}
+        <section className="py-20 bg-white">
           <div className="container-custom">
             <div className="text-center mb-16">
               <Badge className="bg-tci-blue/10 text-tci-blue border-0 mb-4">NOS CENTRES</Badge>
@@ -244,7 +244,7 @@ export default function Apropos() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {sites.map((site, index) => (
-                <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
+                <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow overflow-hidden bg-white">
                   <CardContent className="p-0">
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-0">
                       <div className="md:col-span-3 p-8 space-y-6">
@@ -301,8 +301,8 @@ export default function Apropos() {
           </div>
         </section>
 
-        {/* Partners Section */}
-        <section className="py-20 bg-white">
+        {/* Partners Section - FIXED */}
+        <section className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="text-center mb-16">
               <Badge className="bg-tci-blue/10 text-tci-blue border-0 mb-4">NOS PARTENAIRES</Badge>

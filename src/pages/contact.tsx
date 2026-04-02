@@ -75,12 +75,12 @@ export default function Contact() {
         </section>
 
         {/* Contact Content */}
-        <section className="py-20">
+        <section className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Contact Form */}
               <div className="lg:col-span-2">
-                <Card className="border-0 shadow-xl">
+                <Card className="border-0 shadow-xl bg-white">
                   <CardContent className="p-8 md:p-12">
                     <div className="flex items-center gap-3 mb-8">
                       <div className="w-12 h-12 bg-tci-blue/10 rounded-xl flex items-center justify-center">
@@ -209,7 +209,7 @@ export default function Contact() {
                   </div>
                 </Card>
 
-                <Card className="border-0 shadow-xl">
+                <Card className="border-0 shadow-xl bg-white">
                   <CardContent className="p-8">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-14 h-14 bg-tci-blue/10 rounded-xl flex items-center justify-center">
@@ -230,7 +230,7 @@ export default function Contact() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-0 shadow-xl">
+                <Card className="border-0 shadow-xl bg-white">
                   <CardContent className="p-8">
                     <div className="flex items-center gap-4 mb-6">
                       <div className="w-14 h-14 bg-tci-blue/10 rounded-xl flex items-center justify-center">
@@ -274,12 +274,12 @@ export default function Contact() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-white">
                 <CardContent className="p-8 text-center">
                   <div className="w-16 h-16 bg-tci-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <MessageSquare className="w-8 h-8 text-tci-blue" />
                   </div>
-                  <h3 className="font-bold text-lg mb-2">FAQ</h3>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">FAQ</h3>
                   <p className="text-gray-600 text-sm mb-4">
                     Questions fréquentes sur nos formations
                   </p>
@@ -289,12 +289,12 @@ export default function Contact() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-white">
                 <CardContent className="p-8 text-center">
                   <div className="w-16 h-16 bg-tci-red/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Phone className="w-8 h-8 text-tci-red" />
                   </div>
-                  <h3 className="font-bold text-lg mb-2">Nos Sites</h3>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">Nos Sites</h3>
                   <p className="text-gray-600 text-sm mb-4">
                     5 centres à votre disposition
                   </p>
@@ -304,12 +304,12 @@ export default function Contact() {
                 </CardContent>
               </Card>
 
-              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-shadow bg-white">
                 <CardContent className="p-8 text-center">
                   <div className="w-16 h-16 bg-tci-blue/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Mail className="w-8 h-8 text-tci-blue" />
                   </div>
-                  <h3 className="font-bold text-lg mb-2">Admissions</h3>
+                  <h3 className="font-bold text-lg text-gray-900 mb-2">Admissions</h3>
                   <p className="text-gray-600 text-sm mb-4">
                     Inscrivez-vous en ligne
                   </p>
