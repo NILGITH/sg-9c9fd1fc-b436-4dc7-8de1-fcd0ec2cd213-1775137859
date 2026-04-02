@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { NewsCard } from "@/components/NewsCard";
+import Link from "next/link";
 import { newsService, type News } from "@/services/newsService";
 import { GetStaticProps } from "next";
 
@@ -38,7 +39,9 @@ export default function Actualites({ news }: ActualitesProps) {
             {news.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {news.map((item) => (
-                  <NewsCard key={item.id} news={item} />
+                  <Link key={item.id} href={`/actualites/${item.slug}`}>
+                    <NewsCard news={item} />
+                  </Link>
                 ))}
               </div>
             ) : (
