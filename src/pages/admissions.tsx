@@ -15,6 +15,7 @@ import { paymentService } from "@/services/paymentService";
 import { formationService, type Formation } from "@/services/formationService";
 import { GetStaticProps } from "next";
 import Script from "next/script";
+import Link from "next/link";
 
 interface AdmissionsProps {
   formations: Formation[];
@@ -670,9 +671,18 @@ export default function Admissions({ formations }: AdmissionsProps) {
                     </ol>
                   </div>
 
-                  <Button asChild size="lg">
-                    <a href="/">Retour à l'Accueil</a>
-                  </Button>
+                  <div className="space-y-4">
+                    <Link href="/">
+                      <Button className="w-full bg-primary hover:bg-primary/90">
+                        Retour à l'accueil
+                      </Button>
+                    </Link>
+                    <Link href="/actualites">
+                      <Button variant="outline" className="w-full">
+                        Voir les actualités
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               )}
             </CardContent>
