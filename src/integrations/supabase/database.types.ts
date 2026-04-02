@@ -1,4 +1,4 @@
- 
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 export type Json =
   | string
   | number
@@ -15,6 +15,81 @@ export type Database = {
   }
   public: {
     Tables: {
+      enrollments: {
+        Row: {
+          address: string | null
+          birth_date: string | null
+          created_at: string | null
+          education_level: string | null
+          email: string
+          first_name: string
+          formation_id: string | null
+          id: string
+          last_name: string
+          payment_amount: number | null
+          payment_date: string | null
+          payment_status: string | null
+          phone: string
+          session_date: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          birth_date?: string | null
+          created_at?: string | null
+          education_level?: string | null
+          email: string
+          first_name: string
+          formation_id?: string | null
+          id?: string
+          last_name: string
+          payment_amount?: number | null
+          payment_date?: string | null
+          payment_status?: string | null
+          phone: string
+          session_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          birth_date?: string | null
+          created_at?: string | null
+          education_level?: string | null
+          email?: string
+          first_name?: string
+          formation_id?: string | null
+          id?: string
+          last_name?: string
+          payment_amount?: number | null
+          payment_date?: string | null
+          payment_status?: string | null
+          phone?: string
+          session_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "enrollments_formation_id_fkey"
+            columns: ["formation_id"]
+            isOneToOne: false
+            referencedRelation: "formations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "enrollments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       formation_categories: {
         Row: {
           created_at: string | null
@@ -41,6 +116,50 @@ export type Database = {
           slug?: string
         }
         Relationships: []
+      }
+      formation_sessions: {
+        Row: {
+          created_at: string | null
+          current_students: number | null
+          end_date: string | null
+          formation_id: string | null
+          id: string
+          location: string | null
+          max_students: number | null
+          start_date: string
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_students?: number | null
+          end_date?: string | null
+          formation_id?: string | null
+          id?: string
+          location?: string | null
+          max_students?: number | null
+          start_date: string
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_students?: number | null
+          end_date?: string | null
+          formation_id?: string | null
+          id?: string
+          location?: string | null
+          max_students?: number | null
+          start_date?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "formation_sessions_formation_id_fkey"
+            columns: ["formation_id"]
+            isOneToOne: false
+            referencedRelation: "formations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       formations: {
         Row: {
@@ -171,6 +290,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          role: string | null
           updated_at: string | null
         }
         Insert: {
@@ -179,6 +299,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          role?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -187,6 +308,7 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          role?: string | null
           updated_at?: string | null
         }
         Relationships: []
