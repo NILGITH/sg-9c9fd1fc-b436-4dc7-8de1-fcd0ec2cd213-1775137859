@@ -105,12 +105,10 @@ export default function Energie({ formations }: EnergieProps) {
                             <span>{formation.duration}</span>
                           </div>
                         )}
-                        {formation.certification && (
-                          <div className="flex items-center gap-1">
-                            <Award className="w-4 h-4" />
-                            <span>Certifiant</span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-1">
+                          <Award className="w-4 h-4" />
+                          <span>Certifiant</span>
+                        </div>
                       </div>
                       <Button asChild className="w-full bg-primary">
                         <Link href="/admissions">
