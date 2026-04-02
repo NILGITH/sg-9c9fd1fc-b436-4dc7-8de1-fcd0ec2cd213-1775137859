@@ -149,13 +149,17 @@ export const getStaticProps: GetStaticProps = async () => {
 
   // Filter formations for Energie pole
   const energieFormations = formations?.filter(f => 
-    f.title.toLowerCase().includes('électrique') ||
-    f.title.toLowerCase().includes('électricité') ||
-    f.title.toLowerCase().includes('froid') ||
-    f.title.toLowerCase().includes('plomberie') ||
-    f.title.toLowerCase().includes('solaire') ||
-    f.title.toLowerCase().includes('maintenance industrielle') ||
-    f.title.toLowerCase().includes('climatisation')
+    (f as any).pole === 'energie' ||
+    // Fallback for existing formations without a pole assigned yet
+    (!((f as any).pole) && (
+      f.title.toLowerCase().includes('électrique') ||
+      f.title.toLowerCase().includes('électricité') ||
+      f.title.toLowerCase().includes('froid') ||
+      f.title.toLowerCase().includes('plomberie') ||
+      f.title.toLowerCase().includes('solaire') ||
+      f.title.toLowerCase().includes('maintenance industrielle') ||
+      f.title.toLowerCase().includes('climatisation')
+    ))
   ) || [];
 
   return {
