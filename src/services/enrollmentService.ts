@@ -1,11 +1,11 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+import type { Tables } from "@/integrations/supabase/types";
 
 export type Enrollment = Tables<"enrollments">;
 export type FormationSession = Tables<"formation_sessions">;
 
 export const enrollmentService = {
-  async create(enrollment: TablesInsert<"enrollments">) {
+  async create(enrollment: Omit<Enrollment, "id" | "created_at" | "updated_at">) {
     const { data, error } = await supabase
       .from("enrollments")
       .insert(enrollment)
