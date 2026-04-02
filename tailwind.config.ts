@@ -44,7 +44,6 @@ const config: Config = {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
-          red: "hsl(var(--accent-red))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -54,6 +53,17 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Couleurs TCI (Logo)
+        "tci-blue": "hsl(var(--primary))",
+        "tci-red": "hsl(var(--accent-red))",
+        // Couleurs Bénin (Identité nationale)
+        "benin-green": "hsl(var(--benin-green))",
+        "benin-gold": "hsl(var(--benin-gold))",
+      },
+      backgroundImage: {
+        "gradient-hero": "var(--gradient-hero)",
+        "gradient-success": "var(--gradient-success)",
+        "gradient-tci": "var(--gradient-tci)",
       },
       borderRadius: {
         lg: "var(--radius)",
