@@ -142,7 +142,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   
   const { data: news, error } = await newsService.getBySlug(slug);
 
-  if (error || !news) {
+  if (error || !news || !news.published) {
     return {
       notFound: true,
     };

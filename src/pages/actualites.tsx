@@ -11,6 +11,9 @@ interface ActualitesProps {
 }
 
 export default function Actualites({ news }: ActualitesProps) {
+  // Filter only published news
+  const publishedNews = news.filter(item => item.published);
+
   return (
     <>
       <SEO 
@@ -36,9 +39,9 @@ export default function Actualites({ news }: ActualitesProps) {
         {/* News Grid */}
         <section className="py-20">
           <div className="container-custom">
-            {news.length > 0 ? (
+            {publishedNews.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {news.map((item) => (
+                {publishedNews.map((item) => (
                   <Link key={item.id} href={`/actualites/${item.slug}`}>
                     <NewsCard news={item} />
                   </Link>

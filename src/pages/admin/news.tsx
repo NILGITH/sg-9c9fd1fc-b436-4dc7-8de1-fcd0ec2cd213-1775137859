@@ -14,6 +14,7 @@ import { newsService, type News } from "@/services/newsService";
 import { ArrowLeft, Plus, Pencil, Trash2, Calendar, Loader2, Newspaper } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ImageUploader } from "@/components/ImageUploader";
+import { Switch } from "@/components/ui/switch";
 
 export default function AdminNews() {
   const router = useRouter();
@@ -223,6 +224,20 @@ export default function AdminNews() {
                       />
                     </div>
 
+                    <div className="flex items-center justify-between space-x-2 p-4 border rounded-lg">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="published">Publier l'actualité</Label>
+                        <p className="text-sm text-muted-foreground">
+                          Les actualités publiées seront visibles sur le site
+                        </p>
+                      </div>
+                      <Switch
+                        id="published"
+                        checked={formData.published}
+                        onCheckedChange={(checked) => setFormData({ ...formData, published: checked })}
+                      />
+                    </div>
+
                     <div className="space-y-2">
                       <Label>Images de l'article</Label>
                       <ImageUploader
@@ -267,28 +282,31 @@ export default function AdminNews() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {news.map((item) => (
-                <Card key={item.id} className="overflow-hidden">
-                  {item.image_url && (
-                    <div className="relative h-48 w-full">
-                      <Image
-                        src={item.image_url}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                      />
+                <Card key={item.id} className="hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="font-heading font-bold text-xl">{item.title}</h3>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            item.published 
+                              ? "bg-green-100 text-green-800" 
+                              : "bg-gray-100 text-gray-800"
+                          }`}>
+                            {item.published ? "Publié" : "Brouillon"}
+                          </span>
+                        </div>
+                        <p className="text-muted-foreground line-clamp-2 mb-3">
+                          {item.excerpt}
+                        </p>
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Calendar className="w-4 h-4" />
+                          <time>
+                            {new Date(item.created_at || "").toLocaleDateString("fr-FR")}
+                          </time>
+                        </div>
+                      </div>
                     </div>
-                  )}
-                  <CardHeader>
-                    <CardTitle className="line-clamp-2">{item.title}</CardTitle>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      {new Date(item.created_at).toLocaleDateString("fr-FR")}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-3">
-                      {item.excerpt}
-                    </p>
                   </CardContent>
                   <CardFooter className="gap-2">
                     <Button
