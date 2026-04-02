@@ -33,7 +33,6 @@ export default function AdminFormations() {
     category_id: "",
     icon_color: "#10b981",
     image_url: "",
-    pole: "",
   });
 
   useEffect(() => {
@@ -110,10 +109,9 @@ export default function AdminFormations() {
       description: formation.description,
       requirements: formation.requirements,
       duration: formation.duration || "",
-      category_id: formation.category_id || "",
+      category_id: formation.category_id,
       icon_color: formation.icon_color || "#10b981",
       image_url: formation.image_url || "",
-      pole: (formation as any).pole || "",
     });
     setIsDialogOpen(true);
   };
@@ -148,7 +146,6 @@ export default function AdminFormations() {
       category_id: "",
       icon_color: "#10b981",
       image_url: "",
-      pole: "",
     });
   };
 
@@ -277,21 +274,6 @@ export default function AdminFormations() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="pole">Pôle de formation</Label>
-                    <Select value={formData.pole} onValueChange={(value) => setFormData({ ...formData, pole: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Aucun pôle (ou s'applique à tous)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Aucun pôle</SelectItem>
-                        <SelectItem value="digital">Digital & Software</SelectItem>
-                        <SelectItem value="energie">Énergie & Industrie</SelectItem>
-                        <SelectItem value="business">Business & Lifestyle</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label htmlFor="icon_color">Couleur de l'icône</Label>
                     <Input
                       id="icon_color"
@@ -359,11 +341,6 @@ export default function AdminFormations() {
                         <span className="bg-muted px-2 py-1 rounded">
                           Catégorie: {categories.find(c => c.id === formation.category_id)?.name || "N/A"}
                         </span>
-                        {(formation as any).pole && (formation as any).pole !== 'none' && (
-                          <span className="bg-primary/10 text-primary px-2 py-1 rounded">
-                            Pôle: {(formation as any).pole === 'digital' ? 'Digital' : (formation as any).pole === 'energie' ? 'Énergie' : 'Business'}
-                          </span>
-                        )}
                       </div>
                     </div>
                     <div className="flex gap-2">

@@ -147,18 +147,14 @@ export default function Digital({ formations }: DigitalProps) {
 export const getStaticProps: GetStaticProps = async () => {
   const { data: formations } = await formationService.getAll();
 
-  // Filter formations for Digital pole
+  // Filter formations for Digital pole (category_id for "Formations Diplômantes")
   const digitalFormations = formations?.filter(f => 
-    (f as any).pole === 'digital' || 
-    // Fallback for existing formations without a pole assigned yet
-    (!((f as any).pole) && (
-      f.title.toLowerCase().includes('informatique') ||
-      f.title.toLowerCase().includes('logiciel') ||
-      f.title.toLowerCase().includes('réseaux') ||
-      f.title.toLowerCase().includes('télécommunication') ||
-      f.title.toLowerCase().includes('programmation') ||
-      f.title.toLowerCase().includes('web')
-    ))
+    f.title.toLowerCase().includes('informatique') ||
+    f.title.toLowerCase().includes('logiciel') ||
+    f.title.toLowerCase().includes('réseaux') ||
+    f.title.toLowerCase().includes('télécommunication') ||
+    f.title.toLowerCase().includes('programmation') ||
+    f.title.toLowerCase().includes('web')
   ) || [];
 
   return {

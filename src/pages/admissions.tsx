@@ -91,7 +91,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
         // Update payment status to validated
         await paymentService.update(paymentId, {
           payment_status: "validated",
-          payment_reference: response.transactionId,
+          transaction_id: response.transactionId,
         });
 
         // Update enrollment status to approved
@@ -163,16 +163,11 @@ export default function Admissions({ formations }: AdmissionsProps) {
         amount: ENROLLMENT_FEE.toString(),
         payment_method: "kkiapay",
         payment_status: "pending",
-        payment_date: new Date().toISOString(),
-        payment_reference: null,
-        notes: null,
-        validated_at: null,
-        validated_by: null,
       };
 
       console.log("💰 Creating payment with payload:", paymentPayload);
 
-      const { data: payment, error: paymentError } = await paymentService.create(paymentPayload as any);
+      const { data: payment, error: paymentError } = await paymentService.create(paymentPayload);
 
       if (paymentError) {
         console.error("❌ Payment creation error:", paymentError);

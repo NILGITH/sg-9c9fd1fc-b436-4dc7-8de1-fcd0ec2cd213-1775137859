@@ -159,21 +159,17 @@ export const getStaticProps: GetStaticProps = async () => {
 
   // Filter formations for Business pole
   const businessFormations = formations?.filter(f => 
-    (f as any).pole === 'business' ||
-    // Fallback for existing formations without a pole assigned yet
-    (!((f as any).pole) && (
-      f.title.toLowerCase().includes('couture') ||
-      f.title.toLowerCase().includes('coiffure') ||
-      f.title.toLowerCase().includes('esthétique') ||
-      f.title.toLowerCase().includes('stylisme') ||
-      f.title.toLowerCase().includes('make up') ||
-      f.title.toLowerCase().includes('cuisine') ||
-      f.title.toLowerCase().includes('pâtisserie') ||
-      f.title.toLowerCase().includes('hôtellerie') ||
-      f.title.toLowerCase().includes('restauration') ||
-      f.title.toLowerCase().includes('secrétariat') ||
-      f.title.toLowerCase().includes('élevage')
-    ))
+    f.title.toLowerCase().includes('couture') ||
+    f.title.toLowerCase().includes('coiffure') ||
+    f.title.toLowerCase().includes('esthétique') ||
+    f.title.toLowerCase().includes('stylisme') ||
+    f.title.toLowerCase().includes('make up') ||
+    f.title.toLowerCase().includes('cuisine') ||
+    f.title.toLowerCase().includes('pâtisserie') ||
+    f.title.toLowerCase().includes('hôtellerie') ||
+    f.title.toLowerCase().includes('restauration') ||
+    f.title.toLowerCase().includes('secrétariat') ||
+    f.title.toLowerCase().includes('élevage')
   ) || [];
 
   return {
