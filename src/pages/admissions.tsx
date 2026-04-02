@@ -102,6 +102,9 @@ export default function Admissions() {
           payment_status: "pending", // Set as pending so admin can validate it in Dashboard
           payment_date: new Date().toISOString(),
           payment_reference: `PAY-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
+          notes: null,
+          validated_at: null,
+          validated_by: null,
         });
 
         toast({
