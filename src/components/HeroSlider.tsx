@@ -1,136 +1,120 @@
-import { useCallback, useEffect, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const slides = [
   {
-    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1200&h=600&fit=crop",
-    title: "Formation en Génie Électrique",
-    subtitle: "Maîtrisez les systèmes électriques modernes",
+    image: "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=1200&auto=format&fit=crop",
+    title: "Formez-vous aux métiers de demain",
+    subtitle: "Des formations professionnelles certifiées par l'État",
   },
   {
-    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&h=600&fit=crop",
-    title: "Systèmes Solaires Photovoltaïques",
-    subtitle: "L'énergie renouvelable au cœur de votre carrière",
+    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=1200&auto=format&fit=crop",
+    title: "Excellence et Innovation",
+    subtitle: "10 ans d'expérience, 5 sites de formation au Bénin et en Côte d'Ivoire",
   },
   {
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&h=600&fit=crop",
-    title: "Programmation Web & Génie Logiciel",
-    subtitle: "Devenez développeur professionnel",
+    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&auto=format&fit=crop",
+    title: "Accompagnement Personnalisé",
+    subtitle: "Des formateurs experts pour votre réussite professionnelle",
   },
   {
-    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=1200&h=600&fit=crop",
-    title: "Formations Diplômantes CQM & CQP",
-    subtitle: "Certifications reconnues par l'État",
+    image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1200&auto=format&fit=crop",
+    title: "Diplômes Reconnus",
+    subtitle: "Certifications CQM/CQP délivrées par l'État béninois",
   },
   {
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=600&fit=crop",
-    title: "5 Sites de Formation au Bénin",
-    subtitle: "Cotonou • Godomey • Abomey-Calavi • Parakou • Porto-Novo",
+    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop",
+    title: "Insertion Professionnelle Garantie",
+    subtitle: "Plus de 1000 diplômés intégrés avec succès dans le monde du travail",
   },
 ];
 
 export function HeroSlider() {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
-    Autoplay({ delay: 5000, stopOnInteraction: false }),
-  ]);
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const scrollTo = useCallback(
-    (index: number) => {
-      if (emblaApi) emblaApi.scrollTo(index);
-    },
-    [emblaApi]
-  );
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
 
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % slides.length);
+  };
 
-    emblaApi.on("select", onSelect);
-    onSelect();
-
-    return () => {
-      emblaApi.off("select", onSelect);
-    };
-  }, [emblaApi]);
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+  };
 
   return (
-    <div className="relative w-full">
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex">
-          {slides.map((slide, index) => (
-            <div key={index} className="flex-[0_0_100%] min-w-0 relative">
-              <div className="relative h-[500px] md:h-[600px]">
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
-                <div className="absolute inset-0 flex items-center">
-                  <div className="container-custom">
-                    <div className="max-w-2xl text-white space-y-6">
-                      <h2 className="font-heading font-bold text-4xl md:text-6xl leading-tight">
-                        {slide.title}
-                      </h2>
-                      <p className="text-xl md:text-2xl text-white/90">
-                        {slide.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+    <section className="relative h-[600px] overflow-hidden">
+      {slides.map((slide, index) => (
+        <div
+          key={index}
+          className={`absolute inset-0 transition-opacity duration-1000 ${
+            index === currentSlide ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/40 z-10" />
+          <img
+            src={slide.image}
+            alt={slide.title}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 z-20 flex items-center">
+            <div className="container-custom">
+              <div className="max-w-3xl text-white space-y-6">
+                <h1 className="font-heading font-bold text-5xl md:text-7xl leading-tight">
+                  {slide.title}
+                </h1>
+                <p className="text-xl md:text-2xl text-white/90">
+                  {slide.subtitle}
+                </p>
+                <Button
+                  size="lg"
+                  className="bg-secondary hover:bg-secondary/90 text-white text-lg px-8 mt-4"
+                  onClick={() => window.location.href = "/admissions"}
+                >
+                  S'inscrire maintenant
+                </Button>
               </div>
             </div>
-          ))}
+          </div>
         </div>
-      </div>
+      ))}
 
+      {/* Navigation Arrows */}
       <Button
-        variant="outline"
+        variant="secondary"
         size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"
-        onClick={scrollPrev}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-white/20 hover:bg-white/30 backdrop-blur-sm"
+        onClick={prevSlide}
       >
-        <ChevronLeft className="w-5 h-5" />
+        <ChevronLeft className="w-6 h-6" />
+      </Button>
+      <Button
+        variant="secondary"
+        size="icon"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-white/20 hover:bg-white/30 backdrop-blur-sm"
+        onClick={nextSlide}
+      >
+        <ChevronRight className="w-6 h-6" />
       </Button>
 
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm"
-        onClick={scrollNext}
-      >
-        <ChevronRight className="w-5 h-5" />
-      </Button>
-
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+      {/* Dots Indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
-            className={`w-3 h-3 rounded-full transition-all ${
-              index === selectedIndex
-                ? "bg-white w-8"
-                : "bg-white/50 hover:bg-white/70"
+            onClick={() => setCurrentSlide(index)}
+            className={`w-3 h-3 rounded-full transition-colors ${
+              index === currentSlide ? "bg-white" : "bg-white/50"
             }`}
-            onClick={() => scrollTo(index)}
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 }
