@@ -1,14 +1,14 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HeroSlider } from "@/components/HeroSlider";
-import { FormationCard } from "@/components/FormationCard";
-import { NewsCard } from "@/components/NewsCard";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Award, Users, BookOpen, TrendingUp } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import { ArrowRight, Users, Award, MapPin, Calendar, Briefcase, GraduationCap } from "lucide-react";
 import { formationService, type Formation } from "@/services/formationService";
 import { newsService, type News } from "@/services/newsService";
+import { NewsCard } from "@/components/NewsCard";
 
 interface HomeProps {
   featuredFormations: Formation[];
@@ -16,155 +16,189 @@ interface HomeProps {
 }
 
 export default function Home({ featuredFormations, recentNews }: HomeProps) {
+  const stats = [
+    { icon: Award, value: "10+", label: "Années d'expérience" },
+    { icon: MapPin, value: "5", label: "Sites de formation" },
+    { icon: Users, value: "5000+", label: "Étudiants formés" },
+    { icon: GraduationCap, value: "CQM/CQP", label: "Certifications d'État" },
+  ];
+
+  const poles = [
+    {
+      title: "Pôle Digital & Software",
+      desc: "Génie Logiciel, Programmation Web, Design Graphique",
+      icon: "💻",
+      href: "/parcours/digital",
+    },
+    {
+      title: "Pôle Énergie & Industrie",
+      desc: "Solaire, Électrique, Froid & Climatisation",
+      icon: "⚡",
+      href: "/parcours/energie",
+    },
+    {
+      title: "Pôle Business & Lifestyle",
+      desc: "Mode, Esthétique, Hôtellerie & Restauration",
+      icon: "👔",
+      href: "/parcours/business",
+    },
+  ];
+
   return (
     <>
       <SEO
-        title="TCI Formation - Centre de Formation Professionnelle au Bénin"
-        description="TCI Formation offre des formations diplômantes et professionnelles dans plus de 25 filières. Électricité, Informatique, Couture, Cuisine, et plus encore."
-        image="/og-image.png"
+        title="TCI Formation - Centre de Formation Professionnelle à Cotonou et Abidjan"
+        description="Propulsez votre carrière avec TCI Formation. 10+ ans d'expérience, 5 sites, certifications CQM/CQP. Formations diplômantes et en ligne."
       />
 
       <Header />
 
       <main>
-        <HeroSlider />
-
-        <section className="py-16 lg:py-24 bg-gradient-to-b from-white to-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Award className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="font-heading font-bold text-3xl mb-2">25+</h3>
-                <p className="text-muted-foreground">Filières de Formation</p>
+        {/* Hero Section */}
+        <section className="relative bg-gradient-hero text-white overflow-hidden">
+          <div className="absolute inset-0 bg-grid-white/5"></div>
+          <div className="container-custom relative z-10 py-24 md:py-32">
+            <div className="max-w-4xl mx-auto text-center space-y-8">
+              <div className="inline-block mb-4">
+                <span className="bg-secondary/20 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/20">
+                  🎓 Prochaine rentrée : 04 Mars 2026
+                </span>
               </div>
+              
+              <h1 className="font-heading font-bold text-4xl md:text-6xl leading-tight">
+                Propulsez votre carrière avec <span className="text-secondary">TCI Formation</span>
+              </h1>
+              
+              <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
+                De la maîtrise logicielle aux métiers de l'industrie technologique, 
+                nous formons les leaders de demain à Abidjan et Cotonou.
+              </p>
 
-              <div className="text-center">
-                <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-accent" />
-                </div>
-                <h3 className="font-heading font-bold text-3xl mb-2">5000+</h3>
-                <p className="text-muted-foreground">Apprenants Formés</p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <BookOpen className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="font-heading font-bold text-3xl mb-2">15+</h3>
-                <p className="text-muted-foreground">Années d&apos;Expérience</p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-8 h-8 text-accent" />
-                </div>
-                <h3 className="font-heading font-bold text-3xl mb-2">85%</h3>
-                <p className="text-muted-foreground">Taux d&apos;Insertion</p>
+              <div className="flex flex-wrap justify-center gap-4 pt-4">
+                <Link href="/admissions">
+                  <Button size="lg" variant="secondary" className="text-lg px-8">
+                    S&apos;inscrire maintenant
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+                <Link href="/parcours/digital">
+                  <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20">
+                    Découvrir nos parcours
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="py-16 lg:py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <p className="text-primary font-semibold mb-2 uppercase tracking-wide">
-                Nos Filières de Formation
-              </p>
-              <h2 className="font-heading font-bold text-3xl md:text-4xl lg:text-5xl mb-4">
-                Formations Diplômantes
+        {/* Stats Section */}
+        <section className="py-16 bg-white border-b">
+          <div className="container-custom">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={index} className="text-center">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
+                      <Icon className="w-8 h-8" />
+                    </div>
+                    <div className="font-heading font-bold text-3xl text-primary mb-2">{stat.value}</div>
+                    <div className="text-muted-foreground font-medium">{stat.label}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Poles Section */}
+        <section className="py-20 bg-muted/30">
+          <div className="container-custom">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="font-heading font-bold text-3xl md:text-5xl mb-6">
+                Nos Pôles de Formation
               </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Découvrez nos programmes de formation professionnelle reconnus et certifiés
+              <p className="text-lg text-muted-foreground">
+                Choisissez votre voie parmi nos trois pôles d'excellence reconnus par l'État
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-              {featuredFormations.map((formation) => (
-                <FormationCard key={formation.id} formation={formation} />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {poles.map((pole, index) => (
+                <Link key={index} href={pole.href}>
+                  <Card className="group h-full hover:shadow-2xl hover:scale-105 transition-all duration-300 border-2 hover:border-primary">
+                    <CardContent className="p-8 text-center space-y-4">
+                      <div className="text-6xl mb-4">{pole.icon}</div>
+                      <h3 className="font-heading font-bold text-2xl group-hover:text-primary transition-colors">
+                        {pole.title}
+                      </h3>
+                      <p className="text-muted-foreground">{pole.desc}</p>
+                      <Button variant="ghost" className="group-hover:text-primary">
+                        En savoir plus <ArrowRight className="ml-2 w-4 h-4" />
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Link>
               ))}
             </div>
-
-            <div className="text-center">
-              <Link href="/formations">
-                <Button size="lg" className="group">
-                  Voir toutes nos formations
-                  <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-            </div>
           </div>
         </section>
 
-        <section className="py-16 lg:py-24 bg-gradient-to-b from-gray-50 to-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <p className="text-accent font-semibold mb-2 uppercase tracking-wide">
-                Actualités
-              </p>
-              <h2 className="font-heading font-bold text-3xl md:text-4xl lg:text-5xl mb-4">
-                Nos Activités Récentes
-              </h2>
-              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-                Restez informés de nos dernières actualités et événements
-              </p>
-            </div>
-
-            {recentNews.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                  {recentNews.map((news) => (
-                    <NewsCard key={news.id} news={news} />
-                  ))}
-                </div>
-
-                <div className="text-center">
-                  <Link href="/actualites">
-                    <Button size="lg" variant="outline" className="group">
-                      Voir toutes les actualités
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground text-lg">
-                  Aucune actualité disponible pour le moment.
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        <section className="py-16 lg:py-24 bg-gradient-hero text-white">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 className="font-heading font-bold text-3xl md:text-4xl lg:text-5xl mb-6">
-              Prêt à Démarrer Votre Formation ?
+        {/* CTA Section */}
+        <section className="py-20 bg-gradient-hero text-white">
+          <div className="container-custom text-center max-w-4xl mx-auto space-y-8">
+            <h2 className="font-heading font-bold text-3xl md:text-5xl">
+              Prêt à transformer votre avenir professionnel ?
             </h2>
-            <p className="text-xl mb-8 text-white/90">
-              Rejoignez des milliers d&apos;apprenants qui ont réussi leur insertion professionnelle avec TCI Formation
+            <p className="text-xl text-white/90">
+              Rejoignez des milliers d'étudiants qui ont déjà lancé leur carrière avec TCI Formation
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <Link href="/contact">
-                <Button size="lg" variant="secondary" className="px-8">
-                  Nous Contacter
+            <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <Link href="/admissions">
+                <Button size="lg" variant="secondary" className="text-lg px-8">
+                  S&apos;inscrire en ligne
+                  <Calendar className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="/formations">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="bg-white/10 hover:bg-white/20 text-white border-white/30 backdrop-blur-sm px-8"
-                >
-                  Découvrir nos Formations
+              <Link href="/entreprises">
+                <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20">
+                  <Briefcase className="mr-2 w-5 h-5" />
+                  Solutions Entreprises
                 </Button>
               </Link>
             </div>
           </div>
         </section>
+
+        {/* News Section */}
+        {recentNews.length > 0 && (
+          <section className="py-20">
+            <div className="container-custom">
+              <div className="flex items-end justify-between mb-12">
+                <div>
+                  <h2 className="font-heading font-bold text-3xl md:text-4xl mb-3">
+                    Nos Actualités Récentes
+                  </h2>
+                  <p className="text-muted-foreground text-lg">
+                    Restez informé de nos derniers événements et succès
+                  </p>
+                </div>
+                <Link href="/actualites">
+                  <Button variant="outline">
+                    Voir tout
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {recentNews.map((news) => (
+                  <NewsCard key={news.id} news={news} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
 
       <Footer />

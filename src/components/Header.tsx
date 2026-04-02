@@ -1,23 +1,42 @@
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const parcours = [
+    { title: "Pôle Digital & Software", href: "/parcours/digital", desc: "Génie Logiciel, Web, Design" },
+    { title: "Pôle Énergie & Industrie", href: "/parcours/energie", desc: "Solaire, Électrique, Froid" },
+    { title: "Pôle Business & Lifestyle", href: "/parcours/business", desc: "Mode, Esthétique, Hôtellerie" },
+  ];
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-hero rounded-lg flex items-center justify-center">
-              <span className="text-white font-heading font-bold text-xl">TCI</span>
+        <div className="flex h-20 items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <Image 
+              src="/logo-tci.jpg" 
+              alt="TCI Formation" 
+              width={60} 
+              height={60}
+              className="rounded-full"
+            />
+            <div>
+              <span className="font-heading font-bold text-xl text-primary">TCI Formation</span>
+              <p className="text-xs text-muted-foreground">Centre de Formation Professionnelle</p>
             </div>
-            <span className="font-heading font-bold text-xl hidden sm:block">
-              TCI FORMATION
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -25,24 +44,58 @@ export function Header() {
             <Link href="/" className="text-sm font-medium hover:text-primary transition-colors">
               Accueil
             </Link>
-            <Link href="/formations" className="text-sm font-medium hover:text-primary transition-colors">
-              Nos Formations
+            
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Nos Parcours</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[500px] gap-3 p-4">
+                      {parcours.map((item) => (
+                        <li key={item.href}>
+                          <NavigationMenuLink asChild>
+                            <Link
+                              href={item.href}
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                            >
+                              <div className="text-sm font-medium leading-none">{item.title}</div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {item.desc}
+                              </p>
+                            </Link>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+
+            <Link href="/entreprises" className="text-sm font-medium hover:text-primary transition-colors">
+              Solutions Entreprises
+            </Link>
+            <Link href="/online" className="text-sm font-medium hover:text-primary transition-colors">
+              TCI Online
             </Link>
             <Link href="/apropos" className="text-sm font-medium hover:text-primary transition-colors">
-              À propos
+              À Propos
+            </Link>
+            <Link href="/actualites" className="text-sm font-medium hover:text-primary transition-colors">
+              Actualités
             </Link>
             <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors">
               Contact
             </Link>
-            <Link href="/galerie" className="text-sm font-medium hover:text-primary transition-colors">
-              Galerie
-            </Link>
-            <Link href="/actualites">
-              <Button variant="default" className="bg-secondary hover:bg-secondary/90">
-                Nos actualités
+          </nav>
+
+          <div className="hidden lg:flex items-center gap-4">
+            <Link href="/admissions">
+              <Button className="bg-gradient-accent hover:opacity-90">
+                S&apos;inscrire
               </Button>
             </Link>
-          </nav>
+          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -55,48 +108,40 @@ export function Header() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <nav className="lg:hidden py-6 space-y-4 border-t border-border animate-slide-up">
-            <Link
-              href="/"
-              className="block text-sm font-medium hover:text-primary transition-colors py-2"
-              onClick={() => setIsOpen(false)}
-            >
+          <nav className="lg:hidden py-6 space-y-4 border-t">
+            <Link href="/" className="block py-2 text-sm font-medium hover:text-primary">
               Accueil
             </Link>
-            <Link
-              href="/formations"
-              className="block text-sm font-medium hover:text-primary transition-colors py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              Nos Formations
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-muted-foreground px-2">Nos Parcours</p>
+              {parcours.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block py-2 pl-4 text-sm hover:text-primary"
+                >
+                  {item.title}
+                </Link>
+              ))}
+            </div>
+            <Link href="/entreprises" className="block py-2 text-sm font-medium hover:text-primary">
+              Solutions Entreprises
             </Link>
-            <Link
-              href="/apropos"
-              className="block text-sm font-medium hover:text-primary transition-colors py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              À propos
+            <Link href="/online" className="block py-2 text-sm font-medium hover:text-primary">
+              TCI Online
             </Link>
-            <Link
-              href="/contact"
-              className="block text-sm font-medium hover:text-primary transition-colors py-2"
-              onClick={() => setIsOpen(false)}
-            >
+            <Link href="/apropos" className="block py-2 text-sm font-medium hover:text-primary">
+              À Propos
+            </Link>
+            <Link href="/actualites" className="block py-2 text-sm font-medium hover:text-primary">
+              Actualités
+            </Link>
+            <Link href="/contact" className="block py-2 text-sm font-medium hover:text-primary">
               Contact
             </Link>
-            <Link
-              href="/galerie"
-              className="block text-sm font-medium hover:text-primary transition-colors py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              Galerie
-            </Link>
-            <Link
-              href="/actualites"
-              onClick={() => setIsOpen(false)}
-            >
-              <Button variant="default" className="bg-secondary hover:bg-secondary/90 w-full">
-                Nos actualités
+            <Link href="/admissions">
+              <Button className="w-full bg-gradient-accent hover:opacity-90">
+                S&apos;inscrire
               </Button>
             </Link>
           </nav>
