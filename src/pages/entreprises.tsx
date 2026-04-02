@@ -9,71 +9,71 @@ import Link from "next/link";
 
 export default function Entreprises() {
   const services = [
-    {
-      icon: Target,
-      title: "Ingénierie de Formation",
-      description: "Audit complet des besoins en compétences de votre entreprise et élaboration de plans de formation personnalisés alignés avec vos objectifs stratégiques.",
-      features: [
-        "Analyse des besoins",
-        "Plans de formation sur mesure",
-        "Évaluation des compétences",
-        "Suivi des progrès"
-      ]
-    },
-    {
-      icon: Briefcase,
-      title: "Renforcement de Capacités",
-      description: "Modules courts et intensifs pour mettre à jour vos équipes sur les nouvelles technologies et pratiques de votre secteur.",
-      features: [
-        "Formations certifiantes",
-        "Technologies émergentes",
-        "Pratiques professionnelles",
-        "Formation continue"
-      ]
-    },
-    {
-      icon: ShieldCheck,
-      title: "Conformité & Certifications",
-      description: "Formations certifiées et éligibles aux financements institutionnels comme le FDFP, facilitant la prise en charge financière.",
-      features: [
-        "Diplômes reconnus",
-        "Éligibilité FDFP",
-        "Certifications professionnelles",
-        "Normes internationales"
-      ]
-    }
-  ];
+  {
+    icon: Target,
+    title: "Ingénierie de Formation",
+    description: "Audit complet des besoins en compétences de votre entreprise et élaboration de plans de formation personnalisés alignés avec vos objectifs stratégiques.",
+    features: [
+    "Analyse des besoins",
+    "Plans de formation sur mesure",
+    "Évaluation des compétences",
+    "Suivi des progrès"]
+
+  },
+  {
+    icon: Briefcase,
+    title: "Renforcement de Capacités",
+    description: "Modules courts et intensifs pour mettre à jour vos équipes sur les nouvelles technologies et pratiques de votre secteur.",
+    features: [
+    "Formations certifiantes",
+    "Technologies émergentes",
+    "Pratiques professionnelles",
+    "Formation continue"]
+
+  },
+  {
+    icon: ShieldCheck,
+    title: "Conformité & Certifications",
+    description: "Formations certifiées et éligibles aux financements institutionnels comme le FDFP, facilitant la prise en charge financière.",
+    features: [
+    "Diplômes reconnus",
+    "Éligibilité FDFP",
+    "Certifications professionnelles",
+    "Normes internationales"]
+
+  }];
+
 
   const advantages = [
-    {
-      icon: Users,
-      title: "Formateurs Experts",
-      description: "Professionnels qualifiés avec une expérience terrain dans leur domaine"
-    },
-    {
-      icon: TrendingUp,
-      title: "ROI Mesurable",
-      description: "Amélioration quantifiable des compétences et de la productivité"
-    },
-    {
-      icon: Award,
-      title: "Qualité Certifiée",
-      description: "Formations reconnues par l'État et les institutions professionnelles"
-    }
-  ];
+  {
+    icon: Users,
+    title: "Formateurs Experts",
+    description: "Professionnels qualifiés avec une expérience terrain dans leur domaine"
+  },
+  {
+    icon: TrendingUp,
+    title: "ROI Mesurable",
+    description: "Amélioration quantifiable des compétences et de la productivité"
+  },
+  {
+    icon: Award,
+    title: "Qualité Certifiée",
+    description: "Formations reconnues par l'État et les institutions professionnelles"
+  }];
+
 
   return (
     <>
-      <SEO 
-        title="Solutions Entreprises - TCI Formation" 
-        description="Formations sur mesure, ingénierie de formation et renforcement de capacités pour votre entreprise au Bénin."
-      />
+      <SEO
+        title="Solutions Entreprises - TCI Formation"
+        description="Formations sur mesure, ingénierie de formation et renforcement de capacités pour votre entreprise au Bénin." />
+      
       <Header />
       
       <main className="bg-gray-50">
         {/* Hero Section */}
         <section className="relative py-24 bg-gradient-to-br from-tci-blue via-tci-blue/95 to-tci-blue/90 text-white overflow-hidden">
-          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+          <div className="absolute inset-0 bg-grid-pattern opacity-10" style={{ backgroundImage: "url(\"/3023.jpg\")", backgroundColor: "transparent", opacity: "0.1" }}></div>
           <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-tci-red/20 to-transparent"></div>
           
           <div className="container-custom relative z-10">
@@ -117,8 +117,8 @@ export default function Entreprises() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {services.map((service, index) => (
-                <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all group bg-white">
+              {services.map((service, index) =>
+              <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all group bg-white">
                   <CardContent className="p-8">
                     <div className="w-16 h-16 bg-tci-blue/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-tci-blue group-hover:scale-110 transition-all">
                       <service.icon className="w-8 h-8 text-tci-blue group-hover:text-white transition-colors" />
@@ -128,16 +128,16 @@ export default function Entreprises() {
                       {service.description}
                     </p>
                     <div className="space-y-3">
-                      {service.features.map((feature, i) => (
-                        <div key={i} className="flex items-center gap-2">
+                      {service.features.map((feature, i) =>
+                    <div key={i} className="flex items-center gap-2">
                           <CheckCircle2 className="w-5 h-5 text-tci-blue flex-shrink-0" />
                           <span className="text-sm text-gray-700">{feature}</span>
                         </div>
-                      ))}
+                    )}
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+              )}
             </div>
           </div>
         </section>
@@ -153,15 +153,15 @@ export default function Entreprises() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {advantages.map((advantage, index) => (
-                <div key={index} className="text-center bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
+              {advantages.map((advantage, index) =>
+              <div key={index} className="text-center bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
                   <div className="inline-flex items-center justify-center w-20 h-20 bg-tci-blue/10 rounded-2xl mb-6">
                     <advantage.icon className="w-10 h-10 text-tci-blue" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">{advantage.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{advantage.description}</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </section>
@@ -178,22 +178,22 @@ export default function Entreprises() {
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl mx-auto">
               {[
-                { step: "01", title: "Analyse", desc: "Audit de vos besoins en formation" },
-                { step: "02", title: "Proposition", desc: "Programme personnalisé et devis" },
-                { step: "03", title: "Formation", desc: "Déploiement des modules adaptés" },
-                { step: "04", title: "Suivi", desc: "Évaluation et accompagnement continu" }
-              ].map((item, index) => (
-                <div key={index} className="relative text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-tci-blue text-white rounded-2xl font-bold text-2xl mb-4">
+              { step: "01", title: "Analyse", desc: "Audit de vos besoins en formation" },
+              { step: "02", title: "Proposition", desc: "Programme personnalisé et devis" },
+              { step: "03", title: "Formation", desc: "Déploiement des modules adaptés" },
+              { step: "04", title: "Suivi", desc: "Évaluation et accompagnement continu" }].
+              map((item, index) =>
+              <div key={index} className="relative text-center">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-tci-blue text-white rounded-2xl font-bold text-2xl mb-4" style={{ backgroundColor: "#ef4444", backgroundImage: "none" }}>
                     {item.step}
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
                   <p className="text-gray-600">{item.desc}</p>
-                  {index < 3 && (
-                    <div className="hidden md:block absolute top-8 left-[60%] w-full h-0.5 bg-tci-blue/20"></div>
-                  )}
+                  {index < 3 &&
+                <div className="hidden md:block absolute top-8 left-[60%] w-full h-0.5 bg-tci-blue/20"></div>
+                }
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </section>
@@ -228,6 +228,6 @@ export default function Entreprises() {
       </main>
 
       <Footer />
-    </>
-  );
+    </>);
+
 }
