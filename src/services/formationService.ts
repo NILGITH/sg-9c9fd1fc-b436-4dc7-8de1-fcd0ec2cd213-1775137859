@@ -8,8 +8,10 @@ export const formationService = {
     const { data, error } = await supabase
       .from("formations")
       .select("*")
+      .eq("published", true)
       .order("created_at", { ascending: false });
     
+    console.log("formationService.getAll - data:", data?.length || 0, "error:", error);
     return { data: data || [], error };
   },
 
