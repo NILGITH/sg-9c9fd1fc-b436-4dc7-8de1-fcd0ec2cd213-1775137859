@@ -73,73 +73,105 @@ export default function Admissions({ formations }: AdmissionsProps) {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleStepSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleStepSubmit = async (data: any) => {
+    if (currentStep === 0) {
+      // Step 1: Personal Info
+      setFormData({ ...formData, ...data });
+      setCurrentStep(1);
+    } else if (currentStep === 1) {
+      // Step 2: Academic Info & Create Enrollment
+      const completeData = { ...formData, ...data };
+      setFormData(completeData);
 
-    if (currentStep === 1) {
-      // Validate step 1
-      if (!formData.firstName || !formData.lastName || !formData.email || !formData.phone) {
-        toast({
-          title: "Erreur",
-          description: "Veuillez remplir tous les champs obligatoires",
-          variant: "destructive",
-        });
-        return;
-      }
-      setCurrentStep(2);
-    } else if (currentStep === 2) {
-      // Validate step 2
-      if (!formData.formationId || !formData.educationLevel) {
-        toast({
-          title: "Erreur",
-          description: "Veuillez sélectionner une formation et votre niveau d'études",
-          variant: "destructive",
-        });
-        return;
-      }
-      setCurrentStep(3);
-    } else if (currentStep === 3) {
-      // Final submission - create enrollment
-      setLoading(true);
       try {
-        const enrollmentData: EnrollmentInsert = {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          phone: formData.phone,
-          birth_date: formData.birthDate || null,
-          birth_place: formData.birthPlace || null,
-          nationality: formData.nationality,
-          address: formData.address || null,
-          city: formData.city || null,
-          formation_id: formData.formationId,
-          education_level: formData.educationLevel,
-          last_diploma: formData.lastDiploma || null,
-          motivation: formData.motivation || null,
+        console.log("Creating enrollment with data:", completeData);
+
+        const { data: enrollment, error } = await enrollmentService.create({
+          first_name: completeData.firstName,
+          last_name: completeData.lastName,
+          email: completeData.email,
+          phone: completeData.phone,
+          birth_date: completeData.birthDate,
+          birth_place: completeData.birthPlace,
+          nationality: completeData.nationality,
+          address: completeData.address,
+          formation_id: completeData.formation,
+          education_level: completeData.educationLevel,
+          last_diploma: completeData.lastDiploma || null,
+          motivation: completeData.motivation || null,
           status: "pending",
-        };
+        });
 
-        const { data: enrollment, error } = await enrollmentService.create(enrollmentData);
+        console.log("Enrollment creation result:", { enrollment, error });
 
-        if (error || !enrollment) {
-          throw new Error("Erreur lors de la création de l'inscription");
+        if (error) {
+          console.error("Enrollment creation error:", error);
+          throw new Error(error.message || "Erreur lors de la création de l'inscription");
+        }
+
+        if (!enrollment) {
+          throw new Error("Aucune donnée d'inscription retournée");
         }
 
         setEnrollmentId(enrollment.id);
-        setCurrentStep(4);
-        toast({
-          title: "Succès !",
-          description: "Votre inscription a été enregistrée. Procédez au paiement.",
+        setCurrentStep(2);
+      } catch (err: any) {
+        console.error("Error creating enrollment:", err);
+        alert(`Erreur lors de l'inscription: ${err.message || "Veuillez réessayer"}`);
+      }
+    } else if (currentStep === 2) {
+      // Step 3: Payment
+      if (!enrollmentId) {
+        alert("Erreur: ID d'inscription manquant");
+        return;
+      }
+
+      const completeData = { ...formData, ...data };
+      setFormData(completeData);
+
+      try {
+        console.log("Creating payment with data:", {
+          enrollmentId,
+          amount: completeData.amount,
+          paymentMethod: completeData.paymentMethod,
         });
-      } catch (error) {
-        console.error("Erreur:", error);
-        toast({
-          title: "Erreur",
-          description: "Une erreur est survenue lors de l'inscription. Veuillez réessayer.",
-          variant: "destructive",
+
+        const { data: payment, error } = await paymentService.create({
+          enrollment_id: enrollmentId,
+          amount: completeData.amount.toString(),
+          payment_method: completeData.paymentMethod,
+          payment_status: "pending",
         });
-      } finally {
-        setLoading(false);
+
+        console.log("Payment creation result:", { payment, error });
+
+        if (error) {
+          console.error("Payment creation error:", error);
+          throw new Error(error.message || "Erreur lors de la création du paiement");
+        }
+
+        if (!payment) {
+          throw new Error("Aucune donnée de paiement retournée");
+        }
+
+        setPaymentId(payment.id);
+
+        // Initialize Kkiapay
+        if (completeData.paymentMethod === "kkiapay") {
+          openKkiapayWidget({
+            amount: parseInt(completeData.amount),
+            api_key: "3dc76a90680511ef88d4090c71824b16",
+            sandbox: false,
+            email: completeData.email,
+            phone: completeData.phone,
+            name: `${completeData.firstName} ${completeData.lastName}`,
+          });
+        } else {
+          setCurrentStep(3);
+        }
+      } catch (err: any) {
+        console.error("Error creating payment:", err);
+        alert(`Erreur lors du paiement: ${err.message || "Veuillez réessayer"}`);
       }
     }
   };
