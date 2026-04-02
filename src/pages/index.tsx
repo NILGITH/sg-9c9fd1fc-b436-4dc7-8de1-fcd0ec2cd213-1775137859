@@ -1,15 +1,15 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { HeroSlider } from "@/components/HeroSlider";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowRight, Users, Award, MapPin, Calendar, Briefcase, GraduationCap } from "lucide-react";
+import { Award, Users, MapPin, GraduationCap, Code, Zap, Briefcase, ArrowRight, Network, Droplets, Snowflake, Scissors, Leaf, ChefHat, Coffee, Building } from "lucide-react";
+import { HeroSlider } from "@/components/HeroSlider";
+import { TestimonialsSlider } from "@/components/TestimonialsSlider";
 import { formationService, type Formation } from "@/services/formationService";
 import { newsService, type News } from "@/services/newsService";
 import { NewsCard } from "@/components/NewsCard";
-import { TestimonialsSlider } from "@/components/TestimonialsSlider";
 
 interface HomeProps {
   featuredFormations: Formation[];
@@ -74,6 +74,32 @@ export default function Home({ featuredFormations, recentNews }: HomeProps) {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* Nos Rentrées Section */}
+        <section className="py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
+          <div className="container-custom">
+            <h2 className="font-heading font-bold text-3xl md:text-4xl mb-12 text-center">
+              NOS RENTRÉES
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              {[
+                "10 Septembre 2025",
+                "06 Octobre 2025",
+                "03 Novembre 2025",
+                "05 Janvier 2026",
+                "09 Février 2026",
+                "04 Mars 2026",
+              ].map((date, index) => (
+                <div
+                  key={index}
+                  className="bg-gradient-to-r from-secondary to-orange-600 text-white text-center py-4 px-6 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-shadow"
+                >
+                  {date}
+                </div>
+              ))}
             </div>
           </div>
         </section>
