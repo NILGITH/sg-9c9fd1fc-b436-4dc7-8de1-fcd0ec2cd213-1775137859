@@ -1,4 +1,4 @@
- 
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 export type Json =
   | string
   | number
@@ -19,13 +19,18 @@ export type Database = {
         Row: {
           address: string | null
           birth_date: string | null
+          birth_place: string | null
+          city: string | null
           created_at: string | null
           education_level: string | null
           email: string
           first_name: string
           formation_id: string | null
           id: string
+          last_diploma: string | null
           last_name: string
+          motivation: string | null
+          nationality: string | null
           payment_amount: number | null
           payment_date: string | null
           payment_status: string | null
@@ -38,13 +43,18 @@ export type Database = {
         Insert: {
           address?: string | null
           birth_date?: string | null
+          birth_place?: string | null
+          city?: string | null
           created_at?: string | null
           education_level?: string | null
           email: string
           first_name: string
           formation_id?: string | null
           id?: string
+          last_diploma?: string | null
           last_name: string
+          motivation?: string | null
+          nationality?: string | null
           payment_amount?: number | null
           payment_date?: string | null
           payment_status?: string | null
@@ -57,13 +67,18 @@ export type Database = {
         Update: {
           address?: string | null
           birth_date?: string | null
+          birth_place?: string | null
+          city?: string | null
           created_at?: string | null
           education_level?: string | null
           email?: string
           first_name?: string
           formation_id?: string | null
           id?: string
+          last_diploma?: string | null
           last_name?: string
+          motivation?: string | null
+          nationality?: string | null
           payment_amount?: number | null
           payment_date?: string | null
           payment_status?: string | null
