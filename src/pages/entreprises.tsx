@@ -89,7 +89,7 @@ export default function Entreprises() {
                 adaptés aux défis technologiques et professionnels de votre secteur.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <Button size="lg" className="bg-white text-tci-blue hover:bg-gray-100 h-14 px-8 text-base">
+                <Button size="lg" className="bg-white text-tci-blue hover:bg-gray-100 h-14 px-8 text-base" asChild>
                   <Link href="/contact" className="flex items-center gap-2">
                     Demander un Devis
                     <ArrowRight className="w-5 h-5" />
@@ -103,8 +103,8 @@ export default function Entreprises() {
           </div>
         </section>
 
-        {/* Services Section */}
-        <section className="py-20">
+        {/* Services Section - FIXED: text-gray-900 instead of white */}
+        <section className="py-20 bg-white">
           <div className="container-custom">
             <div className="text-center mb-16">
               <Badge className="bg-tci-blue/10 text-tci-blue border-0 mb-4">NOS SERVICES</Badge>
@@ -118,7 +118,7 @@ export default function Entreprises() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {services.map((service, index) => (
-                <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all group">
+                <Card key={index} className="border-0 shadow-xl hover:shadow-2xl transition-all group bg-white">
                   <CardContent className="p-8">
                     <div className="w-16 h-16 bg-tci-blue/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-tci-blue group-hover:scale-110 transition-all">
                       <service.icon className="w-8 h-8 text-tci-blue group-hover:text-white transition-colors" />
@@ -142,8 +142,8 @@ export default function Entreprises() {
           </div>
         </section>
 
-        {/* Advantages Section */}
-        <section className="py-20 bg-white">
+        {/* Advantages Section - FIXED */}
+        <section className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="text-center mb-16">
               <Badge className="bg-tci-blue/10 text-tci-blue border-0 mb-4">POURQUOI NOUS CHOISIR</Badge>
@@ -154,7 +154,7 @@ export default function Entreprises() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {advantages.map((advantage, index) => (
-                <div key={index} className="text-center">
+                <div key={index} className="text-center bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all">
                   <div className="inline-flex items-center justify-center w-20 h-20 bg-tci-blue/10 rounded-2xl mb-6">
                     <advantage.icon className="w-10 h-10 text-tci-blue" />
                   </div>
@@ -166,8 +166,8 @@ export default function Entreprises() {
           </div>
         </section>
 
-        {/* Process Section */}
-        <section className="py-20">
+        {/* Process Section - FIXED */}
+        <section className="py-20 bg-white">
           <div className="container-custom">
             <div className="text-center mb-16">
               <Badge className="bg-tci-blue/10 text-tci-blue border-0 mb-4">NOTRE PROCESSUS</Badge>
