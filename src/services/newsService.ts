@@ -30,7 +30,7 @@ export const newsService = {
     return { data, error };
   },
 
-  async create(news: Omit<News, "id" | "created_at">) {
+  async create(news: Omit<News, "id" | "created_at" | "updated_at">) {
     const { data, error } = await supabase
       .from("news")
       .insert(news)
