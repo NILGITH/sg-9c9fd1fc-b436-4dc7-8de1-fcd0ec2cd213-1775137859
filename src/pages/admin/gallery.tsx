@@ -23,10 +23,13 @@ export default function AdminGallery() {
   const [mediaType, setMediaType] = useState<"photo" | "video">("photo");
   const [editingMedia, setEditingMedia] = useState<GalleryMedia | null>(null);
   const [formData, setFormData] = useState({
-    type: "photo" as "photo" | "video",
-    url: "",
+    media_type: "photo" as "photo" | "video",
+    media_url: "",
     title: "",
     description: "",
+    published: true,
+    order_position: 0,
+    thumbnail_url: ""
   });
 
   useEffect(() => {
@@ -71,10 +74,13 @@ export default function AdminGallery() {
   const handleEdit = (item: GalleryMedia) => {
     setEditingMedia(item);
     setFormData({
-      type: item.type,
-      url: item.url,
+      media_type: item.media_type as "photo" | "video",
+      media_url: item.media_url,
       title: item.title || "",
       description: item.description || "",
+      published: item.published,
+      order_position: item.order_position || 0,
+      thumbnail_url: item.thumbnail_url || ""
     });
     setIsDialogOpen(true);
   };
@@ -89,16 +95,19 @@ export default function AdminGallery() {
   const resetForm = () => {
     setEditingMedia(null);
     setFormData({
-      type: mediaType,
-      url: "",
+      media_type: mediaType,
+      media_url: "",
       title: "",
       description: "",
+      published: true,
+      order_position: 0,
+      thumbnail_url: ""
     });
   };
 
   const openDialog = (type: "photo" | "video") => {
     setMediaType(type);
-    setFormData({ ...formData, type });
+    setFormData({ ...formData, media_type: type });
     setIsDialogOpen(true);
   };
 
@@ -169,7 +178,7 @@ export default function AdminGallery() {
                     <Card key={item.id} className="overflow-hidden">
                       <div className="relative h-64 w-full">
                         <Image
-                          src={item.url}
+                          src={item.media_url}
                           alt={item.title || "Photo"}
                           fill
                           className="object-cover"
@@ -233,7 +242,7 @@ export default function AdminGallery() {
                       <CardContent className="p-6">
                         <div className="aspect-video mb-4">
                           <iframe
-                            src={item.url}
+                            src={item.media_url}
                             className="w-full h-full rounded-lg"
                             allowFullScreen
                           />
@@ -275,10 +284,10 @@ export default function AdminGallery() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>
-                {editingMedia ? `Modifier ${formData.type === "photo" ? "la photo" : "la vidéo"}` : `Ajouter ${formData.type === "photo" ? "une photo" : "une vidéo"}`}
+                {editingMedia ? `Modifier ${formData.media_type === "photo" ? "la photo" : "la vidéo"}` : `Ajouter ${formData.media_type === "photo" ? "une photo" : "une vidéo"}`}
               </DialogTitle>
               <DialogDescription>
-                {formData.type === "photo" 
+                {formData.media_type === "photo" 
                   ? "Ajoutez une URL d'image depuis Unsplash ou un autre service"
                   : "Collez l'URL d'intégration YouTube (format embed)"}
               </DialogDescription>
@@ -286,13 +295,13 @@ export default function AdminGallery() {
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="url">URL *</Label>
+                <Label htmlFor="media_url">URL *</Label>
                 <Input
-                  id="url"
+                  id="media_url"
                   type="url"
-                  value={formData.url}
-                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                  placeholder={formData.type === "photo" ? "https://images.unsplash.com/..." : "https://www.youtube.com/embed/..."}
+                  value={formData.media_url}
+                  onChange={(e) => setFormData({ ...formData, media_url: e.target.value })}
+                  placeholder={formData.media_type === "photo" ? "https://images.unsplash.com/..." : "https://www.youtube.com/embed/..."}
                   required
                 />
               </div>

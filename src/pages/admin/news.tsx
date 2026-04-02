@@ -56,6 +56,7 @@ export default function AdminNews() {
       } else {
         await newsService.create({
           ...formData,
+          author: "Admin",
         });
       }
       
