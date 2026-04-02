@@ -327,7 +327,9 @@ export default function Home({ latestNews, intakeDates, digitalFormations, energ
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data: latestNews } = await newsService.getLatest(3);
+  const { data: allNews } = await newsService.getAll();
+  const latestNews = allNews?.slice(0, 3) || [];
+  
   const { data: intakeDates } = await intakeDateService.getAll();
   const { data: allFormations } = await formationService.getAll();
 
