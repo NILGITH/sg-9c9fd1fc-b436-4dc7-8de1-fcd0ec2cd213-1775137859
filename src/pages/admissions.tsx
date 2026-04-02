@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { CheckCircle2, AlertCircle, GraduationCap, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { enrollmentService, type EnrollmentInsert } from "@/services/enrollmentService";
+import { enrollmentService } from "@/services/enrollmentService";
 import { paymentService } from "@/services/paymentService";
 import { formationService, type Formation } from "@/services/formationService";
 import { GetStaticProps } from "next";
@@ -73,106 +73,48 @@ export default function Admissions({ formations }: AdmissionsProps) {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleStepSubmit = async (data: any) => {
-    if (currentStep === 0) {
-      // Step 1: Personal Info
-      setFormData({ ...formData, ...data });
-      setCurrentStep(1);
-    } else if (currentStep === 1) {
-      // Step 2: Academic Info & Create Enrollment
-      const completeData = { ...formData, ...data };
-      setFormData(completeData);
+  const handleNextStep = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (currentStep === 1) setCurrentStep(2);
+    else if (currentStep === 2) setCurrentStep(3);
+  };
 
-      try {
-        console.log("Creating enrollment with data:", completeData);
+  const submitEnrollment = async () => {
+    setLoading(true);
+    try {
+      const payload = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        birth_date: formData.birthDate || null,
+        birth_place: formData.birthPlace || null,
+        nationality: formData.nationality || null,
+        address: formData.address || null,
+        city: formData.city || null,
+        formation_id: formData.formationId,
+        education_level: formData.educationLevel,
+        last_diploma: formData.lastDiploma || null,
+        motivation: formData.motivation || null,
+        status: "pending",
+      };
 
-        const { data: enrollment, error } = await enrollmentService.create({
-          first_name: completeData.firstName,
-          last_name: completeData.lastName,
-          email: completeData.email,
-          phone: completeData.phone,
-          birth_date: completeData.birthDate,
-          birth_place: completeData.birthPlace,
-          nationality: completeData.nationality,
-          address: completeData.address,
-          formation_id: completeData.formation,
-          education_level: completeData.educationLevel,
-          last_diploma: completeData.lastDiploma || null,
-          motivation: completeData.motivation || null,
-          status: "pending",
-        });
+      const { data, error } = await enrollmentService.create(payload as any);
+      
+      if (error) throw new Error(error.message || "Erreur lors de la création de l'inscription");
+      if (!data) throw new Error("Aucune donnée d'inscription retournée");
 
-        console.log("Enrollment creation result:", { enrollment, error });
-
-        if (error) {
-          console.error("Enrollment creation error:", error);
-          throw new Error(error.message || "Erreur lors de la création de l'inscription");
-        }
-
-        if (!enrollment) {
-          throw new Error("Aucune donnée d'inscription retournée");
-        }
-
-        setEnrollmentId(enrollment.id);
-        setCurrentStep(2);
-      } catch (err: any) {
-        console.error("Error creating enrollment:", err);
-        alert(`Erreur lors de l'inscription: ${err.message || "Veuillez réessayer"}`);
-      }
-    } else if (currentStep === 2) {
-      // Step 3: Payment
-      if (!enrollmentId) {
-        alert("Erreur: ID d'inscription manquant");
-        return;
-      }
-
-      const completeData = { ...formData, ...data };
-      setFormData(completeData);
-
-      try {
-        console.log("Creating payment with data:", {
-          enrollmentId,
-          amount: completeData.amount,
-          paymentMethod: completeData.paymentMethod,
-        });
-
-        const { data: payment, error } = await paymentService.create({
-          enrollment_id: enrollmentId,
-          amount: completeData.amount.toString(),
-          payment_method: completeData.paymentMethod,
-          payment_status: "pending",
-        });
-
-        console.log("Payment creation result:", { payment, error });
-
-        if (error) {
-          console.error("Payment creation error:", error);
-          throw new Error(error.message || "Erreur lors de la création du paiement");
-        }
-
-        if (!payment) {
-          throw new Error("Aucune donnée de paiement retournée");
-        }
-
-        setPaymentId(payment.id);
-
-        // Initialize Kkiapay
-        if (completeData.paymentMethod === "kkiapay") {
-          openKkiapayWidget({
-            amount: parseInt(completeData.amount),
-            api_key: "3dc76a90680511ef88d4090c71824b16",
-            sandbox: false,
-            email: completeData.email,
-            phone: completeData.phone,
-            name: `${completeData.firstName} ${completeData.lastName}`,
-          });
-        } else {
-          setCurrentStep(3);
-        }
-      } catch (err: any) {
-        console.error("Error creating payment:", err);
-        alert(`Erreur lors du paiement: ${err.message || "Veuillez réessayer"}`);
-      }
+      setEnrollmentId(data.id);
+      setCurrentStep(4);
+    } catch (err: any) {
+      console.error("Error creating enrollment:", err);
+      toast({
+        title: "Erreur d'inscription",
+        description: err.message || "Veuillez vérifier vos informations et réessayer.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -184,8 +126,8 @@ export default function Admissions({ formations }: AdmissionsProps) {
     if (window.openKkiapayWidget) {
       window.openKkiapayWidget({
         amount: 25000,
-        api_key: process.env.NEXT_PUBLIC_KKIAPAY_PUBLIC_KEY || "",
-        sandbox: process.env.NEXT_PUBLIC_KKIAPAY_ENV === "sandbox",
+        api_key: process.env.NEXT_PUBLIC_KKIAPAY_PUBLIC_KEY || "3dc76a90680511ef88d4090c71824b16",
+        sandbox: true,
         email: formData.email,
         phone: formData.phone,
         name: `${formData.firstName} ${formData.lastName}`,
@@ -194,9 +136,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
 
       window.addKkiapayListener("success", async (response: any) => {
         console.log("Paiement réussi:", response);
-        
         try {
-          // Save payment to database
           await paymentService.create({
             enrollment_id: enrollmentId,
             amount: 25000,
@@ -205,9 +145,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
             payment_date: new Date().toISOString(),
             payment_reference: response.transactionId || `KKP-${Date.now()}`,
             notes: `Paiement Kkiapay - ${selectedFormation?.title}`,
-            validated_at: null,
-            validated_by: null,
-          });
+          } as any);
 
           setCurrentStep(5);
           toast({
@@ -313,7 +251,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleStepSubmit} className="space-y-6">
+                  <form onSubmit={handleNextStep} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="firstName">Prénom *</Label>
@@ -442,7 +380,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleStepSubmit} className="space-y-6">
+                  <form onSubmit={handleNextStep} className="space-y-6">
                     <div className="space-y-2">
                       <Label htmlFor="formationId">Formation souhaitée *</Label>
                       <Select value={formData.formationId} onValueChange={(value) => handleChange("formationId", value)}>
@@ -501,7 +439,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
                       <Button type="button" variant="outline" onClick={() => setCurrentStep(1)} className="flex-1">
                         Retour
                       </Button>
-                      <Button type="submit" className="flex-1">
+                      <Button type="submit" className="flex-1" disabled={!formData.formationId || !formData.educationLevel}>
                         Continuer
                       </Button>
                     </div>
@@ -563,7 +501,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
                       <Button type="button" variant="outline" onClick={() => setCurrentStep(2)} className="flex-1">
                         Modifier
                       </Button>
-                      <Button onClick={handleStepSubmit} disabled={loading} className="flex-1">
+                      <Button onClick={submitEnrollment} disabled={loading} className="flex-1">
                         {loading ? "Enregistrement..." : "Confirmer l'inscription"}
                       </Button>
                     </div>
@@ -666,8 +604,6 @@ export const getStaticProps: GetStaticProps = async () => {
     if (error) {
       console.error("Error loading formations:", error);
     }
-
-    console.log("Formations loaded in getStaticProps:", formations?.length || 0);
 
     return {
       props: {

@@ -35,7 +35,7 @@ export const enrollmentService = {
     return { data, error };
   },
 
-  async create(enrollment: Omit<Enrollment, "id" | "created_at" | "updated_at">) {
+  async create(enrollment: any) {
     console.log("EnrollmentService: Creating enrollment with data:", enrollment);
 
     // Validate required fields
