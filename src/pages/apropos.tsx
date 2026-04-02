@@ -1,102 +1,28 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-import { Award, Target, Eye, Heart } from "lucide-react";
+import { Award, Target, MapPin, Handshake, Globe } from "lucide-react";
+import Image from "next/image";
 
 export default function Apropos() {
   return (
     <>
       <SEO 
-        title="À propos - TCI Formation"
-        description="Découvrez TCI Formation, centre de formation professionnelle au Bénin. Notre mission, nos valeurs et notre engagement pour votre réussite."
+        title="À Propos | TCI Formation" 
+        description="Découvrez notre mission, nos centres de formation au Bénin et en Côte d'Ivoire, et nos partenaires."
       />
-      
       <Header />
       
-      <main className="pt-20">
+      <main>
         {/* Hero Section */}
-        <section className="gradient-hero text-white py-20">
-          <div className="container-custom text-center">
-            <h1 className="font-heading font-bold text-4xl md:text-5xl mb-6">
-              À propos de TCI Formation
+        <section className="py-20 bg-gradient-hero text-white">
+          <div className="container-custom max-w-4xl text-center space-y-6">
+            <h1 className="font-heading font-bold text-4xl md:text-5xl">
+              Notre ADN & Notre Mission
             </h1>
-            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-              Nous disons bien la pratique - Un centre d&apos;excellence au service de votre avenir
+            <p className="text-xl text-white/90 leading-relaxed">
+              Répondre au défi de l'emploi des jeunes en Afrique par une formation en adéquation réelle avec le marché.
             </p>
-          </div>
-        </section>
-
-        {/* Introduction */}
-        <section className="py-20">
-          <div className="container-custom max-w-4xl">
-            <div className="prose prose-lg mx-auto">
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                TCI Formation est un centre de formation professionnelle situé à Porto-Novo, au Bénin. 
-                Depuis plus de 10 ans, nous nous engageons à offrir des formations de qualité qui allient 
-                théorie et pratique pour préparer nos étudiants à une insertion réussie dans le monde professionnel.
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed mt-6">
-                Notre devise <strong className="text-foreground">&quot;Nous disons bien la pratique&quot;</strong> reflète 
-                notre approche pédagogique centrée sur l&apos;apprentissage pratique et concret. Nous croyons fermement 
-                que c&apos;est en pratiquant que l&apos;on acquiert les compétences nécessaires pour exceller dans son métier.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Values */}
-        <section className="py-20 bg-muted/30">
-          <div className="container-custom">
-            <div className="text-center mb-16">
-              <h2 className="font-heading font-bold text-3xl md:text-4xl mb-4">
-                Nos Valeurs
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">
-                Les principes qui guident notre action au quotidien
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <Award className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="font-heading font-bold text-xl mb-3">Excellence</h3>
-                <p className="text-muted-foreground">
-                  Nous visons l&apos;excellence dans toutes nos formations et accompagnons chaque étudiant vers la réussite.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-secondary/10 rounded-2xl flex items-center justify-center">
-                  <Target className="w-8 h-8 text-secondary" />
-                </div>
-                <h3 className="font-heading font-bold text-xl mb-3">Pratique</h3>
-                <p className="text-muted-foreground">
-                  Notre approche privilégie la pratique et l&apos;apprentissage concret pour des compétences réelles.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-accent/10 rounded-2xl flex items-center justify-center">
-                  <Eye className="w-8 h-8 text-accent" />
-                </div>
-                <h3 className="font-heading font-bold text-xl mb-3">Innovation</h3>
-                <p className="text-muted-foreground">
-                  Nous adaptons constamment nos programmes aux besoins du marché et aux nouvelles technologies.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <Heart className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="font-heading font-bold text-xl mb-3">Accompagnement</h3>
-                <p className="text-muted-foreground">
-                  Un suivi personnalisé pour chaque étudiant tout au long de son parcours de formation.
-                </p>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -105,129 +31,117 @@ export default function Apropos() {
           <div className="container-custom max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="bg-gradient-hero text-white p-10 rounded-3xl">
+                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6">
+                  <Target className="w-6 h-6 text-white" />
+                </div>
                 <h2 className="font-heading font-bold text-3xl mb-6">Problématique et Mission</h2>
                 <p className="text-lg leading-relaxed text-white/90">
                   Le problème de l'emploi des jeunes est devenu une préoccupation majeure. Avec l'environnement concurrentiel d'aujourd'hui, il est important que la jeunesse reçoive une formation en adéquation avec les besoins du marché.
                 </p>
                 <p className="text-lg leading-relaxed text-white/90 mt-4">
-                  Voilà pourquoi <strong>TCI BENIN</strong> s'est engagé depuis dix (10) ans à faire de la formation professionnelle une offre qui, à travers la qualité de l'enseignement, met déjà sur le marché un nouveau type de professionnels capables de se prendre en charge.
+                  Voilà pourquoi <strong>TCI Formation</strong> s'est engagé depuis plus de dix (10) ans à faire de la formation professionnelle une offre qui, à travers la qualité de l'enseignement, met sur le marché un nouveau type de professionnels capables de se prendre en charge et d'innover.
                 </p>
               </div>
 
               <div className="bg-secondary/10 p-10 rounded-3xl border-2 border-secondary/20">
+                <div className="w-12 h-12 bg-secondary/20 rounded-xl flex items-center justify-center mb-6">
+                  <Globe className="w-6 h-6 text-secondary" />
+                </div>
                 <h2 className="font-heading font-bold text-3xl mb-6">Notre Vision</h2>
                 <p className="text-lg leading-relaxed text-muted-foreground">
-                  Devenir le centre de référence en matière de formation professionnelle au Bénin, 
+                  Devenir le hub technologique et professionnel de référence en Afrique de l'Ouest, 
                   reconnu pour la qualité de ses programmes, l'expertise de ses formateurs et 
-                  le taux d'insertion professionnelle de ses diplômés.
+                  le taux d'insertion professionnelle exceptionnel de ses diplômés.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Domaines d'intervention */}
+        {/* Ancrage Local (Sites) */}
         <section className="py-20 bg-muted/30">
-          <div className="container-custom max-w-4xl">
-            <h2 className="font-heading font-bold text-3xl md:text-4xl mb-12 text-center">
-              Domaines D'intervention
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                "Électricité bâtiment",
-                "Systèmes solaires photovoltaïques",
-                "Froid et climatisation",
-                "Vidéo surveillance",
-                "Informatique appliquée",
-                "Graphisme",
-                "Génie Electrique et Informatique",
-                "Génie Electrique Informatique et Réseaux",
-                "Génie Logiciel et réseaux",
-                "Génie des Télécommunications et Réseaux",
-                "Génie Electrique et Maintenance Industrielle",
-                "Génie Electrique Froid et Plomberie",
-                "Secrétariat",
-                "Coupe et Couture",
-                "Coiffure et Esthétique",
-                "Cuisine et restauration",
-              ].map((domaine, index) => (
-                <div key={index} className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-muted">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+          <div className="container-custom max-w-6xl">
+            <div className="text-center mb-16">
+              <h2 className="font-heading font-bold text-3xl md:text-4xl mb-4">
+                Notre Ancrage Local
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Des campus modernes équipés pour un apprentissage optimal
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-white p-8 rounded-2xl shadow-sm border">
+                <h3 className="flex items-center gap-3 font-heading font-bold text-2xl mb-6 text-primary">
+                  <MapPin className="w-6 h-6" />
+                  Bénin
+                </h3>
+                <ul className="space-y-4">
+                  <li className="flex items-center gap-3 text-lg">
+                    <div className="w-2 h-2 rounded-full bg-secondary" />
+                    <strong>Cotonou</strong> (Campus Vèdoko)
+                  </li>
+                  <li className="flex items-center gap-3 text-lg">
+                    <div className="w-2 h-2 rounded-full bg-secondary" />
+                    <strong>Godomey</strong>
+                  </li>
+                  <li className="flex items-center gap-3 text-lg">
+                    <div className="w-2 h-2 rounded-full bg-secondary" />
+                    <strong>Abomey-Calavi</strong>
+                  </li>
+                  <li className="flex items-center gap-3 text-lg">
+                    <div className="w-2 h-2 rounded-full bg-secondary" />
+                    <strong>Porto-Novo</strong>
+                  </li>
+                  <li className="flex items-center gap-3 text-lg">
+                    <div className="w-2 h-2 rounded-full bg-secondary" />
+                    <strong>Parakou</strong>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-white p-8 rounded-2xl shadow-sm border">
+                <h3 className="flex items-center gap-3 font-heading font-bold text-2xl mb-6 text-secondary">
+                  <MapPin className="w-6 h-6" />
+                  Côte d'Ivoire
+                </h3>
+                <div className="space-y-4">
+                  <p className="text-lg text-muted-foreground mb-4">
+                    Notre nouveau hub en plein développement pour rayonner sur l'Afrique de l'Ouest francophone.
+                  </p>
+                  <li className="flex items-center gap-3 text-lg">
                     <div className="w-2 h-2 rounded-full bg-primary" />
-                  </div>
-                  <span className="text-muted-foreground font-semibold">{domaine}</span>
+                    <strong>Abidjan</strong> (Campus Principal)
+                  </li>
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Why Choose Us */}
+        {/* Partenaires */}
         <section className="py-20">
-          <div className="container-custom max-w-4xl">
-            <h2 className="font-heading font-bold text-3xl md:text-4xl text-center mb-12">
-              Pourquoi choisir TCI Formation ?
+          <div className="container-custom max-w-6xl text-center">
+            <h2 className="font-heading font-bold text-3xl md:text-4xl mb-6">
+              Nos Partenaires de Confiance
             </h2>
-            
-            <div className="space-y-6">
-              <div className="flex gap-4 items-start">
-                <div className="w-8 h-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-white font-bold">
-                  1
-                </div>
-                <div>
-                  <h3 className="font-heading font-semibold text-xl mb-2">Formations certifiées et reconnues</h3>
-                  <p className="text-muted-foreground">
-                    Nos diplômes sont reconnus par l&apos;État et valorisés sur le marché du travail.
-                  </p>
-                </div>
-              </div>
+            <p className="text-lg text-muted-foreground mb-12 max-w-2xl mx-auto">
+              Nous collaborons avec des institutions reconnues pour garantir l'excellence et la pertinence de nos formations.
+            </p>
 
-              <div className="flex gap-4 items-start">
-                <div className="w-8 h-8 rounded-full bg-secondary flex-shrink-0 flex items-center justify-center text-white font-bold">
-                  2
-                </div>
-                <div>
-                  <h3 className="font-heading font-semibold text-xl mb-2">Équipements modernes</h3>
-                  <p className="text-muted-foreground">
-                    Ateliers équipés et laboratoires permettant une formation pratique de qualité.
-                  </p>
-                </div>
+            <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70">
+              {/* Note: Replacing actual images with stylized text/icons for partners as placeholders */}
+              <div className="flex flex-col items-center gap-2">
+                <Handshake className="w-12 h-12 text-primary" />
+                <span className="font-bold text-xl">SOS Village d'Enfant</span>
               </div>
-
-              <div className="flex gap-4 items-start">
-                <div className="w-8 h-8 rounded-full bg-accent flex-shrink-0 flex items-center justify-center text-white font-bold">
-                  3
-                </div>
-                <div>
-                  <h3 className="font-heading font-semibold text-xl mb-2">Formateurs expérimentés</h3>
-                  <p className="text-muted-foreground">
-                    Une équipe pédagogique qualifiée et passionnée, issue du monde professionnel.
-                  </p>
-                </div>
+              <div className="flex flex-col items-center gap-2">
+                <Globe className="w-12 h-12 text-secondary" />
+                <span className="font-bold text-xl">Ambassade du Danemark</span>
               </div>
-
-              <div className="flex gap-4 items-start">
-                <div className="w-8 h-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-white font-bold">
-                  4
-                </div>
-                <div>
-                  <h3 className="font-heading font-semibold text-xl mb-2">Accompagnement personnalisé</h3>
-                  <p className="text-muted-foreground">
-                    Suivi individuel et conseil d&apos;orientation tout au long de votre parcours.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex gap-4 items-start">
-                <div className="w-8 h-8 rounded-full bg-secondary flex-shrink-0 flex items-center justify-center text-white font-bold">
-                  5
-                </div>
-                <div>
-                  <h3 className="font-heading font-semibold text-xl mb-2">Réseau professionnel</h3>
-                  <p className="text-muted-foreground">
-                    Partenariats avec des entreprises pour faciliter les stages et l&apos;insertion professionnelle.
-                  </p>
-                </div>
+              <div className="flex flex-col items-center gap-2">
+                <Award className="w-12 h-12 text-primary" />
+                <span className="font-bold text-xl">CNAP-BENIN</span>
               </div>
             </div>
           </div>
