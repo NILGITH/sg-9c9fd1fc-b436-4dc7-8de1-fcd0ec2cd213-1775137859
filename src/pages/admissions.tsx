@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { formationService, type Formation } from "@/services/formationService";
 import { enrollmentService } from "@/services/enrollmentService";
 import { GraduationCap, BookOpen, CreditCard, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 export default function Admissions() {
   const { toast } = useToast();
@@ -287,9 +288,11 @@ export default function Admissions() {
                       Félicitations ! Vos droits d'inscription ont été réglés. Vous recevrez très prochainement un email avec vos identifiants d'accès et les prochaines étapes.
                     </p>
                     <div className="pt-8">
-                      <Button asChild variant="outline">
-                        <a href="/">Retour à l'accueil</a>
-                      </Button>
+                      <Link href="/">
+                        <Button variant="outline">
+                          Retour à l'accueil
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 )}
