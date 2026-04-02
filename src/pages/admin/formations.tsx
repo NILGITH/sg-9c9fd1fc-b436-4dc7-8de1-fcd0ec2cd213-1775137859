@@ -30,7 +30,6 @@ export default function AdminFormations() {
     description: "",
     requirements: "",
     duration: "",
-    category_id: "",
     icon_color: "#10b981",
     image_url: "",
     pole: "",
@@ -71,35 +70,38 @@ export default function AdminFormations() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (!formData.title || !formData.description || !formData.requirements || !formData.pole) {
+      alert("Veuillez remplir tous les champs obligatoires (titre, description, prérequis, pôle)");
+      return;
+    }
+
     try {
+      const formationData = {
+        title: formData.title,
+        description: formData.description,
+        requirements: formData.requirements,
+        duration: formData.duration || null,
+        category_id: null, // No longer using categories
+        icon_color: formData.icon_color,
+        image_url: formData.image_url || null,
+        pole: formData.pole === 'none' ? null : formData.pole,
+      };
+
       if (editingFormation) {
-        await formationService.update(editingFormation.id, formData);
-        toast({
-          title: "Succès",
-          description: "Formation modifiée avec succès",
-        });
+        const { error } = await formationService.update(editingFormation.id, formationData);
+        if (error) throw error;
       } else {
-        await formationService.create({
-          ...formData,
-          slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
-        } as any);
-        toast({
-          title: "Succès",
-          description: "Formation créée avec succès",
-        });
+        const { error } = await formationService.create(formationData as any);
+        if (error) throw error;
       }
-      
+
       setIsDialogOpen(false);
       resetForm();
       loadFormations();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving formation:", error);
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue",
-        variant: "destructive",
-      });
+      alert(`Erreur: ${error.message}`);
     }
   };
 
@@ -110,7 +112,6 @@ export default function AdminFormations() {
       description: formation.description,
       requirements: formation.requirements,
       duration: formation.duration || "",
-      category_id: formation.category_id || "",
       icon_color: formation.icon_color || "#10b981",
       image_url: formation.image_url || "",
       pole: (formation as any).pole || "",
@@ -145,7 +146,6 @@ export default function AdminFormations() {
       description: "",
       requirements: "",
       duration: "",
-      category_id: "",
       icon_color: "#10b981",
       image_url: "",
       pole: "",
@@ -219,11 +219,12 @@ export default function AdminFormations() {
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Titre *</Label>
+                    <Label htmlFor="title">Titre de la formation *</Label>
                     <Input
                       id="title"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      placeholder="Ex: Développement Web Full Stack"
                       required
                     />
                   </div>
@@ -234,8 +235,9 @@ export default function AdminFormations() {
                       id="description"
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                      required
+                      placeholder="Description détaillée de la formation"
                       rows={4}
+                      required
                     />
                   </div>
 
@@ -245,8 +247,8 @@ export default function AdminFormations() {
                       id="requirements"
                       value={formData.requirements}
                       onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                      placeholder="Ex: BAC, BEPC, Aucun"
                       required
-                      placeholder="Ex: CEP, BEPC, BAC..."
                     />
                   </div>
 
@@ -256,34 +258,17 @@ export default function AdminFormations() {
                       id="duration"
                       value={formData.duration}
                       onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                      placeholder="Ex: 6 mois, 1 an..."
+                      placeholder="Ex: 6 mois, 2 ans"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="category">Catégorie *</Label>
-                    <Select value={formData.category_id} onValueChange={(value) => setFormData({ ...formData, category_id: value })}>
+                    <Label htmlFor="pole">Pôle de formation *</Label>
+                    <Select value={formData.pole} onValueChange={(value) => setFormData({ ...formData, pole: value })} required>
                       <SelectTrigger>
-                        <SelectValue placeholder="Sélectionner une catégorie" />
+                        <SelectValue placeholder="Sélectionner un pôle (obligatoire)" />
                       </SelectTrigger>
                       <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.id}>
-                            {cat.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="pole">Pôle de formation</Label>
-                    <Select value={formData.pole} onValueChange={(value) => setFormData({ ...formData, pole: value })}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Aucun pôle (ou s'applique à tous)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">Aucun pôle</SelectItem>
                         <SelectItem value="digital">Digital & Software</SelectItem>
                         <SelectItem value="energie">Énergie & Industrie</SelectItem>
                         <SelectItem value="business">Business & Lifestyle</SelectItem>
@@ -293,29 +278,37 @@ export default function AdminFormations() {
 
                   <div className="space-y-2">
                     <Label htmlFor="icon_color">Couleur de l'icône</Label>
-                    <Input
-                      id="icon_color"
-                      type="color"
-                      value={formData.icon_color}
-                      onChange={(e) => setFormData({ ...formData, icon_color: e.target.value })}
-                    />
+                    <div className="flex gap-2">
+                      <Input
+                        id="icon_color"
+                        type="color"
+                        value={formData.icon_color}
+                        onChange={(e) => setFormData({ ...formData, icon_color: e.target.value })}
+                        className="w-20 h-10"
+                      />
+                      <Input
+                        value={formData.icon_color}
+                        onChange={(e) => setFormData({ ...formData, icon_color: e.target.value })}
+                        placeholder="#10b981"
+                      />
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Image de couverture</Label>
-                    <ImageUploader
-                      onUpload={(url) => setFormData({ ...formData, image_url: url })}
-                      currentImage={formData.image_url}
+                    <Label htmlFor="image_url">URL de l'image</Label>
+                    <Input
+                      id="image_url"
+                      value={formData.image_url}
+                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                      placeholder="https://images.unsplash.com/..."
                     />
                   </div>
 
                   <div className="flex gap-4">
                     <Button type="submit" className="flex-1">
-                      <Save className="w-4 h-4 mr-2" />
                       {editingFormation ? "Modifier" : "Créer"}
                     </Button>
-                    <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
-                      <X className="w-4 h-4 mr-2" />
+                    <Button type="button" variant="outline" onClick={() => { setIsDialogOpen(false); resetForm(); }}>
                       Annuler
                     </Button>
                   </div>
@@ -356,12 +349,9 @@ export default function AdminFormations() {
                             Durée: {formation.duration}
                           </span>
                         )}
-                        <span className="bg-muted px-2 py-1 rounded">
-                          Catégorie: {categories.find(c => c.id === formation.category_id)?.name || "N/A"}
-                        </span>
                         {(formation as any).pole && (formation as any).pole !== 'none' && (
-                          <span className="bg-primary/10 text-primary px-2 py-1 rounded">
-                            Pôle: {(formation as any).pole === 'digital' ? 'Digital' : (formation as any).pole === 'energie' ? 'Énergie' : 'Business'}
+                          <span className="bg-primary/10 text-primary px-2 py-1 rounded font-medium">
+                            Pôle: {(formation as any).pole === 'digital' ? 'Digital & Software' : (formation as any).pole === 'energie' ? 'Énergie & Industrie' : 'Business & Lifestyle'}
                           </span>
                         )}
                       </div>
