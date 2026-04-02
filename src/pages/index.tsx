@@ -55,42 +55,8 @@ export default function Home({ featuredFormations, recentNews }: HomeProps) {
       <Header />
 
       <main>
-        {/* Hero Section */}
-        <section className="relative bg-gradient-hero text-white overflow-hidden">
-          <div className="absolute inset-0 bg-grid-white/5"></div>
-          <div className="container-custom relative z-10 py-24 md:py-32">
-            <div className="max-w-4xl mx-auto text-center space-y-8">
-              <div className="inline-block mb-4">
-                <span className="bg-secondary/20 text-white px-4 py-2 rounded-full text-sm font-semibold border border-white/20">
-                  🎓 Prochaine rentrée : 04 Mars 2026
-                </span>
-              </div>
-              
-              <h1 className="font-heading font-bold text-4xl md:text-6xl leading-tight">
-                Propulsez votre carrière avec <span className="text-secondary">TCI Formation</span>
-              </h1>
-              
-              <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto">
-                De la maîtrise logicielle aux métiers de l'industrie technologique, 
-                nous formons les leaders de demain à Abidjan et Cotonou.
-              </p>
-
-              <div className="flex flex-wrap justify-center gap-4 pt-4">
-                <Link href="/admissions">
-                  <Button size="lg" variant="secondary" className="text-lg px-8">
-                    S&apos;inscrire maintenant
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-                <Link href="/parcours/digital">
-                  <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20">
-                    Découvrir nos parcours
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Hero Slider */}
+        <HeroSlider />
 
         {/* Stats Section */}
         <section className="py-16 bg-white border-b">
