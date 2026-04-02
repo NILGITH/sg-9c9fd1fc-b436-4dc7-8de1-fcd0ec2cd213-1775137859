@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { HeroSlider } from "@/components/HeroSlider";
 import { TestimonialsSlider } from "@/components/TestimonialsSlider";
+import { PartnersSlider } from "@/components/PartnersSlider";
 import { NewsCard } from "@/components/NewsCard";
 import { newsService } from "@/services/newsService";
 import { intakeDateService } from "@/services/intakeDateService";
@@ -89,86 +90,8 @@ export default function Home({ latestNews, intakeDates, digitalFormations, energ
       <Header />
       
       <main className="min-h-screen">
-        {/* Hero Section - Clean & Professional */}
-        <section className="relative bg-gradient-to-br from-white via-gray-50 to-blue-50 overflow-hidden">
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute inset-0" style={{
-              backgroundImage: 'radial-gradient(circle at 1px 1px, #0066CC 1px, transparent 0)',
-              backgroundSize: '40px 40px'
-            }}></div>
-          </div>
-          
-          <div className="container-custom relative z-10">
-            <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[600px] py-20">
-              {/* Left Content */}
-              <div className="space-y-8 animate-fade-in">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-tci-blue/10 rounded-full">
-                  <span className="w-2 h-2 bg-tci-blue rounded-full animate-pulse"></span>
-                  <span className="text-sm font-semibold text-tci-blue">Centre de Formation d'Excellence</span>
-                </div>
-                
-                <h1 className="font-heading font-bold text-4xl md:text-5xl lg:text-6xl leading-tight">
-                  Façonnez Votre
-                  <span className="block text-tci-blue mt-2">Avenir Professionnel</span>
-                  <span className="block text-tci-red mt-2">Avec TCI Formation</span>
-                </h1>
-                
-                <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-xl">
-                  Rejoignez le centre de formation professionnelle de référence au Bénin. 
-                  Des programmes certifiants, des équipements modernes et un accompagnement personnalisé.
-                </p>
-
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Button asChild size="lg" className="btn-tci text-lg px-8 group shadow-xl">
-                    <Link href="/admissions" className="flex items-center gap-2">
-                      Commencer Maintenant
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </Link>
-                  </Button>
-                  <Button asChild size="lg" variant="outline" className="text-lg px-8 border-2">
-                    <Link href="/formations">
-                      Découvrir Nos Formations
-                    </Link>
-                  </Button>
-                </div>
-
-                {/* Trust Indicators */}
-                <div className="flex flex-wrap items-center gap-8 pt-6">
-                  <div>
-                    <div className="flex items-center gap-1 text-yellow-500 mb-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="w-5 h-5 fill-current" />
-                      ))}
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-bold text-gray-900">4.9/5</span> basé sur 500+ avis
-                    </p>
-                  </div>
-                  <div className="h-12 w-px bg-gray-300"></div>
-                  <div>
-                    <p className="text-2xl font-bold text-gray-900">2000+</p>
-                    <p className="text-sm text-gray-600">Étudiants formés</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Image */}
-              <div className="relative animate-slide-up hidden lg:block">
-                <div className="absolute -top-6 -left-6 w-72 h-72 bg-tci-blue/10 rounded-full blur-3xl"></div>
-                <div className="absolute -bottom-6 -right-6 w-72 h-72 bg-tci-red/10 rounded-full blur-3xl"></div>
-                <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                  <Image
-                    src="/logo-tci.jpg"
-                    alt="TCI Formation"
-                    width={600}
-                    height={600}
-                    className="w-full h-auto"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Hero Section avec Slider */}
+        <HeroSlider />
 
         {/* Stats Section - Modern & Clean */}
         <section className="py-20 bg-white">
@@ -202,6 +125,18 @@ export default function Home({ latestNews, intakeDates, digitalFormations, energ
                 );
               })}
             </div>
+          </div>
+        </section>
+
+        {/* Partners Section */}
+        <section className="py-12 bg-gray-50">
+          <div className="container-custom">
+            <div className="text-center mb-8">
+              <h3 className="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">
+                Nos Partenaires de Confiance
+              </h3>
+            </div>
+            <PartnersSlider />
           </div>
         </section>
 
