@@ -10,13 +10,15 @@ import { TestimonialsSlider } from "@/components/TestimonialsSlider";
 import { formationService, type Formation } from "@/services/formationService";
 import { newsService, type News } from "@/services/newsService";
 import { NewsCard } from "@/components/NewsCard";
+import { intakeDateService } from "@/services/intakeDateService";
 
 interface HomeProps {
   featuredFormations: Formation[];
   recentNews: News[];
+  intakeDates: Array<{ date: string; label: string }>;
 }
 
-export default function Home({ featuredFormations, recentNews }: HomeProps) {
+export default function Home({ featuredFormations, recentNews, intakeDates }: HomeProps) {
   const stats = [
     { icon: Award, value: "10+", label: "Années d'expérience" },
     { icon: MapPin, value: "5", label: "Sites de formation" },
@@ -108,19 +110,12 @@ export default function Home({ featuredFormations, recentNews }: HomeProps) {
               NOS RENTRÉES
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {[
-                "10 Septembre 2025",
-                "06 Octobre 2025",
-                "03 Novembre 2025",
-                "05 Janvier 2026",
-                "09 Février 2026",
-                "04 Mars 2026",
-              ].map((date, index) => (
+              {intakeDates.map((intake, index) => (
                 <div
                   key={index}
                   className="bg-gradient-to-r from-secondary to-orange-600 text-white text-center py-4 px-6 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  {date}
+                  {intake.label}
                 </div>
               ))}
             </div>
@@ -240,11 +235,13 @@ export default function Home({ featuredFormations, recentNews }: HomeProps) {
 export async function getStaticProps() {
   const { data: formations } = await formationService.getAll();
   const { data: news } = await newsService.getAll();
+  const { data: intakeDates } = await intakeDateService.getActive();
 
   return {
     props: {
       featuredFormations: formations?.slice(0, 6) || [],
       recentNews: news?.slice(0, 3) || [],
+      intakeDates: intakeDates?.map(d => ({ date: d.date, label: d.label })) || [],
     },
     revalidate: 60,
   };

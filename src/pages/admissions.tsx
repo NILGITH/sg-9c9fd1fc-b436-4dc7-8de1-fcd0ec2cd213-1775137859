@@ -628,12 +628,26 @@ export default function Admissions({ formations }: AdmissionsProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data: formations } = await formationService.getAll();
+  try {
+    const { data: formations, error } = await formationService.getAll();
+    
+    if (error) {
+      console.error("Error loading formations:", error);
+    }
 
-  return {
-    props: {
-      formations: formations || [],
-    },
-    revalidate: 60,
-  };
+    return {
+      props: {
+        formations: formations || [],
+      },
+      revalidate: 60,
+    };
+  } catch (error) {
+    console.error("Error in getStaticProps:", error);
+    return {
+      props: {
+        formations: [],
+      },
+      revalidate: 60,
+    };
+  }
 };

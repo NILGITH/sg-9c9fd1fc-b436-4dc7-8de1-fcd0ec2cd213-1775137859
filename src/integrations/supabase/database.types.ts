@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+ 
 export type Json =
   | string
   | number
@@ -259,6 +259,33 @@ export type Database = {
           published?: boolean | null
           thumbnail_url?: string | null
           title?: string
+        }
+        Relationships: []
+      }
+      intake_dates: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          is_active: boolean | null
+          label: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id?: string
+          is_active?: boolean | null
+          label: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          is_active?: boolean | null
+          label?: string
+          updated_at?: string | null
         }
         Relationships: []
       }

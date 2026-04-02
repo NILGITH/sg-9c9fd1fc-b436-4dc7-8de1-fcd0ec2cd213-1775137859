@@ -21,19 +21,31 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password,
       });
 
-      if (error) throw error;
+      if (authError) {
+        console.error("Auth error:", authError);
+        if (authError.message.includes("Invalid login credentials")) {
+          setError("Email ou mot de passe incorrect");
+        } else if (authError.message.includes("Email not confirmed")) {
+          setError("Veuillez confirmer votre email");
+        } else {
+          setError(authError.message);
+        }
+        setLoading(false);
+        return;
+      }
 
       if (data.user) {
+        console.log("Login successful:", data.user.email);
         router.push("/admin/dashboard");
       }
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Erreur de connexion");
-    } finally {
+    } catch (err: any) {
+      console.error("Unexpected error:", err);
+      setError("Une erreur inattendue s'est produite");
       setLoading(false);
     }
   };
@@ -68,6 +80,7 @@ export default function AdminLogin() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={loading}
+                  autoComplete="email"
                 />
               </div>
 
@@ -81,6 +94,7 @@ export default function AdminLogin() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={loading}
+                  autoComplete="current-password"
                 />
               </div>
 
