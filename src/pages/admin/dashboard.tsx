@@ -6,11 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap, DollarSign } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from "recharts";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [enrollmentData, setEnrollmentData] = useState<any[]>([]);
+  const [formationStats, setFormationStats] = useState<any[]>([]);
   const [stats, setStats] = useState({
     newsCount: 0,
     photosCount: 0,
@@ -41,8 +44,8 @@ export default function AdminDashboard() {
     const { data: news } = await supabase.from("news").select("id");
     const { data: photos } = await supabase.from("gallery").select("id").eq("media_type", "photo");
     const { data: videos } = await supabase.from("gallery").select("id").eq("media_type", "video");
-    const { data: formations } = await supabase.from("formations").select("id");
-    const { data: enrollments } = await supabase.from("enrollments").select("id");
+    const { data: formations } = await supabase.from("formations").select("id, title");
+    const { data: enrollments } = await supabase.from("enrollments").select("id, created_at, formation_id");
     const { data: payments } = await supabase.from("payments").select("id");
 
     setStats({
@@ -53,6 +56,36 @@ export default function AdminDashboard() {
       enrollmentsCount: enrollments?.length || 0,
       paymentsCount: payments?.length || 0,
     });
+
+    // Generate chart data for enrollments over last 7 days
+    if (enrollments) {
+      const last7Days = Array.from({ length: 7 }).map((_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() - (6 - i));
+        return d.toISOString().split('T')[0];
+      });
+
+      const chartData = last7Days.map(date => {
+        const count = enrollments.filter(e => e.created_at?.startsWith(date)).length;
+        const [year, month, day] = date.split('-');
+        return {
+          date: `${day}/${month}`,
+          inscriptions: count
+        };
+      });
+      setEnrollmentData(chartData);
+
+      // Generate formation popularity data
+      if (formations) {
+        const popularityData = formations.slice(0, 5).map(f => {
+          return {
+            name: f.title.substring(0, 15) + (f.title.length > 15 ? '...' : ''),
+            inscrits: enrollments.filter(e => e.formation_id === f.id).length
+          };
+        }).sort((a, b) => b.inscrits - a.inscrits);
+        setFormationStats(popularityData);
+      }
+    }
   };
 
   const handleLogout = async () => {
@@ -188,6 +221,51 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             </Link>
+          </div>
+
+          {/* Charts Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle>Inscriptions des 7 derniers jours</CardTitle>
+                <CardDescription>Évolution des demandes d'inscription</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={enrollmentData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="colorInscrits" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#0066CC" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#0066CC" stopOpacity={0}/>
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="date" />
+                    <YAxis allowDecimals={false} />
+                    <Tooltip />
+                    <Area type="monotone" dataKey="inscriptions" stroke="#0066CC" fillOpacity={1} fill="url(#colorInscrits)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Formations les plus demandées</CardTitle>
+                <CardDescription>Top 5 des formations</CardDescription>
+              </CardHeader>
+              <CardContent className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={formationStats} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
+                    <XAxis type="number" allowDecimals={false} />
+                    <YAxis dataKey="name" type="category" width={120} tick={{ fontSize: 12 }} />
+                    <Tooltip />
+                    <Bar dataKey="inscrits" fill="#E30613" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Quick Actions */}

@@ -38,7 +38,8 @@ import { paymentService, type Payment } from "@/services/paymentService";
 type PaymentWithEnrollment = Payment & {
   enrollments: {
     id: string;
-    full_name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     phone: string;
     formations: {
@@ -316,7 +317,7 @@ export default function PaymentsAdmin() {
                       <TableRow key={payment.id}>
                         <TableCell>
                           <div>
-                            <p className="font-medium">{payment.enrollments.full_name}</p>
+                            <p className="font-medium">{payment.enrollments.first_name} {payment.enrollments.last_name}</p>
                             <p className="text-sm text-muted-foreground">
                               {payment.enrollments.email}
                             </p>
@@ -372,7 +373,7 @@ export default function PaymentsAdmin() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label className="text-muted-foreground">Étudiant</Label>
-                  <p className="font-medium">{selectedPayment.enrollments.full_name}</p>
+                  <p className="font-medium">{selectedPayment.enrollments.first_name} {selectedPayment.enrollments.last_name}</p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Email</Label>

@@ -11,7 +11,8 @@ export const paymentService = {
         *,
         enrollments (
           id,
-          full_name,
+          first_name,
+          last_name,
           email,
           phone,
           formations (
@@ -31,7 +32,8 @@ export const paymentService = {
         *,
         enrollments (
           id,
-          full_name,
+          first_name,
+          last_name,
           email,
           phone,
           formations (
