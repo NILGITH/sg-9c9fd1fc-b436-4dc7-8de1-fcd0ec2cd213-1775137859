@@ -114,7 +114,7 @@ export default function AdminDashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold">{stats.news}</p>
+                  <p className="text-2xl font-bold">{stats.newsCount}</p>
                   <p className="text-sm text-muted-foreground">articles publiés</p>
                 </CardContent>
               </Card>
@@ -124,12 +124,12 @@ export default function AdminDashboard() {
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Image className="w-5 h-5" />
+                    <ImageIcon className="w-5 h-5" />
                     Galerie
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold">{stats.gallery}</p>
+                  <p className="text-2xl font-bold">{stats.photosCount + stats.videosCount}</p>
                   <p className="text-sm text-muted-foreground">photos/vidéos</p>
                 </CardContent>
               </Card>

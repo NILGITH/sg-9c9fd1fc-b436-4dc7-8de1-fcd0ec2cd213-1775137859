@@ -107,7 +107,7 @@ export default function Digital({ formations }: DigitalProps) {
                     <div className="flex items-center justify-between">
                       <div 
                         className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                        style={{ backgroundColor: `${formation.color}20` }}
+                        style={{ backgroundColor: `${formation.icon_color || '#10b981'}20` }}
                       >
                         💻
                       </div>
