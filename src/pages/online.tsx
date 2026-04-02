@@ -3,7 +3,7 @@ import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MonitorPlay, Award, Users, Clock, GraduationCap } from "lucide-react";
+import { MonitorPlay, Award, Users, Clock, GraduationCap, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { formationService, type Formation } from "@/services/formationService";
 
