@@ -1,208 +1,142 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Monitor, Code, Palette, Laptop, Award, Clock } from "lucide-react";
 import Link from "next/link";
-import { Code, Palette, Network, Database, Award, Clock, GraduationCap } from "lucide-react";
 import { formationService, type Formation } from "@/services/formationService";
+import { GetStaticProps } from "next";
 
 interface DigitalProps {
   formations: Formation[];
 }
 
 export default function Digital({ formations }: DigitalProps) {
-  const benefits = [
-    {
-      icon: Award,
-      title: "Certifications Officielles",
-      desc: "Diplômes CQM & CQP reconnus par l'État",
-    },
-    {
-      icon: Clock,
-      title: "Formation Pratique",
-      desc: "80% de pratique sur des projets réels",
-    },
-    {
-      icon: GraduationCap,
-      title: "Formateurs Experts",
-      desc: "Professionnels actifs de l'industrie",
-    },
-  ];
-
   return (
     <>
-      <SEO
+      <SEO 
         title="Pôle Digital & Software - TCI Formation"
-        description="Formations en Génie Logiciel, Programmation Web, Design Graphique et Réseaux. Devenez expert du numérique avec TCI Formation."
+        description="Formations en développement web, génie logiciel, design graphique et réseaux informatiques."
       />
-
+      
       <Header />
-
-      <main>
-        {/* Hero with Background Image */}
-        <section className="py-20 bg-gradient-hero text-white relative overflow-hidden">
-          <div className="absolute inset-0 opacity-10">
-            <img 
-              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop"
-              alt="Formation informatique"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="container-custom max-w-5xl text-center space-y-8 relative z-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm mb-4">
-              <Code className="w-10 h-10" />
+      
+      <main className="pt-20">
+        {/* Hero Section */}
+        <section className="gradient-hero text-white py-20">
+          <div className="container-custom text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm mb-6">
+              <Monitor className="w-10 h-10" />
             </div>
-            <h1 className="font-heading font-bold text-4xl md:text-6xl">
+            <h1 className="font-heading font-bold text-4xl md:text-5xl mb-6">
               Pôle Digital & Software
             </h1>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
-              Maîtrisez les technologies du futur. De la programmation au design, en passant par les réseaux et la cybersécurité, 
-              nos formations vous préparent aux métiers les plus demandés du secteur numérique.
+            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
+              Formez-vous aux métiers du numérique et du développement logiciel. 
+              Devenez développeur web, designer graphique ou expert en réseaux.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Link href="/admissions">
-                <Button size="lg" variant="secondary" className="text-lg px-8">
-                  Postuler maintenant
-                </Button>
-              </Link>
-              <Link href="/contact">
-                <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20">
-                  Nous contacter
-                </Button>
-              </Link>
-            </div>
           </div>
         </section>
 
-        {/* Benefits */}
-        <section className="py-16 bg-white border-b">
-          <div className="container-custom">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {benefits.map((benefit, index) => {
-                const Icon = benefit.icon;
-                return (
-                  <div key={index} className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
-                      <Icon className="w-8 h-8" />
-                    </div>
-                    <h3 className="font-heading font-bold text-xl mb-2">{benefit.title}</h3>
-                    <p className="text-muted-foreground">{benefit.desc}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Formations */}
+        {/* Domaines Section */}
         <section className="py-20">
           <div className="container-custom">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="font-heading font-bold text-3xl md:text-5xl mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+              <Card className="text-center p-8 hover:shadow-xl transition-shadow">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
+                  <Code className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-3">Développement Web</h3>
+                <p className="text-muted-foreground">
+                  HTML, CSS, JavaScript, React, PHP, bases de données
+                </p>
+              </Card>
+
+              <Card className="text-center p-8 hover:shadow-xl transition-shadow">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900 mb-4">
+                  <Palette className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-3">Design Graphique</h3>
+                <p className="text-muted-foreground">
+                  Photoshop, Illustrator, UI/UX Design, création visuelle
+                </p>
+              </Card>
+
+              <Card className="text-center p-8 hover:shadow-xl transition-shadow">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900 mb-4">
+                  <Laptop className="w-8 h-8 text-teal-600 dark:text-teal-400" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-3">Réseaux & Systèmes</h3>
+                <p className="text-muted-foreground">
+                  Administration réseau, maintenance, télécommunications
+                </p>
+              </Card>
+            </div>
+
+            {/* Formations List */}
+            <div className="mb-12">
+              <h2 className="font-heading font-bold text-3xl md:text-4xl mb-8 text-center">
                 Nos Formations Digital & Software
               </h2>
-              <p className="text-lg text-muted-foreground">
-                Choisissez la formation qui correspond à votre projet professionnel
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {formations.map((formation) => (
-                <Card key={formation.id} className="group hover:shadow-2xl hover:scale-105 transition-all duration-300 border-2 hover:border-primary">
-                  <CardContent className="p-8 space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div 
-                        className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                        style={{ backgroundColor: `${formation.icon_color || '#10b981'}20` }}
-                      >
-                        💻
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {formations.map((formation) => (
+                  <Card key={formation.id} className="hover:shadow-xl transition-shadow overflow-hidden">
+                    {formation.image_url && (
+                      <div className="aspect-video relative overflow-hidden">
+                        <img
+                          src={formation.image_url}
+                          alt={formation.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                        Diplômant
-                      </span>
-                    </div>
-
-                    <div className="space-y-3">
-                      <h3 className="font-heading font-bold text-xl group-hover:text-primary transition-colors">
+                    )}
+                    <CardContent className="p-6">
+                      <h3 className="font-heading font-bold text-xl mb-3">
                         {formation.title}
                       </h3>
-                      <p className="text-muted-foreground line-clamp-3">
+                      <p className="text-muted-foreground mb-4 line-clamp-3">
                         {formation.description}
                       </p>
-                    </div>
-
-                    <div className="pt-4 space-y-3">
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <Clock className="w-4 h-4 mr-2" />
-                        Durée variable selon niveau
+                      <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                        {formation.duration && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            <span>{formation.duration}</span>
+                          </div>
+                        )}
+                        {formation.certification && (
+                          <div className="flex items-center gap-1">
+                            <Award className="w-4 h-4" />
+                            <span>Certifiant</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <GraduationCap className="w-4 h-4 mr-2" />
-                        Niveau : {formation.requirements}
-                      </div>
-                    </div>
-
-                    <Link href="/admissions">
-                      <Button className="w-full bg-gradient-accent hover:opacity-90">
-                        S'inscrire
+                      <Button asChild className="w-full bg-primary">
+                        <Link href="/admissions">
+                          S'inscrire
+                        </Link>
                       </Button>
-                    </Link>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
 
-        {/* Débouchés */}
-        <section className="py-20 bg-muted/30">
-          <div className="container-custom max-w-5xl">
-            <div className="text-center mb-12">
-              <h2 className="font-heading font-bold text-3xl md:text-4xl mb-4">
-                Débouchés Professionnels
+            {/* CTA */}
+            <div className="text-center bg-muted/50 p-12 rounded-2xl">
+              <h2 className="font-heading font-bold text-2xl md:text-3xl mb-4">
+                Prêt à lancer votre carrière dans le digital ?
               </h2>
-              <p className="text-lg text-muted-foreground">
-                Nos diplômés occupent des postes stratégiques dans le secteur du numérique
+              <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                Inscrivez-vous dès maintenant et bénéficiez de notre formation complète avec accompagnement personnalisé
               </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                "Développeur Full Stack",
-                "Ingénieur Logiciel",
-                "Administrateur Réseaux & Systèmes",
-                "Designer UI/UX",
-                "Chef de Projet Digital",
-                "Technicien en Cybersécurité",
-                "Graphiste Multimédia",
-                "Webmaster",
-              ].map((metier, index) => (
-                <div key={index} className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-muted">
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-primary" />
-                  </div>
-                  <span className="text-muted-foreground font-semibold">{metier}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="py-20 bg-gradient-hero text-white">
-          <div className="container-custom text-center max-w-4xl mx-auto space-y-8">
-            <h2 className="font-heading font-bold text-3xl md:text-5xl">
-              Prêt à devenir un expert du digital ?
-            </h2>
-            <p className="text-xl text-white/90">
-              Rejoignez le Pôle Digital & Software et lancez votre carrière dans la tech
-            </p>
-            <Link href="/admissions">
-              <Button size="lg" variant="secondary" className="text-lg px-8">
-                Postuler maintenant
+              <Button asChild size="lg" className="bg-gradient-accent hover:opacity-90">
+                <Link href="/admissions">
+                  S'inscrire Maintenant
+                </Link>
               </Button>
-            </Link>
+            </div>
           </div>
         </section>
       </main>
@@ -212,13 +146,17 @@ export default function Digital({ formations }: DigitalProps) {
   );
 }
 
-export async function getStaticProps() {
+export const getStaticProps: GetStaticProps = async () => {
   const { data: formations } = await formationService.getAll();
-  
+
+  // Filter formations for Digital pole (category_id for "Formations Diplômantes")
   const digitalFormations = formations?.filter(f => 
-    f.category_id === "11111111-1111-1111-1111-111111111111" &&
-    (f.title.includes("Logiciel") || f.title.includes("Informatique") || 
-     f.title.includes("Télécommunications") || f.title.includes("Graphisme"))
+    f.title.toLowerCase().includes('informatique') ||
+    f.title.toLowerCase().includes('logiciel') ||
+    f.title.toLowerCase().includes('réseaux') ||
+    f.title.toLowerCase().includes('télécommunication') ||
+    f.title.toLowerCase().includes('programmation') ||
+    f.title.toLowerCase().includes('web')
   ) || [];
 
   return {
@@ -227,4 +165,4 @@ export async function getStaticProps() {
     },
     revalidate: 60,
   };
-}
+};
