@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
+import { supabase } from "@/integrations/supabase/client";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap, DollarSign, Calendar } from "lucide-react";
+import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap, DollarSign, Calendar, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, PieChart, Pie, Cell } from "recharts";
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [userEmail, setUserEmail] = useState("");
   const [enrollmentData, setEnrollmentData] = useState<any[]>([]);
   const [formationStats, setFormationStats] = useState<any[]>([]);
   const [paymentData, setPaymentData] = useState<any[]>([]);
@@ -26,99 +26,109 @@ export default function AdminDashboard() {
   });
 
   useEffect(() => {
-    checkUser();
-    loadStats();
+    checkAuth();
   }, []);
 
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (!session) {
+  const checkAuth = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        router.push("/admin/login");
+        return;
+      }
+
+      setUserEmail(session.user.email || "");
+      await loadStats();
+    } catch (error) {
+      console.error("Auth check error:", error);
       router.push("/admin/login");
-      return;
     }
-    
-    setUser(session.user);
-    setLoading(false);
   };
 
   const loadStats = async () => {
-    const { data: news } = await supabase.from("news").select("id");
-    const { data: photos } = await supabase.from("gallery").select("id").eq("media_type", "photo");
-    const { data: videos } = await supabase.from("gallery").select("id").eq("media_type", "video");
-    const { data: formations } = await supabase.from("formations").select("id, title");
-    const { data: enrollments } = await supabase.from("enrollments").select("id, created_at, formation_id");
-    const { data: payments } = await supabase.from("payments").select("id, amount, payment_status, created_at");
+    try {
+      const { data: news } = await supabase.from("news").select("id");
+      const { data: photos } = await supabase.from("gallery").select("id").eq("media_type", "photo");
+      const { data: videos } = await supabase.from("gallery").select("id").eq("media_type", "video");
+      const { data: formations } = await supabase.from("formations").select("id, title");
+      const { data: enrollments } = await supabase.from("enrollments").select("id, created_at, formation_id");
+      const { data: payments } = await supabase.from("payments").select("id, amount, payment_status, created_at");
 
-    setStats({
-      newsCount: news?.length || 0,
-      photosCount: photos?.length || 0,
-      videosCount: videos?.length || 0,
-      formationsCount: formations?.length || 0,
-      enrollmentsCount: enrollments?.length || 0,
-      paymentsCount: payments?.length || 0,
-    });
-
-    // Generate chart data for enrollments over last 7 days
-    if (enrollments) {
-      const last7Days = Array.from({ length: 7 }).map((_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (6 - i));
-        return d.toISOString().split('T')[0];
+      setStats({
+        newsCount: news?.length || 0,
+        photosCount: photos?.length || 0,
+        videosCount: videos?.length || 0,
+        formationsCount: formations?.length || 0,
+        enrollmentsCount: enrollments?.length || 0,
+        paymentsCount: payments?.length || 0,
       });
 
-      const chartData = last7Days.map(date => {
-        const count = enrollments.filter(e => e.created_at?.startsWith(date)).length;
-        const [year, month, day] = date.split('-');
-        return {
-          date: `${day}/${month}`,
-          inscriptions: count
-        };
-      });
-      setEnrollmentData(chartData);
+      // Generate chart data for enrollments over last 7 days
+      if (enrollments) {
+        const last7Days = Array.from({ length: 7 }).map((_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (6 - i));
+          return d.toISOString().split('T')[0];
+        });
 
-      // Generate formation popularity data
-      if (formations) {
-        const popularityData = formations.slice(0, 5).map(f => {
+        const chartData = last7Days.map(date => {
+          const count = enrollments.filter(e => e.created_at?.startsWith(date)).length;
+          const [year, month, day] = date.split('-');
           return {
-            name: f.title.substring(0, 15) + (f.title.length > 15 ? '...' : ''),
-            inscrits: enrollments.filter(e => e.formation_id === f.id).length
+            date: `${day}/${month}`,
+            inscriptions: count
           };
-        }).sort((a, b) => b.inscrits - a.inscrits);
-        setFormationStats(popularityData);
+        });
+        setEnrollmentData(chartData);
+
+        // Generate formation popularity data
+        if (formations) {
+          const popularityData = formations.slice(0, 5).map(f => {
+            return {
+              name: f.title.substring(0, 20) + (f.title.length > 20 ? '...' : ''),
+              inscrits: enrollments.filter(e => e.formation_id === f.id).length
+            };
+          }).sort((a, b) => b.inscrits - a.inscrits);
+          setFormationStats(popularityData);
+        }
       }
-    }
 
-    // Generate payment charts data
-    if (payments) {
-      // Payment evolution over last 7 days
-      const last7Days = Array.from({ length: 7 }).map((_, i) => {
-        const d = new Date();
-        d.setDate(d.getDate() - (6 - i));
-        return d.toISOString().split('T')[0];
-      });
+      // Generate payment charts data
+      if (payments) {
+        // Payment evolution over last 7 days
+        const last7Days = Array.from({ length: 7 }).map((_, i) => {
+          const d = new Date();
+          d.setDate(d.getDate() - (6 - i));
+          return d.toISOString().split('T')[0];
+        });
 
-      const paymentChartData = last7Days.map(date => {
-        const dayPayments = payments.filter(p => p.created_at?.startsWith(date));
-        const totalAmount = dayPayments.reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0);
-        const [year, month, day] = date.split('-');
-        return {
-          date: `${day}/${month}`,
-          montant: totalAmount
-        };
-      });
-      setPaymentData(paymentChartData);
+        const paymentChartData = last7Days.map(date => {
+          const dayPayments = payments.filter(p => p.created_at?.startsWith(date));
+          const totalAmount = dayPayments.reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0);
+          const [year, month, day] = date.split('-');
+          return {
+            date: `${day}/${month}`,
+            montant: totalAmount
+          };
+        });
+        setPaymentData(paymentChartData);
 
-      // Payment status distribution
-      const pending = payments.filter(p => p.payment_status === 'pending').length;
-      const validated = payments.filter(p => p.payment_status === 'validated').length;
-      const rejected = payments.filter(p => p.payment_status === 'rejected').length;
-      
-      setPaymentStatusData([
-        { name: 'En attente', value: pending, color: '#F59E0B' },
-        { name: 'Validés', value: validated, color: '#10B981' },
-        { name: 'Rejetés', value: rejected, color: '#EF4444' },
-      ]);
+        // Payment status distribution
+        const pending = payments.filter(p => p.payment_status === 'pending').length;
+        const validated = payments.filter(p => p.payment_status === 'validated').length;
+        const rejected = payments.filter(p => p.payment_status === 'rejected').length;
+        
+        setPaymentStatusData([
+          { name: 'En attente', value: pending, color: '#F59E0B' },
+          { name: 'Validés', value: validated, color: '#10B981' },
+          { name: 'Rejetés', value: rejected, color: '#EF4444' },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error loading stats:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -129,11 +139,8 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p>Chargement...</p>
-        </div>
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -142,29 +149,26 @@ export default function AdminDashboard() {
     <>
       <SEO 
         title="Dashboard Admin - TCI Formation"
-        description="Interface d'administration TCI Formation"
+        description="Tableau de bord administrateur TCI Formation"
       />
 
-      <div className="min-h-screen bg-muted">
+      <div className="min-h-screen bg-muted/30">
         {/* Header */}
-        <header className="bg-background border-b border-border">
-          <div className="container-custom py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-hero rounded-lg flex items-center justify-center">
-                <span className="text-white font-heading font-bold text-xl">TCI</span>
+        <header className="bg-white border-b sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Link href="/" className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
+                    <span className="text-white font-bold text-lg">TCI</span>
+                  </div>
+                </Link>
+                <div>
+                  <h1 className="font-heading font-bold text-xl">Dashboard Admin</h1>
+                  <p className="text-sm text-muted-foreground">{userEmail}</p>
+                </div>
               </div>
-              <div>
-                <h1 className="font-heading font-bold text-xl">Admin TCI Formation</h1>
-                <p className="text-sm text-muted-foreground">{user?.email}</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link href="/" target="_blank">
-                <Button variant="outline" size="sm">
-                  Voir le site
-                </Button>
-              </Link>
-              <Button variant="destructive" size="sm" onClick={handleLogout}>
+              <Button onClick={handleLogout} variant="outline" size="sm">
                 <LogOut className="w-4 h-4 mr-2" />
                 Déconnexion
               </Button>
@@ -172,89 +176,74 @@ export default function AdminDashboard() {
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="container-custom py-8">
-          <div className="mb-8">
-            <h2 className="text-3xl font-heading font-bold mb-2">Tableau de bord</h2>
-            <p className="text-muted-foreground">Gérez le contenu de votre site TCI Formation</p>
-          </div>
+        <main className="container mx-auto px-4 py-8">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Actualités</CardTitle>
+                <Newspaper className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.newsCount}</div>
+                <p className="text-xs text-muted-foreground">Articles publiés</p>
+              </CardContent>
+            </Card>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
-            <Link href="/admin/news">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Newspaper className="w-5 h-5" />
-                    Actualités
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">{stats.newsCount}</p>
-                  <p className="text-sm text-muted-foreground">articles publiés</p>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Formations</CardTitle>
+                <GraduationCap className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.formationsCount}</div>
+                <p className="text-xs text-muted-foreground">Formations disponibles</p>
+              </CardContent>
+            </Card>
 
-            <Link href="/admin/gallery">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <ImageIcon className="w-5 h-5" />
-                    Galerie
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">{stats.photosCount + stats.videosCount}</p>
-                  <p className="text-sm text-muted-foreground">photos/vidéos</p>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Inscriptions</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.enrollmentsCount}</div>
+                <p className="text-xs text-muted-foreground">Demandes d'inscription</p>
+              </CardContent>
+            </Card>
 
-            <Link href="/admin/formations">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <GraduationCap className="w-5 h-5" />
-                    Formations
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">{stats.formationsCount}</p>
-                  <p className="text-sm text-muted-foreground">formations actives</p>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Paiements</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.paymentsCount}</div>
+                <p className="text-xs text-muted-foreground">Paiements enregistrés</p>
+              </CardContent>
+            </Card>
 
-            <Link href="/admin/enrollments">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5" />
-                    Inscriptions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">{stats.enrollmentsCount}</p>
-                  <p className="text-sm text-muted-foreground">demandes reçues</p>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Photos</CardTitle>
+                <ImageIcon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.photosCount}</div>
+                <p className="text-xs text-muted-foreground">Dans la galerie</p>
+              </CardContent>
+            </Card>
 
-            <Link href="/admin/payments">
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
-                    Paiements
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-2xl font-bold">{stats.paymentsCount}</p>
-                  <p className="text-sm text-muted-foreground">paiements reçus</p>
-                </CardContent>
-              </Card>
-            </Link>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Vidéos</CardTitle>
+                <ImageIcon className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.videosCount}</div>
+                <p className="text-xs text-muted-foreground">Dans la galerie</p>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Charts Section */}
@@ -355,7 +344,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -388,6 +377,25 @@ export default function AdminDashboard() {
               <CardContent>
                 <Link href="/admin/formations">
                   <Button className="w-full bg-primary hover:bg-primary/90">
+                    Accéder
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5" />
+                  Galerie
+                </CardTitle>
+                <CardDescription>
+                  Gérez les photos et vidéos
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href="/admin/gallery">
+                  <Button className="w-full bg-accent hover:bg-accent/90">
                     Accéder
                   </Button>
                 </Link>
