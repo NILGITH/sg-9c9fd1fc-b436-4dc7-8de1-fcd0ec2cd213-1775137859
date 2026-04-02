@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap } from "lucide-react";
+import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap, DollarSign } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -16,6 +16,8 @@ export default function AdminDashboard() {
     photosCount: 0,
     videosCount: 0,
     formationsCount: 0,
+    enrollmentsCount: 0,
+    paymentsCount: 0,
   });
 
   useEffect(() => {
@@ -40,12 +42,16 @@ export default function AdminDashboard() {
     const { data: photos } = await supabase.from("gallery").select("id").eq("media_type", "photo");
     const { data: videos } = await supabase.from("gallery").select("id").eq("media_type", "video");
     const { data: formations } = await supabase.from("formations").select("id");
+    const { data: enrollments } = await supabase.from("enrollments").select("id");
+    const { data: payments } = await supabase.from("payments").select("id");
 
     setStats({
       newsCount: news?.length || 0,
       photosCount: photos?.length || 0,
       videosCount: videos?.length || 0,
       formationsCount: formations?.length || 0,
+      enrollmentsCount: enrollments?.length || 0,
+      paymentsCount: payments?.length || 0,
     });
   };
 
@@ -107,7 +113,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
             <Link href="/admin/news">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
@@ -162,29 +168,44 @@ export default function AdminDashboard() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold">Gérer</p>
-                  <p className="text-sm text-muted-foreground">demandes d'inscription</p>
+                  <p className="text-2xl font-bold">{stats.enrollmentsCount}</p>
+                  <p className="text-sm text-muted-foreground">demandes reçues</p>
+                </CardContent>
+              </Card>
+            </Link>
+
+            <Link href="/admin/payments">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    Paiements
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{stats.paymentsCount}</p>
+                  <p className="text-sm text-muted-foreground">paiements reçus</p>
                 </CardContent>
               </Card>
             </Link>
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Newspaper className="w-5 h-5" />
-                  Gérer les Actualités
+                  Actualités
                 </CardTitle>
                 <CardDescription>
-                  Ajoutez, modifiez ou supprimez des actualités
+                  Gérez les actualités du centre
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Link href="/admin/news">
                   <Button className="w-full">
-                    Accéder aux actualités
+                    Accéder
                   </Button>
                 </Link>
               </CardContent>
@@ -194,16 +215,16 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <GraduationCap className="w-5 h-5" />
-                  Gérer les Formations
+                  Formations
                 </CardTitle>
                 <CardDescription>
-                  Ajoutez et gérez les formations de votre centre
+                  Gérez les formations proposées
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <Link href="/admin/formations">
                   <Button className="w-full bg-primary hover:bg-primary/90">
-                    Accéder aux formations
+                    Accéder
                   </Button>
                 </Link>
               </CardContent>
@@ -212,17 +233,36 @@ export default function AdminDashboard() {
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <ImageIcon className="w-5 h-5" />
-                  Gérer la Galerie
+                  <Users className="w-5 h-5" />
+                  Inscriptions
                 </CardTitle>
                 <CardDescription>
-                  Gérez les photos et vidéos de la galerie
+                  Validez les inscriptions
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Link href="/admin/gallery">
+                <Link href="/admin/enrollments">
                   <Button className="w-full bg-secondary hover:bg-secondary/90">
-                    Accéder à la galerie
+                    Accéder
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <DollarSign className="w-5 h-5" />
+                  Paiements
+                </CardTitle>
+                <CardDescription>
+                  Gérez les paiements
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href="/admin/payments">
+                  <Button className="w-full bg-green-600 hover:bg-green-700">
+                    Accéder
                   </Button>
                 </Link>
               </CardContent>

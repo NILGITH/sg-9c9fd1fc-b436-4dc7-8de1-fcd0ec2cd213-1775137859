@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { formationService, type Formation } from "@/services/formationService";
-import { enrollmentService } from "@/services/enrollmentService";
+import { enrollmentService, type EnrollmentInsert } from "@/services/enrollmentService";
+import { paymentService } from "@/services/paymentService";
 import { GraduationCap, BookOpen, CreditCard, Loader2 } from "lucide-react";
 import Link from "next/link";
 
@@ -104,6 +105,64 @@ export default function Admissions() {
         variant: "destructive",
         title: "Erreur de paiement",
         description: "Le paiement a échoué. Veuillez réessayer.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Create enrollment
+      const enrollmentData: EnrollmentInsert = {
+        full_name: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        formation_id: formData.formationId,
+        level: formData.level,
+        address: formData.address || null,
+        birth_date: formData.birthDate || null,
+        status: "pending",
+      };
+
+      const { data: enrollment, error: enrollmentError } = await enrollmentService.create(enrollmentData);
+
+      if (enrollmentError || !enrollment) {
+        throw new Error("Erreur lors de la création de l'inscription");
+      }
+
+      // Create payment record
+      const { error: paymentError } = await paymentService.create({
+        enrollment_id: enrollment.id,
+        amount: 25000,
+        payment_method: "mobile_money",
+        payment_status: "pending",
+        payment_date: new Date().toISOString(),
+        payment_reference: `PAY-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
+        notes: null,
+        validated_by: null,
+        validated_at: null,
+      });
+
+      if (paymentError) {
+        console.error("Erreur création paiement:", paymentError);
+        // Continue even if payment creation fails
+      }
+
+      setStep(3);
+      toast({
+        title: "Succès !",
+        description: "Votre inscription a été enregistrée avec succès.",
+      });
+    } catch (error) {
+      console.error("Erreur:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'inscription. Veuillez réessayer.",
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
