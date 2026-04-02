@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { LogIn, Loader2, AlertCircle, RefreshCw } from "lucide-react";
+import { LogIn, Loader2, AlertCircle } from "lucide-react";
 import Image from "next/image";
 
 export default function AdminLogin() {
@@ -16,7 +16,6 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [error, setError] = useState("");
-  const [networkError, setNetworkError] = useState(false);
 
   useEffect(() => {
     checkSession();
@@ -24,19 +23,13 @@ export default function AdminLogin() {
 
   const checkSession = async () => {
     try {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (error) {
-        console.error("Session check error:", error);
-        setNetworkError(true);
-      }
+      const { data: { session } } = await supabase.auth.getSession();
       
       if (session) {
         router.push("/admin/dashboard");
       }
     } catch (err) {
-      console.error("Network error during session check:", err);
-      setNetworkError(true);
+      console.error("Session check error:", err);
     } finally {
       setCheckingSession(false);
     }
@@ -45,22 +38,9 @@ export default function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setNetworkError(false);
     setLoading(true);
 
     try {
-      // Test network connection first
-      const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/`, {
-        method: 'HEAD',
-        headers: {
-          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Network connection failed');
-      }
-
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password,
@@ -74,10 +54,9 @@ export default function AdminLogin() {
         } else if (authError.message.includes('Email not confirmed')) {
           setError("Veuillez confirmer votre email avant de vous connecter");
         } else if (authError.message.includes('network') || authError.message.includes('fetch')) {
-          setNetworkError(true);
-          setError("Erreur de connexion. Vérifiez votre connexion internet.");
+          setError("Erreur de connexion au serveur. Vérifiez votre connexion internet.");
         } else {
-          setError(authError.message);
+          setError(authError.message || "Une erreur s'est produite lors de la connexion");
         }
         setLoading(false);
         return;
@@ -89,22 +68,9 @@ export default function AdminLogin() {
       }
     } catch (err: any) {
       console.error("Unexpected error:", err);
-      
-      if (err.message.includes('fetch') || err.message.includes('network') || err.message.includes('Failed to fetch')) {
-        setNetworkError(true);
-        setError("Impossible de se connecter au serveur. Vérifiez votre connexion internet et réessayez.");
-      } else {
-        setError("Une erreur inattendue s'est produite. Veuillez réessayer.");
-      }
+      setError("Impossible de se connecter. Vérifiez votre connexion internet et réessayez.");
       setLoading(false);
     }
-  };
-
-  const handleRetry = () => {
-    setError("");
-    setNetworkError(false);
-    setCheckingSession(true);
-    checkSession();
   };
 
   if (checkingSession) {
@@ -147,29 +113,6 @@ export default function AdminLogin() {
             </div>
           </CardHeader>
           <CardContent>
-            {networkError && (
-              <div className="bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-200 p-4 rounded-lg mb-6 space-y-3">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
-                  <div className="flex-1">
-                    <p className="font-medium">Problème de connexion réseau</p>
-                    <p className="text-sm mt-1">
-                      Impossible de se connecter au serveur Supabase. Vérifiez votre connexion internet.
-                    </p>
-                  </div>
-                </div>
-                <Button 
-                  onClick={handleRetry}
-                  variant="outline" 
-                  size="sm"
-                  className="w-full"
-                >
-                  <RefreshCw className="w-4 h-4 mr-2" />
-                  Réessayer la connexion
-                </Button>
-              </div>
-            )}
-
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
@@ -182,7 +125,7 @@ export default function AdminLogin() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  disabled={loading || networkError}
+                  disabled={loading}
                   autoComplete="email"
                   className="h-11"
                 />
@@ -199,13 +142,13 @@ export default function AdminLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  disabled={loading || networkError}
+                  disabled={loading}
                   autoComplete="current-password"
                   className="h-11"
                 />
               </div>
 
-              {error && !networkError && (
+              {error && (
                 <div className="bg-destructive/10 border border-destructive/20 text-destructive text-sm p-3 rounded-lg flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                   <span>{error}</span>
@@ -215,7 +158,7 @@ export default function AdminLogin() {
               <Button 
                 type="submit" 
                 className="w-full h-11 bg-primary hover:bg-primary/90 text-base font-medium"
-                disabled={loading || networkError}
+                disabled={loading}
               >
                 {loading ? (
                   <>
@@ -234,17 +177,6 @@ export default function AdminLogin() {
                 En vous connectant, vous acceptez nos conditions d'utilisation
               </p>
             </form>
-
-            {/* Network Diagnostic */}
-            <div className="mt-6 p-3 bg-muted/50 rounded-lg text-xs space-y-1">
-              <p className="font-medium">État de la connexion :</p>
-              <p className="text-muted-foreground">
-                URL: {process.env.NEXT_PUBLIC_SUPABASE_URL}
-              </p>
-              <p className="text-muted-foreground">
-                Clé API: {process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '✓ Configurée' : '✗ Manquante'}
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>
