@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
@@ -15,12 +15,37 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          router.push("/admin/dashboard");
+        }
+      } catch (err) {
+        console.error("Session check error:", err);
+      }
+    };
+    checkSession();
+  }, [router]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
+      // Check Supabase connection first
+      const { error: healthError } = await supabase.from("profiles").select("count").limit(1);
+      
+      if (healthError) {
+        console.error("Supabase connection error:", healthError);
+        setError("Erreur de connexion au serveur. Veuillez réessayer.");
+        setLoading(false);
+        return;
+      }
+
       const { data, error: authError } = await supabase.auth.signInWithPassword({
         email: email.trim(),
         password: password,
@@ -33,7 +58,7 @@ export default function AdminLogin() {
         } else if (authError.message.includes("Email not confirmed")) {
           setError("Veuillez confirmer votre email");
         } else {
-          setError(authError.message);
+          setError("Erreur de connexion. Veuillez réessayer.");
         }
         setLoading(false);
         return;
@@ -42,10 +67,13 @@ export default function AdminLogin() {
       if (data.user) {
         console.log("Login successful:", data.user.email);
         router.push("/admin/dashboard");
+      } else {
+        setError("Erreur de connexion. Veuillez réessayer.");
+        setLoading(false);
       }
     } catch (err: any) {
       console.error("Unexpected error:", err);
-      setError("Une erreur inattendue s'est produite");
+      setError("Une erreur inattendue s'est produite. Vérifiez votre connexion internet.");
       setLoading(false);
     }
   };
