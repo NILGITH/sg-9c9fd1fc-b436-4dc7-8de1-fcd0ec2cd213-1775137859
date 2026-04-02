@@ -635,6 +635,8 @@ export const getStaticProps: GetStaticProps = async () => {
       console.error("Error loading formations:", error);
     }
 
+    console.log("Formations loaded in getStaticProps:", formations?.length || 0);
+
     return {
       props: {
         formations: formations || [],
