@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, ArrowRight, ArrowLeft, Loader2 } from "lucide-react";
+import { CheckCircle2, ArrowRight, ArrowLeft, Loader2, Send, Info, Phone, Mail, MessageSquare } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { enrollmentService } from "@/services/enrollmentService";
 import { paymentService } from "@/services/paymentService";
@@ -40,7 +40,7 @@ declare global {
 
 const ENROLLMENT_FEE = 25000; // Frais d'inscription en FCFA
 
-export default function Admissions({ formations }: AdmissionsProps) {
+export default function Admissions() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<any>({});
   const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
@@ -262,7 +262,7 @@ export default function Admissions({ formations }: AdmissionsProps) {
     <>
       <SEO 
         title="Admissions - TCI Formation"
-        description="Inscrivez-vous à TCI Formation - Processus d'admission en ligne simplifié"
+        description="Inscrivez-vous en ligne à TCI Formation. Processus simple et rapide pour rejoindre nos formations professionnelles certifiantes."
       />
       
       {/* Load Kkiapay SDK */}
@@ -280,414 +280,448 @@ export default function Admissions({ formations }: AdmissionsProps) {
 
       <Header />
       
-      <main className="pt-20 pb-16 bg-muted/30">
-        <div className="container-custom max-w-4xl">
-          {/* Progress Steps */}
-          <div className="mb-12">
-            <div className="flex items-center justify-between">
-              {steps.map((step, index) => (
-                <div key={index} className="flex-1 flex flex-col items-center">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-colors ${
-                    index === currentStep 
-                      ? "bg-primary border-primary text-white" 
-                      : index < currentStep 
-                      ? "bg-green-600 border-green-600 text-white"
-                      : "border-gray-300 text-gray-400"
-                  }`}>
-                    {index < currentStep ? (
-                      <CheckCircle2 className="w-6 h-6" />
-                    ) : (
-                      <span className="font-bold">{index + 1}</span>
-                    )}
-                  </div>
-                  <div className="text-center mt-2">
-                    <div className={`font-medium text-sm ${
-                      index === currentStep ? "text-primary" : index < currentStep ? "text-green-600" : "text-muted-foreground"
+      <main className="min-h-screen bg-gray-50">
+        {/* Hero Section */}
+        <section className="relative py-20 bg-gradient-to-br from-tci-blue via-tci-blue/95 to-tci-blue/90 text-white overflow-hidden">
+          <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
+          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-tci-red/20 to-transparent"></div>
+          
+          <div className="container-custom relative z-10">
+            <div className="max-w-3xl mx-auto text-center">
+              <Badge variant="secondary" className="mb-6 bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                INSCRIPTIONS OUVERTES
+              </Badge>
+              <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                Commencez Votre Parcours Professionnel
+              </h1>
+              <p className="text-xl text-white/90 leading-relaxed">
+                Remplissez notre formulaire d'inscription en ligne et rejoignez plus de 2000 étudiants qui nous ont fait confiance.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Progress Steps - Updated avec couleurs correctes */}
+        <section className="py-12 bg-white border-b border-gray-100">
+          <div className="container-custom">
+            <div className="flex items-center justify-center gap-4 md:gap-8 max-w-3xl mx-auto">
+              {steps.map((stepItem, index) => (
+                <div key={index} className="flex items-center gap-2 md:gap-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-bold text-sm md:text-base transition-all ${
+                      step > index 
+                        ? 'bg-tci-blue text-white' 
+                        : step === index 
+                        ? 'bg-tci-blue text-white ring-4 ring-tci-blue/20' 
+                        : 'bg-gray-200 text-gray-500'
                     }`}>
-                      {step.title}
+                      {index + 1}
                     </div>
-                    <div className="text-xs text-muted-foreground hidden md:block">
-                      {step.description}
-                    </div>
+                    <span className={`text-xs md:text-sm font-medium transition-colors ${
+                      step >= index ? 'text-gray-900' : 'text-gray-500'
+                    }`}>
+                      {stepItem}
+                    </span>
                   </div>
                   {index < steps.length - 1 && (
-                    <div className={`flex-1 h-0.5 ${
-                      index < currentStep ? "bg-green-600" : "bg-gray-300"
-                    } absolute top-6 left-[calc(50%+2rem)] w-[calc(20%-4rem)] hidden md:block`} />
+                    <div className={`h-0.5 w-8 md:w-16 transition-colors ${
+                      step > index ? 'bg-tci-blue' : 'bg-gray-200'
+                    }`} />
                   )}
                 </div>
               ))}
             </div>
           </div>
+        </section>
 
-          {/* Step Content */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{steps[currentStep].title}</CardTitle>
-              <CardDescription>{steps[currentStep].description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {/* Step 1: Personal Info */}
-              {currentStep === 0 && (
-                <form onSubmit={handleSubmit(handleStepSubmit)} className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName">Prénom *</Label>
-                      <Input
-                        id="firstName"
-                        {...register("firstName", { required: "Le prénom est requis" })}
-                        defaultValue={formData.firstName}
-                      />
-                      {errors.firstName && (
-                        <p className="text-sm text-destructive">{errors.firstName.message as string}</p>
-                      )}
-                    </div>
+        {/* Form Section - Couleurs correctes garanties */}
+        <section className="py-16">
+          <div className="container-custom">
+            <div className="max-w-3xl mx-auto">
+              <Card className="border-0 shadow-2xl bg-white">
+                <CardContent className="p-8 md:p-12">
+                  <form onSubmit={handleSubmit} className="space-y-8">
+                    {step === 0 && (
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-900 mb-2">Informations Personnelles</h2>
+                          <p className="text-gray-600">Veuillez remplir vos informations de base</p>
+                        </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName">Nom *</Label>
-                      <Input
-                        id="lastName"
-                        {...register("lastName", { required: "Le nom est requis" })}
-                        defaultValue={formData.lastName}
-                      />
-                      {errors.lastName && (
-                        <p className="text-sm text-destructive">{errors.lastName.message as string}</p>
-                      )}
-                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <Label htmlFor="firstName" className="text-gray-900 font-medium mb-2 block">
+                              Prénom *
+                            </Label>
+                            <Input
+                              id="firstName"
+                              name="firstName"
+                              value={formData.firstName}
+                              onChange={handleChange}
+                              required
+                              className="h-12"
+                              placeholder="Jean"
+                            />
+                          </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        {...register("email", { 
-                          required: "L'email est requis",
-                          pattern: {
-                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                            message: "Email invalide"
-                          }
-                        })}
-                        defaultValue={formData.email}
-                      />
-                      {errors.email && (
-                        <p className="text-sm text-destructive">{errors.email.message as string}</p>
-                      )}
-                    </div>
+                          <div>
+                            <Label htmlFor="lastName" className="text-gray-900 font-medium mb-2 block">
+                              Nom *
+                            </Label>
+                            <Input
+                              id="lastName"
+                              name="lastName"
+                              value={formData.lastName}
+                              onChange={handleChange}
+                              required
+                              className="h-12"
+                              placeholder="Dupont"
+                            />
+                          </div>
+                        </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Téléphone *</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        {...register("phone", { required: "Le téléphone est requis" })}
-                        defaultValue={formData.phone}
-                      />
-                      {errors.phone && (
-                        <p className="text-sm text-destructive">{errors.phone.message as string}</p>
-                      )}
-                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <Label htmlFor="email" className="text-gray-900 font-medium mb-2 block">
+                              Email *
+                            </Label>
+                            <Input
+                              id="email"
+                              name="email"
+                              type="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                              required
+                              className="h-12"
+                              placeholder="jean.dupont@email.com"
+                            />
+                          </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="birthDate">Date de Naissance</Label>
-                      <Input
-                        id="birthDate"
-                        type="date"
-                        {...register("birthDate")}
-                        defaultValue={formData.birthDate}
-                      />
-                    </div>
+                          <div>
+                            <Label htmlFor="phone" className="text-gray-900 font-medium mb-2 block">
+                              Téléphone *
+                            </Label>
+                            <Input
+                              id="phone"
+                              name="phone"
+                              type="tel"
+                              value={formData.phone}
+                              onChange={handleChange}
+                              required
+                              className="h-12"
+                              placeholder="+229 XX XX XX XX"
+                            />
+                          </div>
+                        </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="birthPlace">Lieu de Naissance</Label>
-                      <Input
-                        id="birthPlace"
-                        {...register("birthPlace")}
-                        defaultValue={formData.birthPlace}
-                      />
-                    </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <Label htmlFor="dateOfBirth" className="text-gray-900 font-medium mb-2 block">
+                              Date de naissance *
+                            </Label>
+                            <Input
+                              id="dateOfBirth"
+                              name="dateOfBirth"
+                              type="date"
+                              value={formData.dateOfBirth}
+                              onChange={handleChange}
+                              required
+                              className="h-12"
+                            />
+                          </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="nationality">Nationalité</Label>
-                      <Input
-                        id="nationality"
-                        {...register("nationality")}
-                        defaultValue={formData.nationality || "Béninoise"}
-                      />
-                    </div>
-                  </div>
+                          <div>
+                            <Label htmlFor="gender" className="text-gray-900 font-medium mb-2 block">
+                              Genre *
+                            </Label>
+                            <select
+                              id="gender"
+                              name="gender"
+                              value={formData.gender}
+                              onChange={handleChange as any}
+                              required
+                              className="w-full h-12 px-3 rounded-lg border border-gray-200 focus:border-tci-blue focus:ring-2 focus:ring-tci-blue/20 bg-white text-gray-900"
+                            >
+                              <option value="">Sélectionner</option>
+                              <option value="M">Masculin</option>
+                              <option value="F">Féminin</option>
+                            </select>
+                          </div>
+                        </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="address">Adresse Complète</Label>
-                    <Textarea
-                      id="address"
-                      {...register("address")}
-                      defaultValue={formData.address}
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="flex justify-end">
-                    <Button type="submit">
-                      Continuer
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </div>
-                </form>
-              )}
-
-              {/* Step 2: Formation & Level */}
-              {currentStep === 1 && (
-                <form onSubmit={handleSubmit(handleStepSubmit)} className="space-y-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="formation">Formation Souhaitée *</Label>
-                    <Select
-                      onValueChange={(value) => {
-                        const form = document.getElementById("formation-form") as HTMLFormElement;
-                        const input = form?.querySelector('input[name="formation"]') as HTMLInputElement;
-                        if (input) input.value = value;
-                      }}
-                      defaultValue={formData.formation}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez une formation" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {formations.map((formation) => (
-                          <SelectItem key={formation.id} value={formation.id}>
-                            {formation.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <input type="hidden" {...register("formation", { required: "La formation est requise" })} />
-                    {errors.formation && (
-                      <p className="text-sm text-destructive">{errors.formation.message as string}</p>
+                        <div>
+                          <Label htmlFor="address" className="text-gray-900 font-medium mb-2 block">
+                            Adresse complète *
+                          </Label>
+                          <Textarea
+                            id="address"
+                            name="address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            required
+                            rows={3}
+                            placeholder="Votre adresse complète"
+                          />
+                        </div>
+                      </div>
                     )}
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="educationLevel">Niveau d'Études *</Label>
-                    <Select
-                      onValueChange={(value) => {
-                        const form = document.getElementById("formation-form") as HTMLFormElement;
-                        const input = form?.querySelector('input[name="educationLevel"]') as HTMLInputElement;
-                        if (input) input.value = value;
-                      }}
-                      defaultValue={formData.educationLevel}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sélectionnez votre niveau" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="BEPC">BEPC</SelectItem>
-                        <SelectItem value="BAC">BAC</SelectItem>
-                        <SelectItem value="BAC+1">BAC+1</SelectItem>
-                        <SelectItem value="BAC+2">BAC+2</SelectItem>
-                        <SelectItem value="BAC+3">BAC+3</SelectItem>
-                        <SelectItem value="Autre">Autre</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <input type="hidden" {...register("educationLevel", { required: "Le niveau d'études est requis" })} />
-                    {errors.educationLevel && (
-                      <p className="text-sm text-destructive">{errors.educationLevel.message as string}</p>
+                    {step === 1 && (
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-900 mb-2">Choix de Formation</h2>
+                          <p className="text-gray-600">Sélectionnez votre formation et votre site</p>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="formation" className="text-gray-900 font-medium mb-2 block">
+                            Formation souhaitée *
+                          </Label>
+                          <select
+                            id="formation"
+                            name="formation"
+                            value={formData.formation}
+                            onChange={handleChange as any}
+                            required
+                            className="w-full h-12 px-3 rounded-lg border border-gray-200 focus:border-tci-blue focus:ring-2 focus:ring-tci-blue/20 bg-white text-gray-900"
+                          >
+                            <option value="">Choisir une formation</option>
+                            {formations.map((f) => (
+                              <option key={f.id} value={f.id}>{f.title}</option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="site" className="text-gray-900 font-medium mb-2 block">
+                            Site de formation *
+                          </Label>
+                          <select
+                            id="site"
+                            name="site"
+                            value={formData.site}
+                            onChange={handleChange as any}
+                            required
+                            className="w-full h-12 px-3 rounded-lg border border-gray-200 focus:border-tci-blue focus:ring-2 focus:ring-tci-blue/20 bg-white text-gray-900"
+                          >
+                            <option value="">Choisir un site</option>
+                            <option value="vedoko">Vèdoko (siège)</option>
+                            <option value="godomey">Godomey</option>
+                            <option value="calavi">Abomey-Calavi</option>
+                            <option value="parakou">Parakou</option>
+                            <option value="porto-novo">Porto-Novo</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <Label htmlFor="intakeDate" className="text-gray-900 font-medium mb-2 block">
+                            Date de rentrée souhaitée *
+                          </Label>
+                          <select
+                            id="intakeDate"
+                            name="intakeDate"
+                            value={formData.intakeDate}
+                            onChange={handleChange as any}
+                            required
+                            className="w-full h-12 px-3 rounded-lg border border-gray-200 focus:border-tci-blue focus:ring-2 focus:ring-tci-blue/20 bg-white text-gray-900"
+                          >
+                            <option value="">Choisir une date</option>
+                            {intakeDates.map((date) => (
+                              <option key={date.id} value={date.id}>{date.label}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
                     )}
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="lastDiploma">Dernier Diplôme Obtenu</Label>
-                    <Input
-                      id="lastDiploma"
-                      {...register("lastDiploma")}
-                      defaultValue={formData.lastDiploma}
-                      placeholder="Ex: BEPC, BAC..."
-                    />
-                  </div>
+                    {step === 2 && (
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-2xl font-bold text-gray-900 mb-2">Informations Académiques</h2>
+                          <p className="text-gray-600">Parlez-nous de votre parcours</p>
+                        </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="motivation">Lettre de Motivation</Label>
-                    <Textarea
-                      id="motivation"
-                      {...register("motivation")}
-                      defaultValue={formData.motivation}
-                      rows={5}
-                      placeholder="Expliquez pourquoi vous souhaitez suivre cette formation..."
-                    />
-                  </div>
+                        <div>
+                          <Label htmlFor="education" className="text-gray-900 font-medium mb-2 block">
+                            Dernier diplôme obtenu *
+                          </Label>
+                          <select
+                            id="education"
+                            name="education"
+                            value={formData.education}
+                            onChange={handleChange as any}
+                            required
+                            className="w-full h-12 px-3 rounded-lg border border-gray-200 focus:border-tci-blue focus:ring-2 focus:ring-tci-blue/20 bg-white text-gray-900"
+                          >
+                            <option value="">Sélectionner</option>
+                            <option value="BEPC">BEPC</option>
+                            <option value="BAC">BAC</option>
+                            <option value="License">License</option>
+                            <option value="Master">Master</option>
+                            <option value="Autre">Autre</option>
+                          </select>
+                        </div>
 
-                  <div className="flex justify-between">
-                    <Button type="button" variant="outline" onClick={() => setCurrentStep(0)}>
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Retour
-                    </Button>
-                    <Button type="submit">
-                      Continuer
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </div>
-                </form>
-              )}
+                        <div>
+                          <Label htmlFor="previousExperience" className="text-gray-900 font-medium mb-2 block">
+                            Expérience professionnelle
+                          </Label>
+                          <Textarea
+                            id="previousExperience"
+                            name="previousExperience"
+                            value={formData.previousExperience}
+                            onChange={handleChange}
+                            rows={4}
+                            placeholder="Décrivez brièvement votre expérience professionnelle (optionnel)"
+                          />
+                        </div>
 
-              {/* Step 3: Confirmation */}
-              {currentStep === 2 && (
-                <div className="space-y-6">
-                  <div className="bg-muted/50 p-6 rounded-lg space-y-4">
-                    <h3 className="font-heading font-bold text-lg mb-4">Récapitulatif de votre inscription</h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground">Prénom</p>
-                        <p className="font-medium">{formData.firstName}</p>
+                        <div>
+                          <Label htmlFor="motivation" className="text-gray-900 font-medium mb-2 block">
+                            Pourquoi souhaitez-vous suivre cette formation ? *
+                          </Label>
+                          <Textarea
+                            id="motivation"
+                            name="motivation"
+                            value={formData.motivation}
+                            onChange={handleChange}
+                            required
+                            rows={5}
+                            placeholder="Expliquez vos motivations et vos objectifs..."
+                          />
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Nom</p>
-                        <p className="font-medium">{formData.lastName}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Email</p>
-                        <p className="font-medium">{formData.email}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Téléphone</p>
-                        <p className="font-medium">{formData.phone}</p>
-                      </div>
-                      <div className="md:col-span-2">
-                        <p className="text-sm text-muted-foreground">Formation</p>
-                        <p className="font-medium">{selectedFormation?.title}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-muted-foreground">Niveau d'Études</p>
-                        <p className="font-medium">{formData.educationLevel}</p>
-                      </div>
-                    </div>
-                  </div>
+                    )}
 
-                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-4 rounded-lg">
-                    <p className="text-sm text-blue-800 dark:text-blue-200">
-                      En confirmant, vous acceptez les termes et conditions de TCI Formation. 
-                      Vous serez redirigé vers le paiement des frais d'inscription de <strong>{ENROLLMENT_FEE.toLocaleString("fr-FR")} FCFA</strong>.
-                    </p>
-                  </div>
+                    {step === 3 && (
+                      <div className="space-y-6">
+                        <div className="text-center py-8">
+                          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <CheckCircle2 className="w-12 h-12 text-green-600" />
+                          </div>
+                          <h2 className="text-3xl font-bold text-gray-900 mb-4">Vérification</h2>
+                          <p className="text-gray-600">Vérifiez vos informations avant de soumettre</p>
+                        </div>
 
-                  <div className="flex justify-between">
-                    <Button type="button" variant="outline" onClick={() => setCurrentStep(1)} disabled={isSubmitting}>
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      Retour
-                    </Button>
-                    <Button onClick={handleSubmit(handleStepSubmit)} disabled={isSubmitting}>
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Envoi en cours...
-                        </>
-                      ) : (
-                        <>
-                          Confirmer l'inscription
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              )}
+                        <div className="bg-gray-50 rounded-xl p-6 space-y-4">
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="text-gray-600">Nom complet:</span>
+                              <p className="font-semibold text-gray-900">{formData.firstName} {formData.lastName}</p>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Email:</span>
+                              <p className="font-semibold text-gray-900">{formData.email}</p>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Téléphone:</span>
+                              <p className="font-semibold text-gray-900">{formData.phone}</p>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">Formation:</span>
+                              <p className="font-semibold text-gray-900">
+                                {formations.find(f => f.id === formData.formation)?.title || '-'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
 
-              {/* Step 4: Payment */}
-              {currentStep === 3 && (
-                <div className="space-y-6">
-                  <div className="text-center py-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900 mb-6">
-                      <CheckCircle2 className="w-10 h-10 text-green-600 dark:text-green-400" />
-                    </div>
-                    <h3 className="font-heading font-bold text-2xl mb-2">
-                      Inscription Enregistrée !
-                    </h3>
-                    <p className="text-muted-foreground mb-8">
-                      Votre demande d'inscription a été créée avec succès.
-                      Procédez maintenant au paiement des frais d'inscription.
-                    </p>
+                        <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                          <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                          <div className="text-sm">
+                            <p className="font-semibold text-blue-900 mb-1">Note importante</p>
+                            <p className="text-blue-800">
+                              Après soumission, vous recevrez un email de confirmation avec les prochaines étapes. 
+                              Notre équipe vous contactera sous 48h pour finaliser votre inscription.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
-                    <Card className="bg-gradient-accent text-white mb-8">
-                      <CardContent className="p-8">
-                        <p className="text-white/80 mb-2">Frais d'inscription</p>
-                        <p className="font-heading font-bold text-4xl">
-                          {ENROLLMENT_FEE.toLocaleString("fr-FR")} FCFA
-                        </p>
-                      </CardContent>
-                    </Card>
-
-                    <div className="space-y-4">
-                      <Button 
-                        onClick={openKkiapayPayment}
-                        size="lg"
-                        className="w-full bg-gradient-accent hover:opacity-90"
-                        disabled={!kkiapayReady}
+                    <div className="flex items-center justify-between pt-6 border-t border-gray-100">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handlePrevious}
+                        disabled={step === 0}
+                        className="px-8"
                       >
-                        {!kkiapayReady ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Chargement du système de paiement...
-                          </>
-                        ) : (
-                          "Payer Maintenant avec Kkiapay"
-                        )}
+                        <ArrowLeft className="w-4 h-4 mr-2" />
+                        Précédent
                       </Button>
 
-                      <p className="text-xs text-muted-foreground">
-                        Paiement sécurisé par Kkiapay • Mobile Money • Carte Bancaire
-                      </p>
+                      {step < 3 ? (
+                        <Button
+                          type="button"
+                          onClick={handleNext}
+                          className="px-8 bg-tci-blue hover:bg-tci-blue/90"
+                        >
+                          Suivant
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      ) : (
+                        <Button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="px-8 bg-tci-blue hover:bg-tci-blue/90"
+                        >
+                          {isSubmitting ? "Envoi..." : "Soumettre l'inscription"}
+                          <Send className="w-4 h-4 ml-2" />
+                        </Button>
+                      )}
                     </div>
-                  </div>
-                </div>
-              )}
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
 
-              {/* Step 5: Success */}
-              {currentStep === 4 && (
-                <div className="text-center py-12">
-                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100 dark:bg-green-900 mb-6">
-                    <CheckCircle2 className="w-12 h-12 text-green-600 dark:text-green-400" />
-                  </div>
-                  <h3 className="font-heading font-bold text-3xl mb-4">
-                    Paiement Réussi !
-                  </h3>
-                  <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-                    Votre inscription a été validée avec succès. Vous recevrez un email de confirmation 
-                    avec toutes les informations nécessaires dans les prochaines minutes.
-                  </p>
+        {/* Help Section - Couleurs correctes */}
+        <section className="py-16 bg-white">
+          <div className="container-custom">
+            <div className="max-w-3xl mx-auto text-center">
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Besoin d'Aide ?
+              </h2>
+              <p className="text-gray-600 mb-8">
+                Notre équipe est là pour vous accompagner dans votre inscription
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card className="border-0 shadow-lg bg-white">
+                  <CardContent className="p-6 text-center">
+                    <div className="w-12 h-12 bg-tci-blue/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Phone className="w-6 h-6 text-tci-blue" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Appelez-nous</h3>
+                    <p className="text-sm text-gray-600">+229 01 96 10 04 42</p>
+                  </CardContent>
+                </Card>
 
-                  <div className="bg-muted/50 p-6 rounded-lg max-w-md mx-auto mb-8">
-                    <h4 className="font-heading font-bold mb-4">Prochaines Étapes</h4>
-                    <ol className="text-left space-y-2 text-sm">
-                      <li className="flex items-start gap-2">
-                        <span className="font-bold text-primary">1.</span>
-                        <span>Consultez votre email pour la confirmation d'inscription</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="font-bold text-primary">2.</span>
-                        <span>Préparez les documents nécessaires (photocopies diplômes, photos d'identité)</span>
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="font-bold text-primary">3.</span>
-                        <span>Attendez la convocation pour finaliser votre inscription</span>
-                      </li>
-                    </ol>
-                  </div>
+                <Card className="border-0 shadow-lg bg-white">
+                  <CardContent className="p-6 text-center">
+                    <div className="w-12 h-12 bg-tci-blue/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <Mail className="w-6 h-6 text-tci-blue" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Écrivez-nous</h3>
+                    <p className="text-sm text-gray-600">contact@tciformation.com</p>
+                  </CardContent>
+                </Card>
 
-                  <div className="space-y-4">
-                    <Link href="/">
-                      <Button className="w-full bg-primary hover:bg-primary/90">
-                        Retour à l'accueil
-                      </Button>
-                    </Link>
-                    <Link href="/actualites">
-                      <Button variant="outline" className="w-full">
-                        Voir les actualités
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                <Card className="border-0 shadow-lg bg-white">
+                  <CardContent className="p-6 text-center">
+                    <div className="w-12 h-12 bg-tci-blue/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                      <MessageSquare className="w-6 h-6 text-tci-blue" />
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2">Visitez-nous</h3>
+                    <p className="text-sm text-gray-600">5 sites au Bénin</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />
