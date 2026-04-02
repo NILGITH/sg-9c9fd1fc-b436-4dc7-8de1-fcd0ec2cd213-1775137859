@@ -13,6 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { galleryService, type GalleryMedia } from "@/services/galleryService";
 import { ArrowLeft, Plus, Pencil, Trash2, Image as ImageIcon, Video, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export default function AdminGallery() {
   const router = useRouter();
@@ -107,7 +109,7 @@ export default function AdminGallery() {
 
   const openDialog = (type: "photo" | "video") => {
     setMediaType(type);
-    setFormData({ ...formData, media_type: type });
+    setFormData({ ...formData, media_type: type, media_url: "" });
     setIsDialogOpen(true);
   };
 
@@ -294,17 +296,30 @@ export default function AdminGallery() {
             </DialogHeader>
             
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="media_url">URL *</Label>
-                <Input
-                  id="media_url"
-                  type="url"
-                  value={formData.media_url}
-                  onChange={(e) => setFormData({ ...formData, media_url: e.target.value })}
-                  placeholder={formData.media_type === "photo" ? "https://images.unsplash.com/..." : "https://www.youtube.com/embed/..."}
-                  required
-                />
-              </div>
+              {formData.media_type === "photo" ? (
+                <div className="space-y-2">
+                  <Label>Photo</Label>
+                  <ImageUploader
+                    onUpload={(url) => setFormData({ ...formData, media_url: url })}
+                    currentImage={formData.media_url}
+                  />
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <Label htmlFor="media_url">URL de la vidéo *</Label>
+                  <Input
+                    id="media_url"
+                    type="url"
+                    value={formData.media_url}
+                    onChange={(e) => setFormData({ ...formData, media_url: e.target.value })}
+                    placeholder="https://www.youtube.com/embed/..."
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Collez l'URL d'intégration YouTube (format embed)
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-2">
                 <Label htmlFor="title">Titre</Label>

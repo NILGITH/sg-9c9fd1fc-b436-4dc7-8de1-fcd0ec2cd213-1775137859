@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { formationService, type Formation } from "@/services/formationService";
 import { LogOut, Plus, Edit, Trash2, Save, X, Image as ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export default function AdminFormations() {
   const router = useRouter();
@@ -23,7 +24,6 @@ export default function AdminFormations() {
   const [categories, setCategories] = useState<any[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingFormation, setEditingFormation] = useState<Formation | null>(null);
-  const [uploading, setUploading] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -66,67 +66,6 @@ export default function AdminFormations() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/admin/login");
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploading(true);
-    const { data, error } = await formationService.uploadImage(file);
-
-    if (error) {
-      toast({
-        title: "Erreur",
-        description: "Échec de l'upload de l'image",
-        variant: "destructive",
-      });
-    } else {
-      setFormData({ ...formData, image_url: data || "" });
-      toast({
-        title: "Succès",
-        description: "Image uploadée avec succès",
-      });
-    }
-    setUploading(false);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (editingFormation) {
-      const { error } = await formationService.update(editingFormation.id, formData);
-      if (error) {
-        toast({
-          title: "Erreur",
-          description: "Échec de la modification",
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: "Succès",
-        description: "Formation modifiée avec succès",
-      });
-    } else {
-      const { error } = await formationService.create(formData as any);
-      if (error) {
-        toast({
-          title: "Erreur",
-          description: "Échec de la création",
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: "Succès",
-        description: "Formation créée avec succès",
-      });
-    }
-
-    setIsDialogOpen(false);
-    resetForm();
-    loadFormations();
   };
 
   const handleEdit = (formation: Formation) => {
@@ -311,21 +250,15 @@ export default function AdminFormations() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="image">Image de couverture</Label>
-                    <Input
-                      id="image"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                      disabled={uploading}
+                    <Label>Image de couverture</Label>
+                    <ImageUploader
+                      onUpload={(url) => setFormData({ ...formData, image_url: url })}
+                      currentImage={formData.image_url}
                     />
-                    {formData.image_url && (
-                      <img src={formData.image_url} alt="Preview" className="w-full h-40 object-cover rounded-lg mt-2" />
-                    )}
                   </div>
 
                   <div className="flex gap-4">
-                    <Button type="submit" className="flex-1" disabled={uploading}>
+                    <Button type="submit" className="flex-1">
                       <Save className="w-4 h-4 mr-2" />
                       {editingFormation ? "Modifier" : "Créer"}
                     </Button>

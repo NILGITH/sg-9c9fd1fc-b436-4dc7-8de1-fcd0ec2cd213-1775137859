@@ -12,19 +12,22 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { supabase } from "@/integrations/supabase/client";
 import { newsService, type News } from "@/services/newsService";
 import { ArrowLeft, Plus, Pencil, Trash2, Calendar, Loader2, Newspaper } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { ImageUploader } from "@/components/ImageUploader";
 
 export default function AdminNews() {
   const router = useRouter();
+  const { toast } = useToast();
   const [news, setNews] = useState<News[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingNews, setEditingNews] = useState<News | null>(null);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     slug: "",
     excerpt: "",
     content: "",
-    image_url: "",
     published: true,
   });
 
@@ -52,11 +55,20 @@ export default function AdminNews() {
     
     try {
       if (editingNews) {
-        await newsService.update(editingNews.id, formData);
+        await newsService.update(editingNews.id, formData, imageUrls);
+        toast({
+          title: "Succès",
+          description: "Actualité modifiée avec succès",
+        });
       } else {
         await newsService.create({
           ...formData,
           author: "Admin",
+          image_url: imageUrls[0] || null,
+        }, imageUrls);
+        toast({
+          title: "Succès",
+          description: "Actualité créée avec succès",
         });
       }
       
@@ -65,6 +77,11 @@ export default function AdminNews() {
       loadNews();
     } catch (error) {
       console.error("Error saving news:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue",
+        variant: "destructive",
+      });
     }
   };
 
@@ -75,9 +92,12 @@ export default function AdminNews() {
       slug: item.slug,
       excerpt: item.excerpt,
       content: item.content || "",
-      image_url: item.image_url || "",
       published: item.published,
     });
+    // Load existing images if available
+    if (item.image_url) {
+      setImageUrls([item.image_url]);
+    }
     setIsDialogOpen(true);
   };
 
@@ -90,12 +110,12 @@ export default function AdminNews() {
 
   const resetForm = () => {
     setEditingNews(null);
+    setImageUrls([]);
     setFormData({
       title: "",
       slug: "",
       excerpt: "",
       content: "",
-      image_url: "",
       published: true,
     });
   };
@@ -204,17 +224,14 @@ export default function AdminNews() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="image_url">URL de l'image</Label>
-                      <Input
-                        id="image_url"
-                        type="url"
-                        value={formData.image_url}
-                        onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                        placeholder="https://..."
+                      <Label>Images de l'article</Label>
+                      <ImageUploader
+                        multiple
+                        maxFiles={5}
+                        onMultipleUpload={(urls) => setImageUrls(urls)}
+                        currentImage={imageUrls[0]}
+                        onUpload={(url) => setImageUrls([url])}
                       />
-                      <p className="text-xs text-muted-foreground">
-                        Utilisez une image depuis Unsplash ou un autre service
-                      </p>
                     </div>
 
                     <DialogFooter>
