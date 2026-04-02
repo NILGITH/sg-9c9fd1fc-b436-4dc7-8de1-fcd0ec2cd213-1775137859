@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Newspaper, Image as ImageIcon, BarChart3 } from "lucide-react";
+import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -105,47 +105,50 @@ export default function AdminDashboard() {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Actualités</p>
-                    <p className="text-3xl font-bold">{stats.newsCount}</p>
-                  </div>
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <Newspaper className="w-6 h-6 text-primary" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href="/admin/news">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Newspaper className="w-5 h-5" />
+                    Actualités
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{stats.news}</p>
+                  <p className="text-sm text-muted-foreground">articles publiés</p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Photos</p>
-                    <p className="text-3xl font-bold">{stats.photosCount}</p>
-                  </div>
-                  <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                    <ImageIcon className="w-6 h-6 text-secondary" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href="/admin/gallery">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Image className="w-5 h-5" />
+                    Galerie
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{stats.gallery}</p>
+                  <p className="text-sm text-muted-foreground">photos/vidéos</p>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Vidéos</p>
-                    <p className="text-3xl font-bold">{stats.videosCount}</p>
-                  </div>
-                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="w-6 h-6 text-accent" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <Link href="/admin/enrollments">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    Inscriptions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">Gérer</p>
+                  <p className="text-sm text-muted-foreground">demandes d'inscription</p>
+                </CardContent>
+              </Card>
+            </Link>
           </div>
 
           {/* Quick Actions */}
