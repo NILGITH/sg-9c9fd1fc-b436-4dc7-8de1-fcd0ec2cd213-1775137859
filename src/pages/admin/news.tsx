@@ -11,7 +11,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 import { newsService, type News } from "@/services/newsService";
-import { ArrowLeft, Plus, Pencil, Trash2, Calendar, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Pencil, Trash2, Calendar, Loader2, Newspaper } from "lucide-react";
 
 export default function AdminNews() {
   const router = useRouter();
@@ -56,7 +56,6 @@ export default function AdminNews() {
       } else {
         await newsService.create({
           ...formData,
-          published_at: new Date().toISOString(),
         });
       }
       
@@ -265,7 +264,7 @@ export default function AdminNews() {
                     <CardTitle className="line-clamp-2">{item.title}</CardTitle>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Calendar className="w-4 h-4" />
-                      {new Date(item.published_at || item.created_at).toLocaleDateString("fr-FR")}
+                      {new Date(item.created_at).toLocaleDateString("fr-FR")}
                     </div>
                   </CardHeader>
                   <CardContent>

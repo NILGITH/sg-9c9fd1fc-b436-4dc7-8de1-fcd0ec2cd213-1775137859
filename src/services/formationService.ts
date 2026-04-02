@@ -20,7 +20,7 @@ export const formationService = {
     const { data, error } = await supabase
       .from("formations")
       .select("*")
-      .eq("category", category)
+      .eq("category_id", category)
       .order("title", { ascending: true });
     
     console.log("Formations by category:", { data, error });

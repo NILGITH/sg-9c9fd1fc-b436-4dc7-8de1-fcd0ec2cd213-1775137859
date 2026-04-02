@@ -9,7 +9,7 @@ export const newsService = {
       .from("news")
       .select("*")
       .eq("published", true)
-      .order("published_at", { ascending: false });
+      .order("created_at", { ascending: false });
     
     console.log("News query:", { data, error });
     if (error) console.error("Error:", error);

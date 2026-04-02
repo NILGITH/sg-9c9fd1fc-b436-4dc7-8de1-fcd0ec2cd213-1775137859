@@ -56,7 +56,7 @@ export default function Galerie({ photos, videos }: GalerieProps) {
                         onClick={() => setSelectedMedia(photo)}
                       >
                         <Image
-                          src={photo.media_url}
+                          src={photo.url}
                           alt={photo.title || "Gallery photo"}
                           fill
                           className="object-cover group-hover:scale-110 transition-transform duration-300"
@@ -85,7 +85,7 @@ export default function Galerie({ photos, videos }: GalerieProps) {
                       <div key={video.id} className="space-y-4">
                         <div className="aspect-video rounded-2xl overflow-hidden bg-muted">
                           <iframe
-                            src={video.media_url}
+                            src={video.url}
                             title={video.title || "Video"}
                             className="w-full h-full"
                             allowFullScreen
@@ -123,7 +123,7 @@ export default function Galerie({ photos, videos }: GalerieProps) {
         >
           <div className="relative max-w-6xl w-full aspect-[4/3]">
             <Image
-              src={selectedMedia.media_url}
+              src={selectedMedia.url}
               alt={selectedMedia.title || "Gallery photo"}
               fill
               className="object-contain"

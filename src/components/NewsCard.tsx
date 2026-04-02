@@ -10,7 +10,7 @@ interface NewsCardProps {
 }
 
 export function NewsCard({ news }: NewsCardProps) {
-  const formattedDate = new Date(news.published_at || news.created_at).toLocaleDateString("fr-FR", {
+  const formattedDate = new Date(news.created_at).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
     year: "numeric"

@@ -11,10 +11,10 @@ interface FormationsProps {
 
 export default function Formations({ formations }: FormationsProps) {
   const groupedFormations = formations.reduce((acc, formation) => {
-    if (!acc[formation.category]) {
-      acc[formation.category] = [];
+    if (!acc[formation.category_id]) {
+      acc[formation.category_id] = [];
     }
-    acc[formation.category].push(formation);
+    acc[formation.category_id].push(formation);
     return acc;
   }, {} as Record<string, Formation[]>);
 

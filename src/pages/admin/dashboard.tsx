@@ -36,8 +36,8 @@ export default function AdminDashboard() {
 
   const loadStats = async () => {
     const { data: news } = await supabase.from("news").select("id");
-    const { data: photos } = await supabase.from("gallery_media").select("id").eq("type", "photo");
-    const { data: videos } = await supabase.from("gallery_media").select("id").eq("type", "video");
+    const { data: photos } = await supabase.from("gallery").select("id").eq("type", "photo");
+    const { data: videos } = await supabase.from("gallery").select("id").eq("type", "video");
 
     setStats({
       newsCount: news?.length || 0,

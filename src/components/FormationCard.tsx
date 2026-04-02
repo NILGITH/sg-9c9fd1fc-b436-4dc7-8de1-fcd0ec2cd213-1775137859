@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { BookOpen } from "lucide-react";
 import type { Formation } from "@/services/formationService";
 
 interface FormationCardProps {
@@ -13,9 +14,9 @@ export function FormationCard({ formation }: FormationCardProps) {
       <CardContent className="p-6">
         <div
           className="w-16 h-16 rounded-2xl mb-6 flex items-center justify-center text-3xl"
-          style={{ backgroundColor: `${formation.icon_color}20` }}
+          style={{ backgroundColor: `${formation.icon_color}20`, color: formation.icon_color }}
         >
-          {formation.icon}
+          <BookOpen className="w-8 h-8" />
         </div>
         <h3 className="font-heading font-bold text-xl mb-3 group-hover:text-primary transition-colors">
           {formation.title}

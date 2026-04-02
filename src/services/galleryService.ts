@@ -1,14 +1,14 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
-export type GalleryMedia = Tables<"gallery_media">;
+export type GalleryMedia = Tables<"gallery">;
 
 export const galleryService = {
   async getAll(type?: "photo" | "video") {
     let query = supabase
-      .from("gallery_media")
+      .from("gallery")
       .select("*")
-      .order("uploaded_at", { ascending: false });
+      .order("created_at", { ascending: false });
     
     if (type) {
       query = query.eq("type", type);
@@ -22,9 +22,9 @@ export const galleryService = {
     return { data: data || [], error };
   },
 
-  async create(media: Omit<GalleryMedia, "id" | "uploaded_at">) {
+  async create(media: Omit<GalleryMedia, "id" | "created_at">) {
     const { data, error } = await supabase
-      .from("gallery_media")
+      .from("gallery")
       .insert(media)
       .select()
       .single();
@@ -37,7 +37,7 @@ export const galleryService = {
 
   async update(id: string, updates: Partial<GalleryMedia>) {
     const { data, error } = await supabase
-      .from("gallery_media")
+      .from("gallery")
       .update(updates)
       .eq("id", id)
       .select()
@@ -51,7 +51,7 @@ export const galleryService = {
 
   async delete(id: string) {
     const { error } = await supabase
-      .from("gallery_media")
+      .from("gallery")
       .delete()
       .eq("id", id);
     
