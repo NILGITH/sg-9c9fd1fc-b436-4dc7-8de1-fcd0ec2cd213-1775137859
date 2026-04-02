@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users } from "lucide-react";
+import { LogOut, Newspaper, Image as ImageIcon, BarChart3, Users, GraduationCap } from "lucide-react";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -15,6 +15,7 @@ export default function AdminDashboard() {
     newsCount: 0,
     photosCount: 0,
     videosCount: 0,
+    formationsCount: 0,
   });
 
   useEffect(() => {
@@ -38,11 +39,13 @@ export default function AdminDashboard() {
     const { data: news } = await supabase.from("news").select("id");
     const { data: photos } = await supabase.from("gallery").select("id").eq("media_type", "photo");
     const { data: videos } = await supabase.from("gallery").select("id").eq("media_type", "video");
+    const { data: formations } = await supabase.from("formations").select("id");
 
     setStats({
       newsCount: news?.length || 0,
       photosCount: photos?.length || 0,
       videosCount: videos?.length || 0,
+      formationsCount: formations?.length || 0,
     });
   };
 
@@ -104,7 +107,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Link href="/admin/news">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
@@ -135,6 +138,21 @@ export default function AdminDashboard() {
               </Card>
             </Link>
 
+            <Link href="/admin/formations">
+              <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5" />
+                    Formations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-bold">{stats.formationsCount}</p>
+                  <p className="text-sm text-muted-foreground">formations actives</p>
+                </CardContent>
+              </Card>
+            </Link>
+
             <Link href="/admin/enrollments">
               <Card className="hover:shadow-lg transition-shadow cursor-pointer">
                 <CardHeader>
@@ -152,7 +170,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -167,6 +185,25 @@ export default function AdminDashboard() {
                 <Link href="/admin/news">
                   <Button className="w-full">
                     Accéder aux actualités
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <GraduationCap className="w-5 h-5" />
+                  Gérer les Formations
+                </CardTitle>
+                <CardDescription>
+                  Ajoutez et gérez les formations de votre centre
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Link href="/admin/formations">
+                  <Button className="w-full bg-primary hover:bg-primary/90">
+                    Accéder aux formations
                   </Button>
                 </Link>
               </CardContent>
