@@ -109,7 +109,7 @@ export default function Formations({ formations }: FormationsProps) {
 }
 
 export async function getStaticProps() {
-  const formations = await formationService.getAll();
+  const { data: formations } = await formationService.getAll();
 
   return {
     props: {

@@ -173,8 +173,8 @@ export default function Home({ featuredFormations, recentNews }: HomeProps) {
 }
 
 export async function getStaticProps() {
-  const formations = await formationService.getAll();
-  const news = await newsService.getAll();
+  const { data: formations } = await formationService.getAll();
+  const { data: news } = await newsService.getAll();
 
   return {
     props: {
