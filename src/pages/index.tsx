@@ -9,6 +9,7 @@ import { ArrowRight, Users, Award, MapPin, Calendar, Briefcase, GraduationCap } 
 import { formationService, type Formation } from "@/services/formationService";
 import { newsService, type News } from "@/services/newsService";
 import { NewsCard } from "@/components/NewsCard";
+import { TestimonialsSlider } from "@/components/TestimonialsSlider";
 
 interface HomeProps {
   featuredFormations: Formation[];
@@ -199,6 +200,21 @@ export default function Home({ featuredFormations, recentNews }: HomeProps) {
             </div>
           </section>
         )}
+
+        {/* Testimonials Section */}
+        <section className="py-20 bg-muted/30">
+          <div className="container-custom">
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <h2 className="font-heading font-bold text-3xl md:text-5xl mb-6">
+                Témoignages de nos Apprenants
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Découvrez ce que nos anciens étudiants pensent de leur expérience à TCI Formation
+              </p>
+            </div>
+            <TestimonialsSlider />
+          </div>
+        </section>
       </main>
 
       <Footer />
