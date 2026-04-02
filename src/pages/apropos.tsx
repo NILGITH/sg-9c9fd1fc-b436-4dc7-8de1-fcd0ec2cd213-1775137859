@@ -86,36 +86,84 @@ export default function Apropos() {
           </div>
         </section>
 
-        {/* Mission & Vision */}
+        {/* Who We Are with Image */}
         <section className="py-20">
+          <div className="container-custom">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="font-heading font-bold text-3xl md:text-5xl mb-6">
+                  Qui Sommes-Nous ?
+                </h2>
+                <div className="space-y-4 text-lg text-muted-foreground">
+                  <p>
+                    <strong className="text-foreground">TCI BENIN</strong> est un centre de formation professionnelle créé depuis plus de 10 ans, 
+                    dédié à l'excellence et à l'insertion professionnelle des jeunes au Bénin et en Côte d'Ivoire.
+                  </p>
+                  <p>
+                    Nous proposons des formations diplômantes reconnues par l'État (CQM et CQP) dans les domaines 
+                    du numérique, de l'énergie, de l'industrie et des métiers du lifestyle.
+                  </p>
+                  <p>
+                    Avec <strong>5 sites de formation</strong> au Bénin (Cotonou, Godomey, Abomey-Calavi, Porto-Novo, Parakou) 
+                    et une présence à Abidjan en Côte d'Ivoire, nous sommes le partenaire de référence pour votre 
+                    développement professionnel.
+                  </p>
+                </div>
+              </div>
+              <div className="relative h-[400px] rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800&auto=format&fit=crop"
+                  alt="Centre de formation TCI"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Mission & Vision with Images */}
+        <section className="py-20 bg-muted/30">
           <div className="container-custom max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="bg-gradient-hero text-white p-10 rounded-3xl">
-                <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-6">
-                  <Target className="w-6 h-6 text-white" />
+              <div className="relative">
+                <div className="bg-gradient-hero text-white p-10 rounded-3xl relative overflow-hidden">
+                  <div className="absolute inset-0 opacity-5">
+                    <img 
+                      src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800&auto=format&fit=crop"
+                      alt="Étudiants en formation"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="relative z-10">
+                    <h2 className="font-heading font-bold text-3xl mb-6">Problématique et Mission</h2>
+                    <p className="text-lg leading-relaxed text-white/90">
+                      Le problème de l'emploi des jeunes est devenu une préoccupation majeure. Avec l'environnement concurrentiel d'aujourd'hui, il est important que la jeunesse reçoive une formation en adéquation avec les besoins du marché.
+                    </p>
+                    <p className="text-lg leading-relaxed text-white/90 mt-4">
+                      Voilà pourquoi <strong>TCI BENIN</strong> s'est engagé depuis dix (10) ans à faire de la formation professionnelle une offre qui, à travers la qualité de l'enseignement, met déjà sur le marché un nouveau type de professionnels capables de se prendre en charge.
+                    </p>
+                  </div>
                 </div>
-                <h2 className="font-heading font-bold text-3xl mb-6">Problématique et Mission</h2>
-                <p className="text-lg leading-relaxed text-white/90">
-                  Le problème de l'emploi des jeunes est devenu une préoccupation majeure et un défi permanent pour les responsables à différents niveaux en général et pour les parents d'élèves, élèves et étudiants en particulier. Avec l'environnement concurrentiel qui caractérise le monde des affaires d'aujourd'hui, il est important que la jeunesse reçoive une formation en adéquation avec les besoins du marché.
-                </p>
-                <p className="text-lg leading-relaxed text-white/90 mt-4">
-                  Voilà pourquoi <strong>TCI BENIN</strong> s'est engagé depuis dix (10) ans à faire de la formation professionnelle une offre qui, à travers la qualité de l'enseignement, met déjà sur le marché un nouveau type de professionnels capables de se prendre en charge et d'innover.
-                </p>
               </div>
 
-              <div className="bg-secondary/10 p-10 rounded-3xl border-2 border-secondary/20">
-                <div className="w-12 h-12 bg-secondary/20 rounded-xl flex items-center justify-center mb-6">
-                  <Award className="w-6 h-6 text-secondary" />
+              <div className="relative">
+                <div className="bg-secondary/10 p-10 rounded-3xl border-2 border-secondary/20 relative overflow-hidden">
+                  <div className="absolute inset-0 opacity-5">
+                    <img 
+                      src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop"
+                      alt="Vision TCI"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="relative z-10">
+                    <h2 className="font-heading font-bold text-3xl mb-6">Notre Vision</h2>
+                    <p className="text-lg leading-relaxed text-muted-foreground">
+                      Devenir le centre de référence en matière de formation professionnelle au Bénin, 
+                      reconnu pour la qualité de ses programmes, l'expertise de ses formateurs et 
+                      le taux d'insertion professionnelle de ses diplômés.
+                    </p>
+                  </div>
                 </div>
-                <h2 className="font-heading font-bold text-3xl mb-6">Notre Vision</h2>
-                <p className="text-lg leading-relaxed text-muted-foreground">
-                  Devenir le centre de référence en matière de formation professionnelle au Bénin, 
-                  reconnu pour la qualité de ses programmes, l'expertise de ses formateurs et 
-                  le taux d'insertion professionnelle exceptionnel de ses diplômés.
-                </p>
-                <p className="text-lg leading-relaxed text-muted-foreground mt-4">
-                  TCI BENIN apporte une solution efficace et concrète à tous les jeunes, artisans, maîtres artisans, particuliers qui expriment une passion pour l'énergie en général, l'énergie solaire en particulier, la technologie, l'informatique et l'industrie à travers des formations pratiques multidimensionnelles.
-                </p>
               </div>
             </div>
           </div>

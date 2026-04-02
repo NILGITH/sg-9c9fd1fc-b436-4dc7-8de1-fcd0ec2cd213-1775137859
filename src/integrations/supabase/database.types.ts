@@ -169,6 +169,7 @@ export type Database = {
           duration: string | null
           icon_color: string | null
           id: string
+          image_url: string | null
           published: boolean | null
           requirements: string | null
           slug: string
@@ -181,6 +182,7 @@ export type Database = {
           duration?: string | null
           icon_color?: string | null
           id?: string
+          image_url?: string | null
           published?: boolean | null
           requirements?: string | null
           slug: string
@@ -193,6 +195,7 @@ export type Database = {
           duration?: string | null
           icon_color?: string | null
           id?: string
+          image_url?: string | null
           published?: boolean | null
           requirements?: string | null
           slug?: string

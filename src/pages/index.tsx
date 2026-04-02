@@ -58,22 +58,45 @@ export default function Home({ featuredFormations, recentNews }: HomeProps) {
         {/* Hero Slider */}
         <HeroSlider />
 
-        {/* Stats Section */}
-        <section className="py-16 bg-white border-b">
-          <div className="container-custom">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={index} className="text-center">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
-                      <Icon className="w-8 h-8" />
-                    </div>
-                    <div className="font-heading font-bold text-3xl text-primary mb-2">{stat.value}</div>
-                    <div className="text-muted-foreground font-medium">{stat.label}</div>
-                  </div>
-                );
-              })}
+        {/* Stats Section with Background Image */}
+        <section className="py-16 bg-white border-b relative overflow-hidden">
+          <div className="absolute inset-0 opacity-5">
+            <img 
+              src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&auto=format&fit=crop"
+              alt="Formation professionnelle"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="container-custom relative z-10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
+                  <Award className="w-8 h-8" />
+                </div>
+                <p className="text-4xl font-bold font-heading text-primary mb-2">10+</p>
+                <p className="text-muted-foreground">Années d'Expérience</p>
+              </div>
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary/10 text-secondary mb-4">
+                  <MapPin className="w-8 h-8" />
+                </div>
+                <p className="text-4xl font-bold font-heading text-secondary mb-2">5</p>
+                <p className="text-muted-foreground">Sites de Formation</p>
+              </div>
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 text-primary mb-4">
+                  <GraduationCap className="w-8 h-8" />
+                </div>
+                <p className="text-4xl font-bold font-heading text-primary mb-2">CQM/CQP</p>
+                <p className="text-muted-foreground">Certifications d'État</p>
+              </div>
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary/10 text-secondary mb-4">
+                  <Users className="w-8 h-8" />
+                </div>
+                <p className="text-4xl font-bold font-heading text-secondary mb-2">1000+</p>
+                <p className="text-muted-foreground">Diplômés</p>
+              </div>
             </div>
           </div>
         </section>

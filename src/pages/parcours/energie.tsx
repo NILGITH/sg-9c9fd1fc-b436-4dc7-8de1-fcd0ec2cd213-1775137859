@@ -40,9 +40,16 @@ export default function Energie({ formations }: EnergieProps) {
       <Header />
 
       <main>
-        {/* Hero */}
-        <section className="py-20 bg-gradient-hero text-white">
-          <div className="container-custom max-w-5xl text-center space-y-8">
+        {/* Hero with Solar Panel Background */}
+        <section className="py-20 bg-gradient-hero text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <img 
+              src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&auto=format&fit=crop"
+              alt="Panneaux solaires"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="container-custom max-w-5xl text-center space-y-8 relative z-10">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm mb-4">
               <Zap className="w-10 h-10" />
             </div>

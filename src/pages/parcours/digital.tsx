@@ -40,9 +40,16 @@ export default function Digital({ formations }: DigitalProps) {
       <Header />
 
       <main>
-        {/* Hero */}
-        <section className="py-20 bg-gradient-hero text-white">
-          <div className="container-custom max-w-5xl text-center space-y-8">
+        {/* Hero with Background Image */}
+        <section className="py-20 bg-gradient-hero text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <img 
+              src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&auto=format&fit=crop"
+              alt="Formation informatique"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="container-custom max-w-5xl text-center space-y-8 relative z-10">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm mb-4">
               <Code className="w-10 h-10" />
             </div>

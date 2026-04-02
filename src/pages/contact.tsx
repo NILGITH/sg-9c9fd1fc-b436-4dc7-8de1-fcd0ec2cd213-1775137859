@@ -52,15 +52,22 @@ export default function Contact() {
       
       <Header />
       
-      <main className="pt-20">
-        {/* Hero Section */}
-        <section className="gradient-hero text-white py-20">
-          <div className="container-custom text-center">
-            <h1 className="font-heading font-bold text-4xl md:text-5xl mb-6">
-              Contactez-nous
+      <main>
+        {/* Hero with Image */}
+        <section className="py-20 bg-gradient-hero text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <img 
+              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&auto=format&fit=crop"
+              alt="Contactez-nous"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="container-custom max-w-3xl text-center space-y-6 relative z-10">
+            <h1 className="font-heading font-bold text-4xl md:text-6xl">
+              Contactez-Nous
             </h1>
-            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
-              Nous sommes à votre écoute pour répondre à toutes vos questions
+            <p className="text-xl text-white/90">
+              Une question ? Un projet de formation ? Notre équipe est à votre écoute pour vous accompagner dans votre parcours professionnel.
             </p>
           </div>
         </section>
