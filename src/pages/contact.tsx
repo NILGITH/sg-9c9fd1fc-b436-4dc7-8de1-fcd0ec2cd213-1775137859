@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Phone, Mail, MapPin, Clock, Send, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import Link from "next/link";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -298,7 +299,7 @@ export default function Contact() {
                     5 centres à votre disposition
                   </p>
                   <Button variant="outline" className="w-full" asChild>
-                    <a href="/apropos#sites">Voir les centres</a>
+                    <Link href="/apropos#sites">Voir les centres</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -313,7 +314,7 @@ export default function Contact() {
                     Inscrivez-vous en ligne
                   </p>
                   <Button variant="outline" className="w-full" asChild>
-                    <a href="/admissions">S'inscrire</a>
+                    <Link href="/admissions">S'inscrire</Link>
                   </Button>
                 </CardContent>
               </Card>
