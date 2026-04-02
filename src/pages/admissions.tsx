@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { formationService, type Formation } from "@/services/formationService";
-import { enrollmentService, type EnrollmentInsert } from "@/services/enrollmentService";
+import { enrollmentService } from "@/services/enrollmentService";
 import { paymentService } from "@/services/paymentService";
 import { GraduationCap, BookOpen, CreditCard, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +18,7 @@ export default function Admissions() {
   const { toast } = useToast();
   const [formations, setFormations] = useState<Formation[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: Form, 2: Payment
+  const [step, setStep] = useState(1); // 1: Form, 2: Payment, 3: Success
   const [enrollmentId, setEnrollmentId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
@@ -91,8 +91,19 @@ export default function Admissions() {
     
     try {
       if (enrollmentId) {
+        // Update the enrollment's payment status to paid
         await enrollmentService.updatePaymentStatus(enrollmentId, "paid", 25000); // Ex: 25,000 FCFA / XOF
         
+        // Register the payment in our new payments table
+        await paymentService.create({
+          enrollment_id: enrollmentId,
+          amount: 25000,
+          payment_method: "mobile_money",
+          payment_status: "pending", // Set as pending so admin can validate it in Dashboard
+          payment_date: new Date().toISOString(),
+          payment_reference: `PAY-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
+        });
+
         toast({
           title: "Paiement réussi !",
           description: "Vos droits d'inscription ont été réglés avec succès. Bienvenue chez TCI Formation !",
@@ -101,68 +112,11 @@ export default function Admissions() {
         setStep(3); // Success step
       }
     } catch (error) {
+      console.error(error);
       toast({
         variant: "destructive",
         title: "Erreur de paiement",
         description: "Le paiement a échoué. Veuillez réessayer.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      // Create enrollment
-      const enrollmentData: EnrollmentInsert = {
-        full_name: formData.fullName,
-        email: formData.email,
-        phone: formData.phone,
-        formation_id: formData.formationId,
-        level: formData.level,
-        address: formData.address || null,
-        birth_date: formData.birthDate || null,
-        status: "pending",
-      };
-
-      const { data: enrollment, error: enrollmentError } = await enrollmentService.create(enrollmentData);
-
-      if (enrollmentError || !enrollment) {
-        throw new Error("Erreur lors de la création de l'inscription");
-      }
-
-      // Create payment record
-      const { error: paymentError } = await paymentService.create({
-        enrollment_id: enrollment.id,
-        amount: 25000,
-        payment_method: "mobile_money",
-        payment_status: "pending",
-        payment_date: new Date().toISOString(),
-        payment_reference: `PAY-${Date.now()}-${Math.random().toString(36).substring(7).toUpperCase()}`,
-        notes: null,
-        validated_by: null,
-        validated_at: null,
-      });
-
-      if (paymentError) {
-        console.error("Erreur création paiement:", paymentError);
-        // Continue even if payment creation fails
-      }
-
-      setStep(3);
-      toast({
-        title: "Succès !",
-        description: "Votre inscription a été enregistrée avec succès.",
-      });
-    } catch (error) {
-      console.error("Erreur:", error);
-      toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'inscription. Veuillez réessayer.",
-        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
