@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+import type { Tables } from "@/integrations/supabase/types";
 
 export type GalleryMedia = Tables<"gallery">;
 
@@ -22,7 +22,7 @@ export const galleryService = {
     return { data: data || [], error };
   },
 
-  async create(media: TablesInsert<"gallery">) {
+  async create(media: Omit<GalleryMedia, "id" | "created_at">) {
     const { data, error } = await supabase
       .from("gallery")
       .insert(media)

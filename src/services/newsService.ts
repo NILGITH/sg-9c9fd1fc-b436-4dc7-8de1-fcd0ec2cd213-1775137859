@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+import type { Tables } from "@/integrations/supabase/types";
 
 export type News = Tables<"news">;
 
@@ -30,7 +30,7 @@ export const newsService = {
     return { data, error };
   },
 
-  async create(news: TablesInsert<"news">) {
+  async create(news: Omit<News, "id" | "created_at">) {
     const { data, error } = await supabase
       .from("news")
       .insert(news)
