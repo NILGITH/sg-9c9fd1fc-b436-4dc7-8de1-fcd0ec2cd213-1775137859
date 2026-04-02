@@ -68,6 +68,40 @@ export default function AdminFormations() {
     router.push("/admin/login");
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      if (editingFormation) {
+        await formationService.update(editingFormation.id, formData);
+        toast({
+          title: "Succès",
+          description: "Formation modifiée avec succès",
+        });
+      } else {
+        await formationService.create({
+          ...formData,
+          slug: formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+        } as any);
+        toast({
+          title: "Succès",
+          description: "Formation créée avec succès",
+        });
+      }
+      
+      setIsDialogOpen(false);
+      resetForm();
+      loadFormations();
+    } catch (error) {
+      console.error("Error saving formation:", error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleEdit = (formation: Formation) => {
     setEditingFormation(formation);
     setFormData({
