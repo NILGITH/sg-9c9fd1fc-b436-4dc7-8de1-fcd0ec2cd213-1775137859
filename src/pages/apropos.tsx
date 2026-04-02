@@ -105,12 +105,12 @@ export default function Apropos() {
           <div className="container-custom max-w-6xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="bg-gradient-hero text-white p-10 rounded-3xl">
-                <h2 className="font-heading font-bold text-3xl mb-6">Notre Mission</h2>
+                <h2 className="font-heading font-bold text-3xl mb-6">Problématique et Mission</h2>
                 <p className="text-lg leading-relaxed text-white/90">
-                  Former des professionnels compétents et qualifiés, capables de répondre 
-                  aux exigences du marché du travail béninois et africain. Nous nous engageons 
-                  à offrir des formations pratiques et adaptées qui favorisent l&apos;insertion 
-                  professionnelle et l&apos;entrepreneuriat.
+                  Le problème de l'emploi des jeunes est devenu une préoccupation majeure. Avec l'environnement concurrentiel d'aujourd'hui, il est important que la jeunesse reçoive une formation en adéquation avec les besoins du marché.
+                </p>
+                <p className="text-lg leading-relaxed text-white/90 mt-4">
+                  Voilà pourquoi <strong>TCI BENIN</strong> s'est engagé depuis dix (10) ans à faire de la formation professionnelle une offre qui, à travers la qualité de l'enseignement, met déjà sur le marché un nouveau type de professionnels capables de se prendre en charge.
                 </p>
               </div>
 
@@ -118,16 +118,52 @@ export default function Apropos() {
                 <h2 className="font-heading font-bold text-3xl mb-6">Notre Vision</h2>
                 <p className="text-lg leading-relaxed text-muted-foreground">
                   Devenir le centre de référence en matière de formation professionnelle au Bénin, 
-                  reconnu pour la qualité de ses programmes, l&apos;expertise de ses formateurs et 
-                  le taux d&apos;insertion professionnelle de ses diplômés.
+                  reconnu pour la qualité de ses programmes, l'expertise de ses formateurs et 
+                  le taux d'insertion professionnelle de ses diplômés.
                 </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Why Choose Us */}
+        {/* Domaines d'intervention */}
         <section className="py-20 bg-muted/30">
+          <div className="container-custom max-w-4xl">
+            <h2 className="font-heading font-bold text-3xl md:text-4xl mb-12 text-center">
+              Domaines D'intervention
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {[
+                "Électricité bâtiment",
+                "Systèmes solaires photovoltaïques",
+                "Froid et climatisation",
+                "Vidéo surveillance",
+                "Informatique appliquée",
+                "Graphisme",
+                "Génie Electrique et Informatique",
+                "Génie Electrique Informatique et Réseaux",
+                "Génie Logiciel et réseaux",
+                "Génie des Télécommunications et Réseaux",
+                "Génie Electrique et Maintenance Industrielle",
+                "Génie Electrique Froid et Plomberie",
+                "Secrétariat",
+                "Coupe et Couture",
+                "Coiffure et Esthétique",
+                "Cuisine et restauration",
+              ].map((domaine, index) => (
+                <div key={index} className="flex items-center gap-3 bg-white p-4 rounded-xl shadow-sm border border-muted">
+                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                  </div>
+                  <span className="text-muted-foreground font-semibold">{domaine}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Why Choose Us */}
+        <section className="py-20">
           <div className="container-custom max-w-4xl">
             <h2 className="font-heading font-bold text-3xl md:text-4xl text-center mb-12">
               Pourquoi choisir TCI Formation ?
