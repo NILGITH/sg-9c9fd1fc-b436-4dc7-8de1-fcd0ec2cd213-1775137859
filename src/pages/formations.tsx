@@ -10,9 +10,9 @@ interface FormationsProps {
 }
 
 export default function Formations({ formations }: FormationsProps) {
-  const diplomantes = formations.filter((f) => f.category_id === "diplomantes");
-  const autresDiplomantes = formations.filter((f) => f.category_id === "autres_diplomantes");
-  const enLigne = formations.filter((f) => f.category_id === "en_ligne");
+  const diplomantes = formations.filter((f) => f.category_id === "11111111-1111-1111-1111-111111111111");
+  const autresDiplomantes = formations.filter((f) => f.category_id === "22222222-2222-2222-2222-222222222222");
+  const enLigne = formations.filter((f) => f.category_id === "33333333-3333-3333-3333-333333333333");
 
   return (
     <>
