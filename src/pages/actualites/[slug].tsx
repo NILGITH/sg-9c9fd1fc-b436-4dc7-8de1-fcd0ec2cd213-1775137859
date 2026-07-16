@@ -5,15 +5,10 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { newsService, type News, type NewsImage } from "@/services/newsService";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-
-type NewsWithImages = News & {
-  news_images: NewsImage[];
-};
+import { newsService, type News } from "@/services/newsService";
 
 interface NewsDetailProps {
-  news: NewsWithImages;
+  news: News;
 }
 
 export default function NewsDetail({ news }: NewsDetailProps) {
@@ -28,7 +23,7 @@ export default function NewsDetail({ news }: NewsDetailProps) {
       <SEO
         title={`${news.title} - TCI Formation`}
         description={news.excerpt || ""}
-        image={news.news_images[0]?.image_url || news.image_url}
+        image={news.image_url || undefined}
       />
 
       <Header />
@@ -52,40 +47,8 @@ export default function NewsDetail({ news }: NewsDetailProps) {
               <time dateTime={news.created_at || ""}>{formattedDate}</time>
             </div>
 
-            {/* Images Carousel */}
-            {news.news_images && news.news_images.length > 0 ? (
-              <div className="mb-8">
-                {news.news_images.length === 1 ? (
-                  <div className="aspect-video relative rounded-2xl overflow-hidden">
-                    <img
-                      src={news.news_images[0].image_url}
-                      alt={news.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ) : (
-                  <Carousel className="w-full">
-                    <CarouselContent>
-                      {news.news_images
-                        .sort((a, b) => a.display_order - b.display_order)
-                        .map((image, index) => (
-                          <CarouselItem key={image.id}>
-                            <div className="aspect-video relative rounded-2xl overflow-hidden">
-                              <img
-                                src={image.image_url}
-                                alt={`${news.title} - Image ${index + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                  </Carousel>
-                )}
-              </div>
-            ) : news.image_url ? (
+            {/* Image principale */}
+            {news.image_url && (
               <div className="aspect-video relative rounded-2xl overflow-hidden mb-8">
                 <img
                   src={news.image_url}
@@ -93,7 +56,7 @@ export default function NewsDetail({ news }: NewsDetailProps) {
                   className="w-full h-full object-cover"
                 />
               </div>
-            ) : null}
+            )}
 
             {/* Excerpt */}
             {news.excerpt && (
