@@ -2,12 +2,30 @@
 // Types are generated from the Supabase database schema using the Supabase CLI.
  
 
-import type { Database as DB } from './database.types';
+import { createClient } from "@supabase/supabase-js";
 
-export type Database = DB;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Type helper pour les tables Supabase
+export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
+
+// Définition temporaire du type Database si database.types.ts est vide
+interface Database {
+  public: {
+    Tables: {
+      [key: string]: {
+        Row: any;
+        Insert: any;
+        Update: any;
+      };
+    };
+  };
+}
 
 // Re-export commonly used types for convenience
-export type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row'];
 export type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
 export type Functions<T extends keyof Database['public']['Functions']> = Database['public']['Functions'][T];
 
