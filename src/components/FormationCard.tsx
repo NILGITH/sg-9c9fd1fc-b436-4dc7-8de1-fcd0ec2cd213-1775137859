@@ -31,7 +31,7 @@ export function FormationCard({ formation }: FormationCardProps) {
         )}
       </CardContent>
       <CardFooter className="p-6 pt-0">
-        <Link href={`/formations/${formation.slug}`} className="w-full">
+        <Link href={`/formations/${formation.id}`} className="w-full">
           <Button variant="default" className="w-full bg-primary hover:bg-primary/90">
             En savoir plus
           </Button>
