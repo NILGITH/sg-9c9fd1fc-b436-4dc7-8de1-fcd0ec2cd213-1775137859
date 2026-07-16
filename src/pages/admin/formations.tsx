@@ -311,13 +311,14 @@ export default function AdminFormations() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="image_url">URL de l'image</Label>
-                    <Input
-                      id="image_url"
-                      value={formData.image_url}
-                      onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                      placeholder="https://images.unsplash.com/..."
+                    <Label>Image de la formation</Label>
+                    <ImageUploader
+                      onUpload={(url) => setFormData({ ...formData, image_url: url })}
+                      currentImage={formData.image_url}
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Téléchargez une image ou collez une URL depuis Unsplash
+                    </p>
                   </div>
 
                   <div className="flex gap-4">
