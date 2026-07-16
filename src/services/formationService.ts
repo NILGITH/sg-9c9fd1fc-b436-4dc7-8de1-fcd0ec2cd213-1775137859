@@ -36,14 +36,12 @@ export const formationService = {
   },
 
   async update(id: string, formation: Partial<Formation>) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("formations")
       .update(formation)
-      .eq("id", id)
-      .select()
-      .single();
+      .eq("id", id);
     
-    return { data, error };
+    return { error };
   },
 
   async delete(id: string) {

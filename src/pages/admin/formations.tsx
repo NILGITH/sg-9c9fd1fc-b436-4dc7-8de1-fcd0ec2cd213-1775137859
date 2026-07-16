@@ -72,7 +72,11 @@ export default function AdminFormations() {
     e.preventDefault();
 
     if (!formData.title || !formData.description || !formData.requirements || !formData.pole) {
-      alert("Veuillez remplir tous les champs obligatoires (titre, description, prérequis, pôle)");
+      toast({
+        title: "Erreur",
+        description: "Veuillez remplir tous les champs obligatoires (titre, description, prérequis, pôle)",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -82,7 +86,7 @@ export default function AdminFormations() {
         description: formData.description,
         requirements: formData.requirements,
         duration: formData.duration || null,
-        category_id: null, // No longer using categories
+        category_id: null,
         icon_color: formData.icon_color,
         image_url: formData.image_url || null,
         pole: formData.pole === 'none' ? null : formData.pole,
@@ -91,9 +95,17 @@ export default function AdminFormations() {
       if (editingFormation) {
         const { error } = await formationService.update(editingFormation.id, formationData);
         if (error) throw error;
+        toast({
+          title: "Succès",
+          description: "Formation modifiée avec succès",
+        });
       } else {
         const { error } = await formationService.create(formationData as any);
         if (error) throw error;
+        toast({
+          title: "Succès",
+          description: "Formation créée avec succès",
+        });
       }
 
       setIsDialogOpen(false);
@@ -101,7 +113,11 @@ export default function AdminFormations() {
       loadFormations();
     } catch (error: any) {
       console.error("Error saving formation:", error);
-      alert(`Erreur: ${error.message}`);
+      toast({
+        title: "Erreur",
+        description: `Échec de l'opération: ${error.message}`,
+        variant: "destructive",
+      });
     }
   };
 
