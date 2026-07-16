@@ -53,16 +53,12 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Couleurs TCI (Logo)
+        // Couleurs TCI du logo uniquement
         "tci-blue": "hsl(var(--primary))",
         "tci-red": "hsl(var(--accent-red))",
-        // Couleurs Bénin (Identité nationale)
-        "benin-green": "hsl(var(--benin-green))",
-        "benin-gold": "hsl(var(--benin-gold))",
       },
       backgroundImage: {
         "gradient-hero": "var(--gradient-hero)",
-        "gradient-success": "var(--gradient-success)",
         "gradient-tci": "var(--gradient-tci)",
       },
       borderRadius: {
