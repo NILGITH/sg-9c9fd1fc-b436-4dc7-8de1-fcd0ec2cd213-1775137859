@@ -40,10 +40,9 @@ export const formationService = {
       .from("formations")
       .update(formation)
       .eq("id", id)
-      .select()
-      .single();
+      .select();
     
-    return { data, error };
+    return { data: data?.[0] || null, error };
   },
 
   async delete(id: string) {

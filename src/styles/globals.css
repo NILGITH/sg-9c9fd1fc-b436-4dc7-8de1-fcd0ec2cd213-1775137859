@@ -13,24 +13,18 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
     
-    /* Couleurs TCI - Logo */
+    /* Couleurs du logo TCI uniquement */
     --primary: 213 94% 45%; /* Bleu TCI */
     --primary-foreground: 0 0% 100%;
     --accent-red: 4 90% 58%; /* Rouge TCI */
     --accent-red-foreground: 0 0% 100%;
     
-    /* Couleurs Bénin - Identité nationale */
-    --benin-green: 142 71% 45%; /* Vert du drapeau */
-    --benin-green-foreground: 0 0% 100%;
-    --benin-gold: 38 92% 50%; /* Or/Jaune du drapeau */
-    --benin-gold-foreground: 222 47% 11%;
-    
     --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
     --muted: 214 32% 91%;
     --muted-foreground: 215 16% 47%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 213 94% 45%;
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     --border: 214 32% 91%;
@@ -38,9 +32,8 @@
     --ring: 213 94% 45%;
     --radius: 0.75rem;
     
-    /* Gradients combinés TCI + Bénin */
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--benin-green)) 100%);
-    --gradient-success: linear-gradient(135deg, hsl(var(--benin-green)) 0%, hsl(var(--benin-gold)) 100%);
+    /* Gradients TCI uniquement */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent-red)) 100%);
     --gradient-tci: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent-red)) 100%);
   }
 
@@ -55,10 +48,6 @@
     --primary-foreground: 0 0% 100%;
     --accent-red: 4 90% 58%;
     --accent-red-foreground: 0 0% 100%;
-    --benin-green: 142 71% 45%;
-    --benin-green-foreground: 0 0% 100%;
-    --benin-gold: 38 92% 50%;
-    --benin-gold-foreground: 222 47% 11%;
     --secondary: 217 33% 18%;
     --secondary-foreground: 0 0% 98%;
     --muted: 217 33% 18%;
@@ -122,38 +111,9 @@
     border-color: hsl(var(--accent-red));
   }
 
-  /* Couleurs Bénin */
-  .text-benin-green {
-    color: hsl(var(--benin-green));
-  }
-
-  .bg-benin-green {
-    background-color: hsl(var(--benin-green));
-  }
-
-  .border-benin-green {
-    border-color: hsl(var(--benin-green));
-  }
-
-  .text-benin-gold {
-    color: hsl(var(--benin-gold));
-  }
-
-  .bg-benin-gold {
-    background-color: hsl(var(--benin-gold));
-  }
-
-  .border-benin-gold {
-    border-color: hsl(var(--benin-gold));
-  }
-
-  /* Gradients */
+  /* Gradients TCI */
   .bg-gradient-hero {
     background: var(--gradient-hero);
-  }
-
-  .bg-gradient-success {
-    background: var(--gradient-success);
   }
 
   .bg-gradient-tci {
@@ -173,17 +133,12 @@
     animation: scale 0.5s ease-out;
   }
 
-  /* Section avec fond subtil Bénin */
-  .section-benin-pattern {
-    @apply bg-gradient-to-br from-benin-green/5 via-background to-benin-gold/5;
-  }
-
   /* Card avec effet hover élégant */
   .card-hover {
     @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
   }
 
-  /* Boutons thématiques */
+  /* Boutons thématiques TCI */
   .btn-tci {
     @apply bg-gradient-to-r from-tci-blue to-tci-blue/90 hover:from-tci-blue/90 hover:to-tci-blue text-white shadow-lg hover:shadow-xl transition-all duration-300;
   }
@@ -192,20 +147,9 @@
     @apply bg-gradient-to-r from-tci-red to-tci-red/90 hover:from-tci-red/90 hover:to-tci-red text-white shadow-lg hover:shadow-xl transition-all duration-300;
   }
 
-  .btn-benin {
-    @apply bg-gradient-to-r from-benin-green to-benin-gold hover:from-benin-green/90 hover:to-benin-gold/90 text-white shadow-lg hover:shadow-xl transition-all duration-300;
-  }
-
-  /* Badge patriotique */
-  .badge-benin {
-    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-benin-green to-benin-gold text-white font-semibold shadow-lg;
-  }
-
-  /* Bordure tricolore inspirée du drapeau */
-  .border-benin-flag {
-    border-left: 4px solid hsl(var(--benin-green));
-    border-top: 2px solid hsl(var(--benin-gold));
-    border-bottom: 2px solid hsl(var(--accent-red));
+  /* Badge TCI */
+  .badge-tci {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-tci-blue to-tci-red text-white font-semibold shadow-lg;
   }
 }
 
@@ -254,13 +198,13 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--benin-green)) 100%);
+  background: linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--accent-red)) 100%);
   border-radius: 6px;
   border: 3px solid hsl(var(--secondary));
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, hsl(var(--primary)) 0%, hsl(var(--benin-gold)) 100%);
+  background: hsl(var(--primary));
 }
 
 /* Focus visible avec couleurs TCI */
@@ -269,10 +213,10 @@ html {
   outline-offset: 2px;
 }
 
-/* Pattern de fond inspiré du Bénin */
+/* Pattern de fond TCI */
 .bg-grid-pattern {
   background-image: 
-    linear-gradient(to right, hsl(var(--benin-green) / 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(var(--benin-gold) / 0.03) 1px, transparent 1px);
+    linear-gradient(to right, hsl(var(--primary) / 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--accent-red) / 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
 }
