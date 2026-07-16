@@ -4,7 +4,7 @@ import type { Tables } from "@/integrations/supabase/types";
 export type GalleryMedia = Tables<"gallery">;
 
 export const galleryService = {
-  async getAll(type?: "photo" | "video") {
+  async getAll(type?: "image" | "video") {
     let query = supabase
       .from("gallery")
       .select("*")

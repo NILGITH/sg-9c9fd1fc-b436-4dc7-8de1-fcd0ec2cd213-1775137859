@@ -47,14 +47,12 @@ export const formationService = {
   },
 
   async delete(id: string) {
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from("formations")
       .delete()
-      .eq("id", id)
-      .select()
-      .single();
+      .eq("id", id);
     
-    return { data, error };
+    return { error };
   },
 
   async uploadImage(file: File) {

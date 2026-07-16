@@ -22,10 +22,10 @@ export default function AdminGallery() {
   const [videos, setVideos] = useState<GalleryMedia[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [mediaType, setMediaType] = useState<"photo" | "video">("photo");
+  const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [editingMedia, setEditingMedia] = useState<GalleryMedia | null>(null);
   const [formData, setFormData] = useState({
-    media_type: "photo" as "photo" | "video",
+    media_type: "image" as "image" | "video",
     media_url: "",
     title: "",
     description: "",
@@ -48,7 +48,7 @@ export default function AdminGallery() {
 
   const loadGallery = async () => {
     setLoading(true);
-    const { data: allPhotos } = await galleryService.getAll("photo");
+    const { data: allPhotos } = await galleryService.getAll("image");
     const { data: allVideos } = await galleryService.getAll("video");
     if (allPhotos) setPhotos(allPhotos);
     if (allVideos) setVideos(allVideos);
@@ -76,7 +76,7 @@ export default function AdminGallery() {
   const handleEdit = (item: GalleryMedia) => {
     setEditingMedia(item);
     setFormData({
-      media_type: item.media_type as "photo" | "video",
+      media_type: item.media_type as "image" | "video",
       media_url: item.media_url,
       title: item.title || "",
       description: item.description || "",
@@ -107,7 +107,7 @@ export default function AdminGallery() {
     });
   };
 
-  const openDialog = (type: "photo" | "video") => {
+  const openDialog = (type: "image" | "video") => {
     setMediaType(type);
     setFormData({ ...formData, media_type: type, media_url: "" });
     setIsDialogOpen(true);
@@ -154,7 +154,7 @@ export default function AdminGallery() {
 
             <TabsContent value="photos">
               <div className="mb-6">
-                <Button onClick={() => openDialog("photo")}>
+                <Button onClick={() => openDialog("image")}>
                   <Plus className="w-4 h-4 mr-2" />
                   Ajouter une photo
                 </Button>
@@ -168,7 +168,7 @@ export default function AdminGallery() {
                     <p className="text-muted-foreground mb-6">
                       Commencez par ajouter votre première photo
                     </p>
-                    <Button onClick={() => openDialog("photo")}>
+                    <Button onClick={() => openDialog("image")}>
                       <Plus className="w-4 h-4 mr-2" />
                       Ajouter une photo
                     </Button>
@@ -286,17 +286,17 @@ export default function AdminGallery() {
           <DialogContent className="max-w-2xl">
             <DialogHeader>
               <DialogTitle>
-                {editingMedia ? `Modifier ${formData.media_type === "photo" ? "la photo" : "la vidéo"}` : `Ajouter ${formData.media_type === "photo" ? "une photo" : "une vidéo"}`}
+                {editingMedia ? `Modifier ${formData.media_type === "image" ? "la photo" : "la vidéo"}` : `Ajouter ${formData.media_type === "image" ? "une photo" : "une vidéo"}`}
               </DialogTitle>
               <DialogDescription>
-                {formData.media_type === "photo" 
+                {formData.media_type === "image" 
                   ? "Ajoutez une URL d'image depuis Unsplash ou un autre service"
                   : "Collez l'URL d'intégration YouTube (format embed)"}
               </DialogDescription>
             </DialogHeader>
             
             <form onSubmit={handleSubmit} className="space-y-4">
-              {formData.media_type === "photo" ? (
+              {formData.media_type === "image" ? (
                 <div className="space-y-2">
                   <Label>Photo</Label>
                   <ImageUploader
