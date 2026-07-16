@@ -40,18 +40,21 @@ export const formationService = {
       .from("formations")
       .update(formation)
       .eq("id", id)
-      .select();
+      .select()
+      .single();
     
-    return { data: data?.[0] || null, error };
+    return { data, error };
   },
 
   async delete(id: string) {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("formations")
       .delete()
-      .eq("id", id);
+      .eq("id", id)
+      .select()
+      .single();
     
-    return { error };
+    return { data, error };
   },
 
   async uploadImage(file: File) {
