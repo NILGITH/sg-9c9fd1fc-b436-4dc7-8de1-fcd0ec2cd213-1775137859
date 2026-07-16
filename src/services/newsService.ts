@@ -2,74 +2,39 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
 
 export type News = Tables<"news">;
-export type NewsImage = Tables<"news_images">;
 
 export const newsService = {
   async getAll() {
     const { data, error } = await supabase
       .from("news")
-      .select(`
-        *,
-        news_images (
-          id,
-          image_url,
-          display_order
-        )
-      `)
-      .order("created_at", { ascending: false });
+      .select("*")
+      .eq("published", true)
+      .order("published_at", { ascending: false });
     
     return { data: data || [], error };
   },
 
-  async getBySlug(slug: string) {
+  async getBySlug(slug: string): Promise<{ data: News | null; error: any }> {
     const { data, error } = await supabase
       .from("news")
-      .select(`
-        *,
-        news_images (
-          id,
-          image_url,
-          display_order
-        )
-      `)
+      .select("*")
       .eq("slug", slug)
-      .single();
+      .maybeSingle();
     
     return { data, error };
   },
 
-  async create(news: Omit<News, "id" | "created_at" | "updated_at">, imageUrls: string[] = []) {
+  async create(news: Omit<News, "id" | "created_at" | "updated_at">) {
     const { data, error } = await supabase
       .from("news")
       .insert(news)
       .select()
       .single();
     
-    if (error || !data) {
-      return { data: null, error };
-    }
-
-    // Insert images
-    if (imageUrls.length > 0) {
-      const newsImages = imageUrls.map((url, index) => ({
-        news_id: data.id,
-        image_url: url,
-        display_order: index,
-      }));
-
-      const { error: imagesError } = await supabase
-        .from("news_images")
-        .insert(newsImages);
-
-      if (imagesError) {
-        console.error("Error inserting images:", imagesError);
-      }
-    }
-
-    return { data, error: null };
+    return { data, error };
   },
 
-  async update(id: string, news: Partial<News>, imageUrls?: string[]) {
+  async update(id: string, news: Partial<News>) {
     const { data, error } = await supabase
       .from("news")
       .update(news)
@@ -77,46 +42,65 @@ export const newsService = {
       .select()
       .single();
     
-    if (error || !data) {
-      return { data: null, error };
-    }
-
-    // Update images if provided
-    if (imageUrls !== undefined) {
-      // Delete old images
-      await supabase
-        .from("news_images")
-        .delete()
-        .eq("news_id", id);
-
-      // Insert new images
-      if (imageUrls.length > 0) {
-        const newsImages = imageUrls.map((url, index) => ({
-          news_id: id,
-          image_url: url,
-          display_order: index,
-        }));
-
-        const { error: imagesError } = await supabase
-          .from("news_images")
-          .insert(newsImages);
-
-        if (imagesError) {
-          console.error("Error inserting images:", imagesError);
-        }
-      }
-    }
-
-    return { data, error: null };
+    return { data, error };
   },
 
   async delete(id: string) {
-    // Images will be deleted automatically via ON DELETE CASCADE
     const { error } = await supabase
       .from("news")
       .delete()
       .eq("id", id);
     
     return { error };
+  },
+
+  generateSlug(title: string): string {
+    return title
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  },
+
+  async uploadImage(file: File) {
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `news/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("public")
+      .upload(filePath, file);
+
+    if (uploadError) {
+      return { data: null, error: uploadError };
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from("public")
+      .getPublicUrl(filePath);
+
+    return { data: publicUrl, error: null };
+  },
+
+  async getRelated(currentSlug: string, limit = 3) {
+    const { data, error } = await supabase
+      .from("news")
+      .select("*")
+      .eq("published", true)
+      .neq("slug", currentSlug)
+      .order("published_at", { ascending: false })
+      .limit(limit);
+    
+    return { data: data || [], error };
+  },
+
+  async getAllSlugs() {
+    const { data, error } = await supabase
+      .from("news")
+      .select("slug")
+      .eq("published", true);
+    
+    return { data: data || [], error };
   },
 };
