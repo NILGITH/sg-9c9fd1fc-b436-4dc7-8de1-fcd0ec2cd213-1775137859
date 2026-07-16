@@ -34,7 +34,7 @@ export default function AdminDashboard() {
     paymentsRejected: 0,
     totalRevenue: 0,
     monthlyRevenue: 0,
-    conversionRate: 0,
+    conversionRate: 0
   });
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function AdminDashboard() {
   const checkAuth = async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session) {
         router.push("/admin/login");
         return;
@@ -68,25 +68,25 @@ export default function AdminDashboard() {
       const { data: payments } = await supabase.from("payments").select("id, amount, payment_status, created_at");
 
       // Calculate stats
-      const enrollmentsPending = enrollments?.filter(e => e.status === 'pending').length || 0;
-      const enrollmentsApproved = enrollments?.filter(e => e.status === 'approved').length || 0;
-      const enrollmentsRejected = enrollments?.filter(e => e.status === 'rejected').length || 0;
+      const enrollmentsPending = enrollments?.filter((e) => e.status === 'pending').length || 0;
+      const enrollmentsApproved = enrollments?.filter((e) => e.status === 'approved').length || 0;
+      const enrollmentsRejected = enrollments?.filter((e) => e.status === 'rejected').length || 0;
 
-      const paymentsPending = payments?.filter(p => p.payment_status === 'pending').length || 0;
-      const paymentsValidated = payments?.filter(p => p.payment_status === 'validated').length || 0;
-      const paymentsRejected = payments?.filter(p => p.payment_status === 'rejected').length || 0;
+      const paymentsPending = payments?.filter((p) => p.payment_status === 'pending').length || 0;
+      const paymentsValidated = payments?.filter((p) => p.payment_status === 'validated').length || 0;
+      const paymentsRejected = payments?.filter((p) => p.payment_status === 'rejected').length || 0;
 
       const totalRevenue = payments?.reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0) || 0;
-      
+
       // Monthly revenue (current month)
       const currentMonth = new Date().toISOString().substring(0, 7); // YYYY-MM
-      const monthlyRevenue = payments?.filter(p => p.created_at?.startsWith(currentMonth))
-        .reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0) || 0;
+      const monthlyRevenue = payments?.filter((p) => p.created_at?.startsWith(currentMonth)).
+      reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0) || 0;
 
       // Conversion rate (approved enrollments / total enrollments)
-      const conversionRate = enrollments && enrollments.length > 0
-        ? Math.round((enrollmentsApproved / enrollments.length) * 100)
-        : 0;
+      const conversionRate = enrollments && enrollments.length > 0 ?
+      Math.round(enrollmentsApproved / enrollments.length * 100) :
+      0;
 
       setStats({
         newsCount: news?.length || 0,
@@ -103,15 +103,15 @@ export default function AdminDashboard() {
         paymentsRejected,
         totalRevenue,
         monthlyRevenue,
-        conversionRate,
+        conversionRate
       });
 
       // Generate enrollment status pie chart
       setEnrollmentStatusData([
-        { name: 'En attente', value: enrollmentsPending, color: '#F59E0B' },
-        { name: 'Approuvées', value: enrollmentsApproved, color: '#10B981' },
-        { name: 'Rejetées', value: enrollmentsRejected, color: '#EF4444' },
-      ]);
+      { name: 'En attente', value: enrollmentsPending, color: '#F59E0B' },
+      { name: 'Approuvées', value: enrollmentsApproved, color: '#10B981' },
+      { name: 'Rejetées', value: enrollmentsRejected, color: '#EF4444' }]
+      );
 
       // Generate chart data for enrollments over last 7 days
       if (enrollments) {
@@ -121,8 +121,8 @@ export default function AdminDashboard() {
           return d.toISOString().split('T')[0];
         });
 
-        const chartData = last7Days.map(date => {
-          const count = enrollments.filter(e => e.created_at?.startsWith(date)).length;
+        const chartData = last7Days.map((date) => {
+          const count = enrollments.filter((e) => e.created_at?.startsWith(date)).length;
           const [year, month, day] = date.split('-');
           return {
             date: `${day}/${month}`,
@@ -133,10 +133,10 @@ export default function AdminDashboard() {
 
         // Generate formation popularity data
         if (formations) {
-          const popularityData = formations.slice(0, 5).map(f => {
+          const popularityData = formations.slice(0, 5).map((f) => {
             return {
               name: f.title.substring(0, 25) + (f.title.length > 25 ? '...' : ''),
-              inscrits: enrollments.filter(e => e.formation_id === f.id).length
+              inscrits: enrollments.filter((e) => e.formation_id === f.id).length
             };
           }).sort((a, b) => b.inscrits - a.inscrits);
           setFormationStats(popularityData);
@@ -152,8 +152,8 @@ export default function AdminDashboard() {
           return d.toISOString().split('T')[0];
         });
 
-        const paymentChartData = last7Days.map(date => {
-          const dayPayments = payments.filter(p => p.created_at?.startsWith(date));
+        const paymentChartData = last7Days.map((date) => {
+          const dayPayments = payments.filter((p) => p.created_at?.startsWith(date));
           const totalAmount = dayPayments.reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0);
           const [year, month, day] = date.split('-');
           return {
@@ -170,8 +170,8 @@ export default function AdminDashboard() {
           return d.toISOString().substring(0, 7); // YYYY-MM
         });
 
-        const monthlyRevenueData = last6Months.map(month => {
-          const monthPayments = payments.filter(p => p.created_at?.startsWith(month));
+        const monthlyRevenueData = last6Months.map((month) => {
+          const monthPayments = payments.filter((p) => p.created_at?.startsWith(month));
           const total = monthPayments.reduce((sum, p) => sum + (parseFloat(p.amount as any) || 0), 0);
           const [year, monthNum] = month.split('-');
           const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
@@ -184,10 +184,10 @@ export default function AdminDashboard() {
 
         // Payment status distribution
         setPaymentStatusData([
-          { name: 'En attente', value: paymentsPending, color: '#F59E0B' },
-          { name: 'Validés', value: paymentsValidated, color: '#10B981' },
-          { name: 'Rejetés', value: paymentsRejected, color: '#EF4444' },
-        ]);
+        { name: 'En attente', value: paymentsPending, color: '#F59E0B' },
+        { name: 'Validés', value: paymentsValidated, color: '#10B981' },
+        { name: 'Rejetés', value: paymentsRejected, color: '#EF4444' }]
+        );
       }
     } catch (error) {
       console.error("Error loading stats:", error);
@@ -205,16 +205,16 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    );
+      </div>);
+
   }
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Dashboard Admin - TCI Formation"
-        description="Tableau de bord administrateur TCI Formation"
-      />
+        description="Tableau de bord administrateur TCI Formation" />
+      
 
       <div className="min-h-screen bg-muted/30">
         {/* Header */}
@@ -437,8 +437,8 @@ export default function AdminDashboard() {
                   <AreaChart data={enrollmentData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorInscrits" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#0066CC" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#0066CC" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#0066CC" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="#0066CC" stopOpacity={0} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -503,11 +503,11 @@ export default function AdminDashboard() {
                       label={(entry) => `${entry.name}: ${entry.value}`}
                       outerRadius={100}
                       fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {paymentStatusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
+                      dataKey="value">
+                      
+                      {paymentStatusData.map((entry, index) =>
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                      )}
                     </Pie>
                     <Tooltip />
                   </PieChart>
@@ -589,7 +589,7 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <Link href="/admin/enrollments">
-                    <Button className="w-full bg-secondary hover:bg-secondary/90">
+                    <Button className="w-full bg-secondary hover:bg-secondary/90" style={{ backgroundColor: "#06b6d4", backgroundImage: "none" }}>
                       Accéder
                     </Button>
                   </Link>
@@ -637,6 +637,6 @@ export default function AdminDashboard() {
           </div>
         </main>
       </div>
-    </>
-  );
+    </>);
+
 }
